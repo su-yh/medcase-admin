@@ -1,6 +1,8 @@
 export const DOCTOR_STATUS_OPTIONS = [
   { value: '0', label: '正常', tagType: 'success' },
-  { value: '1', label: '停用', tagType: 'info' }
+  { value: '1', label: '停用', tagType: 'info' },
+  { value: '3', label: '待审核', tagType: 'warning' },
+  { value: '4', label: '审核失败', tagType: 'danger' }
 ]
 
 export const DOCTOR_RECORDS = [

@@ -125,6 +125,16 @@
             查看
           </el-button>
           <el-button
+            v-if="row.status === '3'"
+            v-hasPermi="['biz:doctor:review']"
+            link
+            type="primary"
+            icon="Checked"
+            @click="handleReview(row)"
+          >
+            审核
+          </el-button>
+          <el-button
             link
             type="primary"
             icon="MoreFilled"
@@ -179,13 +189,59 @@
         <el-button @click="detailOpen = false">关闭</el-button>
       </template>
     </el-dialog>
+
+    <el-dialog v-model="reviewOpen" title="医生审核" width="520px" append-to-body>
+      <el-descriptions
+        v-if="reviewDoctorInfo"
+        :column="1"
+        label-width="90px"
+        class="doctor-descriptions"
+        border
+      >
+        <el-descriptions-item label="医生姓名">
+          {{ reviewDoctorInfo.name }}
+        </el-descriptions-item>
+        <el-descriptions-item label="登录账号">
+          {{ reviewDoctorInfo.username }}
+        </el-descriptions-item>
+        <el-descriptions-item label="手机号">
+          {{ reviewDoctorInfo.phone }}
+        </el-descriptions-item>
+      </el-descriptions>
+      <el-form label-width="90px" class="review-form">
+        <el-form-item label="审核结果">
+          <el-radio-group v-model="reviewForm.approve">
+            <el-radio :value="true">审核通过</el-radio>
+            <el-radio :value="false">审核拒绝</el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-alert
+          v-if="!reviewForm.approve"
+          title="审核失败后，医生可使用原账号重新提交审核。"
+          type="warning"
+          :closable="false"
+          show-icon
+        />
+      </el-form>
+      <template #footer>
+        <el-button @click="reviewOpen = false">关闭</el-button>
+        <el-button
+          type="primary"
+          icon="Check"
+          :loading="reviewSubmitting"
+          @click="handleSubmitReview"
+        >
+          提交
+        </el-button>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
 <script setup name="Doctor">
 import { onMounted, reactive, ref } from 'vue'
-import { getDoctor, listDoctor } from '@/api/biz/doctor'
-import { ElMessage } from 'element-plus'
+import { getDoctor, listDoctor, reviewDoctor } from '@/api/biz/doctor'
+import { ElMessage, ElMessageBox } from 'element-plus'
 import {
   DOCTOR_STATUS_OPTIONS
 } from './mock'
@@ -196,6 +252,12 @@ const doctorList = ref([])
 const total = ref(0)
 const detailOpen = ref(false)
 const currentDoctor = ref(null)
+const reviewOpen = ref(false)
+const reviewDoctorInfo = ref(null)
+const reviewSubmitting = ref(false)
+const reviewForm = reactive({
+  approve: true
+})
 
 const columns = reactive({
   id: { label: '医生编号', visible: true },
@@ -257,6 +319,45 @@ function handleView(row) {
     currentDoctor.value = res
     detailOpen.value = true
   })
+}
+
+function handleReview(row) {
+  reviewDoctorInfo.value = row
+  reviewForm.approve = true
+  reviewOpen.value = true
+}
+
+async function handleSubmitReview() {
+  if (!reviewDoctorInfo.value || reviewSubmitting.value) {
+    return
+  }
+
+  const isApprove = reviewForm.approve
+  try {
+    await ElMessageBox.confirm(
+      `确认${isApprove ? '通过' : '拒绝'}医生「${reviewDoctorInfo.value.name}」的注册申请吗？`,
+      '审核确认',
+      {
+        type: 'warning',
+        confirmButtonText: '确认提交',
+        cancelButtonText: '取消'
+      }
+    )
+  } catch {
+    return
+  }
+
+  reviewSubmitting.value = true
+  try {
+    await reviewDoctor(reviewDoctorInfo.value.id, {
+      approve: isApprove
+    })
+    ElMessage.success(isApprove ? '医生审核通过' : '医生审核已拒绝')
+    reviewOpen.value = false
+    getList()
+  } finally {
+    reviewSubmitting.value = false
+  }
 }
 
 function handleMore() {

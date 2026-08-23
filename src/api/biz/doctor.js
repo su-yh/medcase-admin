@@ -14,3 +14,11 @@ export function getDoctor(userId) {
     method: 'get'
   })
 }
+
+export function reviewDoctor(userId, data) {
+  return bizRequest({
+    url: `/biz/doctor-user/${userId}/review`,
+    method: 'post',
+    data
+  })
+}
