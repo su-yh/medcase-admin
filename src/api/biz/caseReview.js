@@ -1,16 +1,16 @@
-import request from '@/utils/request'
+import bizRequest from '@/utils/bizRequest'
 
 export function listCaseReview(query) {
-  return request({
-    url: '/biz/case/review/list',
+  return bizRequest({
+    url: '/biz/case-review/list',
     method: 'get',
     params: query
   })
 }
 
 export function getCaseReview(id) {
-  return request({
-    url: '/biz/case/review/' + id,
+  return bizRequest({
+    url: '/biz/case-review/' + id,
     method: 'get'
   })
 }

@@ -2,7 +2,7 @@ import test from 'node:test'
 import assert from 'node:assert/strict'
 import { filterDoctorRecords, paginateDoctorRecords } from './mock.js'
 
-test('filters doctors by name, account, phone, and status', () => {
+test('filters doctors by name, phone, and status', () => {
   const records = [
     { id: 1, name: '张医生', username: 'zhang', phone: '13800000001', status: '0' },
     { id: 2, name: '李医生', username: 'li', phone: '13900000002', status: '1' }
@@ -11,10 +11,6 @@ test('filters doctors by name, account, phone, and status', () => {
   assert.deepEqual(
     filterDoctorRecords(records, { name: '张', status: '0' }).map(item => item.id),
     [1]
-  )
-  assert.deepEqual(
-    filterDoctorRecords(records, { username: 'li' }).map(item => item.id),
-    [2]
   )
   assert.deepEqual(
     filterDoctorRecords(records, { phone: '00000002' }).map(item => item.id),

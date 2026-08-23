@@ -17,15 +17,6 @@
           @keyup.enter="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="登录账号" prop="username">
-        <el-input
-          v-model="queryParams.username"
-          placeholder="请输入登录账号"
-          clearable
-          style="width: 220px"
-          @keyup.enter="handleQuery"
-        />
-      </el-form-item>
       <el-form-item label="手机号" prop="phone">
         <el-input
           v-model="queryParams.phone"
@@ -86,13 +77,6 @@
         prop="username"
         align="center"
         width="140"
-      />
-      <el-table-column
-        v-if="columns.department.visible"
-        label="所属科室"
-        prop="department"
-        align="center"
-        width="150"
       />
       <el-table-column
         v-if="columns.title.visible"
@@ -171,9 +155,6 @@
         <el-descriptions-item label="手机号">
           {{ currentDoctor.phone }}
         </el-descriptions-item>
-        <el-descriptions-item label="所属科室">
-          {{ currentDoctor.department }}
-        </el-descriptions-item>
         <el-descriptions-item label="职称">
           {{ currentDoctor.title }}
         </el-descriptions-item>
@@ -212,7 +193,6 @@ const columns = reactive({
   id: { label: '医生编号', visible: true },
   name: { label: '医生姓名', visible: true },
   username: { label: '登录账号', visible: true },
-  department: { label: '所属科室', visible: true },
   title: { label: '职称', visible: true },
   phone: { label: '手机号', visible: true },
   status: { label: '状态', visible: true },
@@ -224,7 +204,6 @@ const queryParams = reactive({
   pageNum: 1,
   pageSize: 10,
   name: '',
-  username: '',
   phone: '',
   status: ''
 })
@@ -235,11 +214,10 @@ function getList() {
     pageNum: queryParams.pageNum,
     pageSize: queryParams.pageSize,
     name: queryParams.name || undefined,
-    username: queryParams.username || undefined,
     phone: queryParams.phone || undefined,
     status: queryParams.status || undefined
   }).then(res => {
-    doctorList.value = res.rows
+    doctorList.value = res.list || []
     total.value = Number(res.total || 0)
   }).finally(() => {
     loading.value = false
@@ -254,7 +232,6 @@ function handleQuery() {
 function resetQuery() {
   queryParams.pageNum = 1
   queryParams.name = ''
-  queryParams.username = ''
   queryParams.phone = ''
   queryParams.status = ''
   getList()
@@ -269,7 +246,7 @@ function getStatusOption(status) {
 
 function handleView(row) {
   getDoctor(row.id).then(res => {
-    currentDoctor.value = res.data
+    currentDoctor.value = res
     detailOpen.value = true
   })
 }

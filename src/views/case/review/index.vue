@@ -208,7 +208,7 @@ function getList() {
     title: queryParams.title || undefined,
     status: queryParams.status || undefined
   }).then(res => {
-    caseList.value = res.rows
+    caseList.value = res.list || []
     total.value = Number(res.total || 0)
   }).finally(() => {
     loading.value = false
@@ -237,7 +237,7 @@ function getStatusOption(status) {
 
 function handleView(row) {
   getCaseReview(row.id).then(res => {
-    currentCase.value = res.data
+    currentCase.value = res
     detailOpen.value = true
   })
 }

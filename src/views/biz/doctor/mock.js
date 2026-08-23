@@ -8,7 +8,6 @@ export const DOCTOR_RECORDS = [
     id: 20001,
     name: '张医生',
     username: 'zhangsan',
-    department: '心内科',
     title: '主治医师',
     phone: '13800000001',
     status: '0',
@@ -18,7 +17,6 @@ export const DOCTOR_RECORDS = [
     id: 20002,
     name: '李医生',
     username: 'lisi',
-    department: '骨科',
     title: '副主任医师',
     phone: '13900000002',
     status: '0',
@@ -28,7 +26,6 @@ export const DOCTOR_RECORDS = [
     id: 20003,
     name: '王医生',
     username: 'wangwu',
-    department: '内分泌科',
     title: '主治医师',
     phone: '13700000003',
     status: '1',
@@ -38,7 +35,6 @@ export const DOCTOR_RECORDS = [
     id: 20004,
     name: '赵医生',
     username: 'zhaoliu',
-    department: '全科医学科',
     title: '住院医师',
     phone: '13600000004',
     status: '0',
@@ -48,7 +44,6 @@ export const DOCTOR_RECORDS = [
     id: 20005,
     name: '陈医生',
     username: 'chenqi',
-    department: '呼吸内科',
     title: '副主任医师',
     phone: '13500000005',
     status: '0',
@@ -58,7 +53,6 @@ export const DOCTOR_RECORDS = [
     id: 20006,
     name: '刘医生',
     username: 'liuba',
-    department: '消化内科',
     title: '主治医师',
     phone: '13300000006',
     status: '1',
@@ -68,7 +62,6 @@ export const DOCTOR_RECORDS = [
     id: 20007,
     name: '周医生',
     username: 'zhoujiu',
-    department: '心内科',
     title: '住院医师',
     phone: '13200000007',
     status: '0',
@@ -78,7 +71,6 @@ export const DOCTOR_RECORDS = [
     id: 20008,
     name: '吴医生',
     username: 'wushi',
-    department: '皮肤科',
     title: '主治医师',
     phone: '13100000008',
     status: '0',
@@ -88,7 +80,6 @@ export const DOCTOR_RECORDS = [
     id: 20009,
     name: '孙医生',
     username: 'sunshi',
-    department: '感染科',
     title: '主治医师',
     phone: '13000000009',
     status: '1',
@@ -98,7 +89,6 @@ export const DOCTOR_RECORDS = [
     id: 20010,
     name: '郑医生',
     username: 'zhengyi',
-    department: '内分泌科',
     title: '主任医师',
     phone: '15800000010',
     status: '0',
@@ -108,7 +98,6 @@ export const DOCTOR_RECORDS = [
     id: 20011,
     name: '何医生',
     username: 'heyi',
-    department: '康复医学科',
     title: '住院医师',
     phone: '15900000011',
     status: '0',
@@ -126,7 +115,6 @@ export function filterDoctorRecords(records, filters = {}) {
 
   return records.filter(record =>
     matches(record.name, filters.name)
-    && matches(record.username, filters.username)
     && matches(record.phone, filters.phone)
     && (!filters.status || record.status === filters.status)
   )
