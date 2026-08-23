@@ -144,7 +144,13 @@
     />
 
     <el-dialog v-model="detailOpen" title="医生详情" width="620px" append-to-body>
-      <el-descriptions v-if="currentDoctor" :column="2" border>
+      <el-descriptions
+        v-if="currentDoctor"
+        :column="2"
+        label-width="100px"
+        class="doctor-descriptions"
+        border
+      >
         <el-descriptions-item label="医生编号">
           {{ currentDoctor.id }}
         </el-descriptions-item>
@@ -288,5 +294,9 @@ onMounted(getList)
 
 :deep(.el-table__body tr.hover-row > td.doctor-actions-column) {
   background-color: var(--el-table-row-hover-bg-color);
+}
+
+:deep(.doctor-descriptions .el-descriptions__label) {
+  white-space: nowrap;
 }
 </style>

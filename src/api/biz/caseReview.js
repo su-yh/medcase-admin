@@ -7,3 +7,11 @@ export function listCaseReview(query) {
     params: query
   })
 }
+
+export function reviewCaseReview(id, data) {
+  return bizRequest({
+    url: `/biz/case-review/${id}/review`,
+    method: 'post',
+    data
+  })
+}
