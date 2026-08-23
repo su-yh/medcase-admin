@@ -422,7 +422,7 @@ async function handleSubmitReview() {
   reviewSubmitting.value = true
   try {
     await reviewCaseReview(currentCase.value.id, {
-      status: reviewForm.status,
+      approve: !isReject,
       reason: isReject ? reason : undefined
     })
     ElMessage.success(isReject ? '病例已拒绝' : '病例审核通过')
