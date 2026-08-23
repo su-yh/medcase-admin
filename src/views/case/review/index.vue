@@ -113,7 +113,6 @@
     </el-table>
 
     <pagination
-      v-show="total > 0"
       v-model:page="queryParams.pageNum"
       v-model:limit="queryParams.pageSize"
       :total="total"
@@ -171,11 +170,9 @@
 
 <script setup name="CaseReview">
 import { onMounted, reactive, ref } from 'vue'
+import { getCaseReview, listCaseReview } from '@/api/biz/caseReview'
 import {
-  CASE_RECORDS,
-  CASE_STATUS_OPTIONS,
-  filterCaseRecords,
-  paginateCaseRecords
+  CASE_STATUS_OPTIONS
 } from './mock'
 
 const loading = ref(false)
@@ -204,11 +201,18 @@ const queryParams = reactive({
 
 function getList() {
   loading.value = true
-  const filteredRecords = filterCaseRecords(CASE_RECORDS, queryParams)
-  const result = paginateCaseRecords(filteredRecords, queryParams)
-  caseList.value = result.rows
-  total.value = result.total
-  loading.value = false
+  listCaseReview({
+    pageNum: queryParams.pageNum,
+    pageSize: queryParams.pageSize,
+    id: queryParams.id || undefined,
+    title: queryParams.title || undefined,
+    status: queryParams.status || undefined
+  }).then(res => {
+    caseList.value = res.rows
+    total.value = Number(res.total || 0)
+  }).finally(() => {
+    loading.value = false
+  })
 }
 
 function handleQuery() {
@@ -232,8 +236,10 @@ function getStatusOption(status) {
 }
 
 function handleView(row) {
-  currentCase.value = row
-  detailOpen.value = true
+  getCaseReview(row.id).then(res => {
+    currentCase.value = res.data
+    detailOpen.value = true
+  })
 }
 
 onMounted(getList)

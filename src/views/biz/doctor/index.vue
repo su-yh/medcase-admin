@@ -195,12 +195,10 @@
 
 <script setup name="Doctor">
 import { onMounted, reactive, ref } from 'vue'
+import { getDoctor, listDoctor } from '@/api/biz/doctor'
 import { ElMessage } from 'element-plus'
 import {
-  DOCTOR_RECORDS,
-  DOCTOR_STATUS_OPTIONS,
-  filterDoctorRecords,
-  paginateDoctorRecords
+  DOCTOR_STATUS_OPTIONS
 } from './mock'
 
 const loading = ref(false)
@@ -233,11 +231,19 @@ const queryParams = reactive({
 
 function getList() {
   loading.value = true
-  const filteredRecords = filterDoctorRecords(DOCTOR_RECORDS, queryParams)
-  const result = paginateDoctorRecords(filteredRecords, queryParams)
-  doctorList.value = result.rows
-  total.value = result.total
-  loading.value = false
+  listDoctor({
+    pageNum: queryParams.pageNum,
+    pageSize: queryParams.pageSize,
+    name: queryParams.name || undefined,
+    username: queryParams.username || undefined,
+    phone: queryParams.phone || undefined,
+    status: queryParams.status || undefined
+  }).then(res => {
+    doctorList.value = res.rows
+    total.value = Number(res.total || 0)
+  }).finally(() => {
+    loading.value = false
+  })
 }
 
 function handleQuery() {
@@ -262,8 +268,10 @@ function getStatusOption(status) {
 }
 
 function handleView(row) {
-  currentDoctor.value = row
-  detailOpen.value = true
+  getDoctor(row.id).then(res => {
+    currentDoctor.value = res.data
+    detailOpen.value = true
+  })
 }
 
 function handleMore() {
