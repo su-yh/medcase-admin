@@ -1,0 +1,48 @@
+import test from 'node:test'
+import assert from 'node:assert/strict'
+import {
+  CASE_STATUS_OPTIONS,
+  filterCaseRecords,
+  paginateCaseRecords
+} from './mock.js'
+
+test('exposes the complete case lifecycle status vocabulary', () => {
+  assert.deepEqual(
+    CASE_STATUS_OPTIONS.map(item => item.value),
+    ['draft', 'pending_review', 'review_failed', 'approved_pending_settlement', 'settled']
+  )
+})
+
+test('filters case records by title and status', () => {
+  const result = filterCaseRecords(
+    [
+      { id: 1, title: '胸痛病例讨论', status: 'pending_review' },
+      { id: 2, title: '术后复诊记录', status: 'settled' }
+    ],
+    { title: '胸痛', status: 'pending_review' }
+  )
+
+  assert.deepEqual(result.map(item => item.id), [1])
+})
+
+test('paginates filtered case records with one-based pages', () => {
+  const result = paginateCaseRecords(
+    [{ id: 1 }, { id: 2 }, { id: 3 }],
+    { pageNum: 2, pageSize: 2 }
+  )
+
+  assert.deepEqual(result, { rows: [{ id: 3 }], total: 3 })
+})
+
+test('empty case filters return all records and status filters are exact', () => {
+  const records = [
+    { id: 1, title: '草稿病例', status: 'draft' },
+    { id: 2, title: '待审病例', status: 'pending_review' }
+  ]
+
+  assert.equal(filterCaseRecords(records, {}).length, 2)
+  assert.deepEqual(
+    filterCaseRecords(records, { status: 'draft' }).map(item => item.id),
+    [1]
+  )
+})

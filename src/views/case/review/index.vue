@@ -8,42 +8,33 @@
       label-width="82px"
       class="query-form"
     >
-      <el-form-item label="医生姓名" prop="name">
+      <el-form-item label="病例编号" prop="id">
         <el-input
-          v-model="queryParams.name"
-          placeholder="请输入医生姓名"
+          v-model="queryParams.id"
+          placeholder="请输入病例编号"
           clearable
           style="width: 220px"
           @keyup.enter="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="登录账号" prop="username">
+      <el-form-item label="病例标题" prop="title">
         <el-input
-          v-model="queryParams.username"
-          placeholder="请输入登录账号"
+          v-model="queryParams.title"
+          placeholder="请输入病例标题"
           clearable
           style="width: 220px"
           @keyup.enter="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="手机号" prop="phone">
-        <el-input
-          v-model="queryParams.phone"
-          placeholder="请输入手机号"
-          clearable
-          style="width: 220px"
-          @keyup.enter="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="状态" prop="status">
+      <el-form-item label="病例状态" prop="status">
         <el-select
           v-model="queryParams.status"
-          placeholder="请选择状态"
+          placeholder="请选择病例状态"
           clearable
-          style="width: 180px"
+          style="width: 220px"
         >
           <el-option
-            v-for="item in DOCTOR_STATUS_OPTIONS"
+            v-for="item in CASE_STATUS_OPTIONS"
             :key="item.value"
             :label="item.label"
             :value="item.value"
@@ -60,59 +51,38 @@
       <right-toolbar
         v-model:showSearch="showSearch"
         :columns="columns"
-        storage-key="doctor-management-columns"
+        storage-key="case-review-columns"
         @queryTable="getList"
       />
     </el-row>
 
-    <el-table v-loading="loading" :data="doctorList" row-key="id">
+    <el-table v-loading="loading" :data="caseList" row-key="id">
       <el-table-column
         v-if="columns.id.visible"
-        label="医生编号"
+        label="病例编号"
         prop="id"
         align="center"
         width="100"
       />
       <el-table-column
-        v-if="columns.name.visible"
-        label="医生姓名"
-        prop="name"
+        v-if="columns.title.visible"
+        label="病例标题"
+        prop="title"
+        min-width="220"
+        show-overflow-tooltip
+      />
+      <el-table-column
+        v-if="columns.doctorName.visible"
+        label="提交医生"
+        prop="doctorName"
         align="center"
         width="120"
-      />
-      <el-table-column
-        v-if="columns.username.visible"
-        label="登录账号"
-        prop="username"
-        align="center"
-        width="140"
-      />
-      <el-table-column
-        v-if="columns.department.visible"
-        label="所属科室"
-        prop="department"
-        align="center"
-        width="150"
-      />
-      <el-table-column
-        v-if="columns.title.visible"
-        label="职称"
-        prop="title"
-        align="center"
-        width="140"
-      />
-      <el-table-column
-        v-if="columns.phone.visible"
-        label="手机号"
-        prop="phone"
-        align="center"
-        width="140"
       />
       <el-table-column
         v-if="columns.status.visible"
         label="状态"
         align="center"
-        width="100"
+        width="180"
       >
         <template #default="{ row }">
           <el-tag :type="getStatusOption(row.status).tagType">
@@ -122,7 +92,7 @@
       </el-table-column>
       <el-table-column
         v-if="columns.createTime.visible"
-        label="创建时间"
+        label="提交时间"
         prop="createTime"
         align="center"
         width="180"
@@ -131,20 +101,13 @@
         v-if="columns.actions.visible"
         label="操作"
         align="center"
-        width="140"
+        width="100"
         fixed="right"
       >
         <template #default="{ row }">
           <el-button link type="primary" icon="View" @click="handleView(row)">
             查看
           </el-button>
-          <el-button
-            link
-            type="primary"
-            icon="MoreFilled"
-            title="更多操作"
-            @click="handleMore(row)"
-          />
         </template>
       </el-table-column>
     </el-table>
@@ -157,33 +120,46 @@
       @pagination="getList"
     />
 
-    <el-dialog v-model="detailOpen" title="医生详情" width="620px" append-to-body>
-      <el-descriptions v-if="currentDoctor" :column="2" border>
-        <el-descriptions-item label="医生编号">
-          {{ currentDoctor.id }}
+    <el-dialog v-model="detailOpen" title="病例详情" width="680px" append-to-body>
+      <el-descriptions v-if="currentCase" :column="2" border>
+        <el-descriptions-item label="病例编号">
+          {{ currentCase.id }}
         </el-descriptions-item>
-        <el-descriptions-item label="医生姓名">
-          {{ currentDoctor.name }}
+        <el-descriptions-item label="提交医生">
+          {{ currentCase.doctorName }}
         </el-descriptions-item>
-        <el-descriptions-item label="登录账号">
-          {{ currentDoctor.username }}
+        <el-descriptions-item label="病例标题" :span="2">
+          {{ currentCase.title }}
         </el-descriptions-item>
-        <el-descriptions-item label="手机号">
-          {{ currentDoctor.phone }}
-        </el-descriptions-item>
-        <el-descriptions-item label="所属科室">
-          {{ currentDoctor.department }}
-        </el-descriptions-item>
-        <el-descriptions-item label="职称">
-          {{ currentDoctor.title }}
-        </el-descriptions-item>
-        <el-descriptions-item label="状态">
-          <el-tag :type="getStatusOption(currentDoctor.status).tagType">
-            {{ getStatusOption(currentDoctor.status).label }}
+        <el-descriptions-item label="病例状态">
+          <el-tag :type="getStatusOption(currentCase.status).tagType">
+            {{ getStatusOption(currentCase.status).label }}
           </el-tag>
         </el-descriptions-item>
-        <el-descriptions-item label="创建时间">
-          {{ currentDoctor.createTime }}
+        <el-descriptions-item label="提交时间">
+          {{ currentCase.createTime }}
+        </el-descriptions-item>
+        <el-descriptions-item label="备注" :span="2">
+          {{ currentCase.remark || '暂无备注' }}
+        </el-descriptions-item>
+        <el-descriptions-item
+          v-if="currentCase.reviewReason"
+          label="审核原因"
+          :span="2"
+        >
+          {{ currentCase.reviewReason }}
+        </el-descriptions-item>
+        <el-descriptions-item label="附件" :span="2">
+          <template v-if="currentCase.attachments?.length">
+            <el-tag
+              v-for="attachment in currentCase.attachments"
+              :key="attachment"
+              class="attachment-tag"
+            >
+              {{ attachment }}
+            </el-tag>
+          </template>
+          <span v-else>暂无附件</span>
         </el-descriptions-item>
       </el-descriptions>
       <template #footer>
@@ -193,49 +169,44 @@
   </div>
 </template>
 
-<script setup name="Doctor">
+<script setup name="CaseReview">
 import { onMounted, reactive, ref } from 'vue'
-import { ElMessage } from 'element-plus'
 import {
-  DOCTOR_RECORDS,
-  DOCTOR_STATUS_OPTIONS,
-  filterDoctorRecords,
-  paginateDoctorRecords
+  CASE_RECORDS,
+  CASE_STATUS_OPTIONS,
+  filterCaseRecords,
+  paginateCaseRecords
 } from './mock'
 
 const loading = ref(false)
 const showSearch = ref(true)
-const doctorList = ref([])
+const caseList = ref([])
 const total = ref(0)
 const detailOpen = ref(false)
-const currentDoctor = ref(null)
+const currentCase = ref(null)
 
 const columns = reactive({
-  id: { label: '医生编号', visible: true },
-  name: { label: '医生姓名', visible: true },
-  username: { label: '登录账号', visible: true },
-  department: { label: '所属科室', visible: true },
-  title: { label: '职称', visible: true },
-  phone: { label: '手机号', visible: true },
+  id: { label: '病例编号', visible: true },
+  title: { label: '病例标题', visible: true },
+  doctorName: { label: '提交医生', visible: true },
   status: { label: '状态', visible: true },
-  createTime: { label: '创建时间', visible: true },
+  createTime: { label: '提交时间', visible: true },
   actions: { label: '操作', visible: true }
 })
 
 const queryParams = reactive({
   pageNum: 1,
   pageSize: 10,
-  name: '',
-  username: '',
-  phone: '',
+  id: '',
+  title: '',
   status: ''
 })
 
 function getList() {
   loading.value = true
-  const filteredRecords = filterDoctorRecords(DOCTOR_RECORDS, queryParams)
-  const result = paginateDoctorRecords(filteredRecords, queryParams)
-  doctorList.value = result.rows
+  const filteredRecords = filterCaseRecords(CASE_RECORDS, queryParams)
+  const result = paginateCaseRecords(filteredRecords, queryParams)
+  caseList.value = result.rows
   total.value = result.total
   loading.value = false
 }
@@ -247,27 +218,22 @@ function handleQuery() {
 
 function resetQuery() {
   queryParams.pageNum = 1
-  queryParams.name = ''
-  queryParams.username = ''
-  queryParams.phone = ''
+  queryParams.id = ''
+  queryParams.title = ''
   queryParams.status = ''
   getList()
 }
 
 function getStatusOption(status) {
-  return DOCTOR_STATUS_OPTIONS.find(item => item.value === status) || {
+  return CASE_STATUS_OPTIONS.find(item => item.value === status) || {
     label: '未知状态',
     tagType: 'info'
   }
 }
 
 function handleView(row) {
-  currentDoctor.value = row
+  currentCase.value = row
   detailOpen.value = true
-}
-
-function handleMore() {
-  ElMessage.info('医生操作功能待补充')
 }
 
 onMounted(getList)
@@ -283,5 +249,9 @@ onMounted(getList)
   flex-basis: 100%;
   width: 100%;
   margin-right: 0;
+}
+
+.attachment-tag + .attachment-tag {
+  margin-left: 8px;
 }
 </style>
