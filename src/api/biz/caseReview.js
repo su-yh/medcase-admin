@@ -7,10 +7,3 @@ export function listCaseReview(query) {
     params: query
   })
 }
-
-export function getCaseReview(id) {
-  return bizRequest({
-    url: '/biz/case-review/' + id,
-    method: 'get'
-  })
-}

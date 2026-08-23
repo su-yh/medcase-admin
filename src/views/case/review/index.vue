@@ -101,12 +101,21 @@
         v-if="columns.actions.visible"
         label="操作"
         align="center"
-        width="100"
+        width="160"
         fixed="right"
       >
         <template #default="{ row }">
           <el-button link type="primary" icon="View" @click="handleView(row)">
             查看
+          </el-button>
+          <el-button
+            v-if="row.status === 'pending_review'"
+            link
+            type="primary"
+            icon="Edit"
+            @click="handleReview(row)"
+          >
+            审核
           </el-button>
         </template>
       </el-table-column>
@@ -170,7 +179,7 @@
 
 <script setup name="CaseReview">
 import { onMounted, reactive, ref } from 'vue'
-import { getCaseReview, listCaseReview } from '@/api/biz/caseReview'
+import { listCaseReview } from '@/api/biz/caseReview'
 import {
   CASE_STATUS_OPTIONS
 } from './mock'
@@ -236,10 +245,12 @@ function getStatusOption(status) {
 }
 
 function handleView(row) {
-  getCaseReview(row.id).then(res => {
-    currentCase.value = res
-    detailOpen.value = true
-  })
+  currentCase.value = row
+  detailOpen.value = true
+}
+
+function handleReview(row) {
+  handleView(row)
 }
 
 onMounted(getList)
