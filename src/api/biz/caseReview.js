@@ -15,3 +15,14 @@ export function reviewCaseReview(id, data) {
     data
   })
 }
+
+export function settleCaseReview(id, data) {
+  const request = {
+    url: `/biz/case-review/${id}/settle`,
+    method: 'post'
+  }
+  if (data && Object.keys(data).length) {
+    request.data = data
+  }
+  return bizRequest(request)
+}

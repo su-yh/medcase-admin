@@ -72,13 +72,6 @@
         show-overflow-tooltip
       />
       <el-table-column
-        v-if="columns.doctorName.visible"
-        label="提交医生"
-        prop="doctorName"
-        align="center"
-        width="120"
-      />
-      <el-table-column
         v-if="columns.status.visible"
         label="状态"
         align="center"
@@ -91,17 +84,49 @@
         </template>
       </el-table-column>
       <el-table-column
-        v-if="columns.createTime.visible"
-        label="提交时间"
-        prop="createTime"
+        v-if="columns.submitInfo.visible"
+        label="提交"
         align="center"
         width="180"
-      />
+      >
+        <template #default="{ row }">
+          <div class="case-operator-info">
+            <span>{{ row.doctorName || '暂无' }}</span>
+            <small>{{ row.createTime || '—' }}</small>
+          </div>
+        </template>
+      </el-table-column>
+      <el-table-column
+        v-if="columns.reviewInfo.visible"
+        label="审核"
+        align="center"
+        width="180"
+      >
+        <template #default="{ row }">
+          <div class="case-operator-info">
+            <span>{{ row.reviewerNickname || '暂无' }}</span>
+            <small>{{ row.reviewTime || '—' }}</small>
+          </div>
+        </template>
+      </el-table-column>
+      <el-table-column
+        v-if="columns.settleInfo.visible"
+        label="结算"
+        align="center"
+        width="180"
+      >
+        <template #default="{ row }">
+          <div class="case-operator-info">
+            <span>{{ row.settlerNickname || '暂无' }}</span>
+            <small>{{ row.settledTime || '—' }}</small>
+          </div>
+        </template>
+      </el-table-column>
       <el-table-column
         v-if="columns.actions.visible"
         label="操作"
         align="center"
-        width="160"
+        width="220"
         fixed="right"
         class-name="case-review-actions-column"
         label-class-name="case-review-actions-header"
@@ -119,6 +144,16 @@
           >
             审核
           </el-button>
+          <el-button
+            v-if="row.status === 'approved_pending_settlement'"
+            link
+            type="warning"
+            icon="Money"
+            :loading="settleSubmitting && currentCase?.id === row.id"
+            @click="handleSettle(row)"
+          >
+            结算
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -132,12 +167,12 @@
 
     <el-dialog
       v-model="detailOpen"
-      :title="reviewMode ? '病例审核' : '病例详情'"
+      :title="dialogTitle"
       width="680px"
       append-to-body
       :close-on-click-modal="false"
       class="case-review-dialog"
-      @closed="resetReviewForm"
+      @closed="resetDialog"
     >
       <el-descriptions
         v-if="currentCase"
@@ -195,7 +230,7 @@
         </el-descriptions-item>
       </el-descriptions>
       <el-form
-        v-if="reviewMode && currentCase?.status === 'pending_review'"
+        v-if="dialogMode === 'review' && currentCase?.status === 'pending_review'"
         ref="reviewFormRef"
         :model="reviewForm"
         class="review-form"
@@ -222,14 +257,34 @@
           />
         </el-form-item>
       </el-form>
+      <el-form
+        v-if="dialogMode === 'settle' && currentCase?.status === 'approved_pending_settlement'"
+        :model="settleForm"
+        class="review-form"
+        label-width="90px"
+      >
+        <el-form-item label="结算状态">
+          <el-tag type="warning">待结算</el-tag>
+        </el-form-item>
+      </el-form>
       <template #footer>
         <el-button @click="detailOpen = false">关闭</el-button>
-        <template v-if="reviewMode && currentCase?.status === 'pending_review'">
+        <template v-if="dialogMode === 'review' && currentCase?.status === 'pending_review'">
           <el-button
             type="primary"
             icon="Check"
             :loading="reviewSubmitting"
             @click="handleSubmitReview"
+          >
+            提交
+          </el-button>
+        </template>
+        <template v-if="dialogMode === 'settle' && currentCase?.status === 'approved_pending_settlement'">
+          <el-button
+            type="warning"
+            icon="Money"
+            :loading="settleSubmitting"
+            @click="handleSubmitSettle"
           >
             提交
           </el-button>
@@ -244,7 +299,8 @@ import { computed, onMounted, reactive, ref } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import {
   listCaseReview,
-  reviewCaseReview
+  reviewCaseReview,
+  settleCaseReview
 } from '@/api/biz/caseReview'
 import {
   CASE_STATUS_OPTIONS
@@ -256,21 +312,33 @@ const caseList = ref([])
 const total = ref(0)
 const detailOpen = ref(false)
 const currentCase = ref(null)
-const reviewMode = ref(false)
+const dialogMode = ref('detail')
 const reviewSubmitting = ref(false)
+const settleSubmitting = ref(false)
 const reviewFormRef = ref()
 const reviewForm = reactive({
   status: 'approved_pending_settlement',
   reason: ''
 })
+const settleForm = reactive({})
 const attachmentList = computed(() => getAttachmentList(currentCase.value?.attachments))
+const dialogTitle = computed(() => {
+  if (dialogMode.value === 'review') {
+    return '病例审核'
+  }
+  if (dialogMode.value === 'settle') {
+    return '病例结算'
+  }
+  return '病例详情'
+})
 
 const columns = reactive({
   id: { label: '病例编号', visible: true },
   title: { label: '病例标题', visible: true },
-  doctorName: { label: '提交医生', visible: true },
   status: { label: '状态', visible: true },
-  createTime: { label: '提交时间', visible: true },
+  submitInfo: { label: '提交', visible: true },
+  reviewInfo: { label: '审核', visible: true },
+  settleInfo: { label: '结算', visible: true },
   actions: { label: '操作', visible: true }
 })
 
@@ -380,13 +448,13 @@ function getAttachmentNameFromUrl(url) {
 }
 
 function handleView(row) {
-  reviewMode.value = false
+  dialogMode.value = 'detail'
   currentCase.value = row
   detailOpen.value = true
 }
 
 function handleReview(row) {
-  reviewMode.value = row.status === 'pending_review'
+  dialogMode.value = 'review'
   currentCase.value = row
   reviewForm.status = 'approved_pending_settlement'
   reviewForm.reason = ''
@@ -433,10 +501,52 @@ async function handleSubmitReview() {
   }
 }
 
-function resetReviewForm() {
+function handleSettle(row) {
+  if (!row || settleSubmitting.value) {
+    return
+  }
+
+  dialogMode.value = 'settle'
+  currentCase.value = row
+  Object.keys(settleForm).forEach(key => delete settleForm[key])
+  detailOpen.value = true
+}
+
+async function handleSubmitSettle() {
+  if (!currentCase.value || settleSubmitting.value) {
+    return
+  }
+
+  try {
+    await ElMessageBox.confirm(
+      `确认结算病例「${currentCase.value.title}」吗？`,
+      '结算确认',
+      {
+        type: 'warning',
+        confirmButtonText: '确认提交',
+        cancelButtonText: '取消'
+      }
+    )
+  } catch {
+    return
+  }
+
+  settleSubmitting.value = true
+  try {
+    await settleCaseReview(currentCase.value.id, settleForm)
+    ElMessage.success('病例已结算')
+    detailOpen.value = false
+    getList()
+  } finally {
+    settleSubmitting.value = false
+  }
+}
+
+function resetDialog() {
   reviewForm.status = 'approved_pending_settlement'
   reviewForm.reason = ''
-  reviewMode.value = false
+  Object.keys(settleForm).forEach(key => delete settleForm[key])
+  dialogMode.value = 'detail'
 }
 
 onMounted(getList)
@@ -474,6 +584,18 @@ onMounted(getList)
 
 .review-form {
   margin-top: 20px;
+}
+
+.case-operator-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  line-height: 1.4;
+}
+
+.case-operator-info small {
+  color: var(--el-text-color-secondary);
+  font-size: 12px;
 }
 
 :deep(.case-review-dialog .el-dialog__body) {
