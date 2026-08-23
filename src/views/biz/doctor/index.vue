@@ -117,6 +117,8 @@
         align="center"
         width="140"
         fixed="right"
+        class-name="doctor-actions-column"
+        label-class-name="doctor-actions-header"
       >
         <template #default="{ row }">
           <el-button link type="primary" icon="View" @click="handleView(row)">
@@ -268,5 +270,23 @@ onMounted(getList)
   flex-basis: 100%;
   width: 100%;
   margin-right: 0;
+}
+
+:deep(.el-table__fixed-right) {
+  box-shadow: -6px 0 8px -6px rgb(0 0 0 / 25%);
+}
+
+:deep(.doctor-actions-column) {
+  background-color: #fafafa;
+  border-left: 1px solid var(--el-border-color-lighter);
+}
+
+:deep(.doctor-actions-header) {
+  background-color: #f5f7fa;
+  border-left: 1px solid var(--el-border-color-light);
+}
+
+:deep(.el-table__body tr.hover-row > td.doctor-actions-column) {
+  background-color: var(--el-table-row-hover-bg-color);
 }
 </style>
