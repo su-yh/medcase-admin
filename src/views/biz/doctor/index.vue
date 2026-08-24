@@ -125,7 +125,7 @@
             查看
           </el-button>
           <el-button
-            v-if="row.status === '3'"
+            v-if="row.status === '3' || row.status === '5'"
             v-hasPermi="['biz:doctor:review']"
             link
             type="primary"
