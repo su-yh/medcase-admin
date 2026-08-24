@@ -20,12 +20,6 @@
             @click="goTarget('https://gitee.com/y_project/RuoYi-Vue')"
             >访问码云</el-button
           >
-          <el-button
-            icon="HomeFilled"
-            plain
-            @click="goTarget('http://ruoyi.vip')"
-            >访问主页</el-button
-          >
         </p>
       </el-col>
 
@@ -73,13 +67,6 @@
             </div>
           </template>
           <div class="body">
-            <p>
-              <i class="el-icon-s-promotion"></i> 官网：<el-link
-                href="http://www.ruoyi.vip"
-                target="_blank"
-                >http://www.ruoyi.vip</el-link
-              >
-            </p>
             <p>
               <i class="el-icon-user-solid"></i> QQ群：<s> 满937441 </s> <s> 满887144332 </s>
               <s> 满180251782 </s> <s> 满104180207 </s> <s> 满186866453 </s> <s> 满201396349 </s>
