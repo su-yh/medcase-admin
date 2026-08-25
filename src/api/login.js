@@ -1,4 +1,5 @@
 import request from '@/utils/request'
+import adminRequest from '@/utils/adminRequest'
 
 // 登录方法
 export function login(username, password, code, uuid) {
@@ -8,7 +9,7 @@ export function login(username, password, code, uuid) {
     code,
     uuid
   }
-  return request({
+  return adminRequest({
     url: '/login',
     headers: {
       isToken: false,
@@ -16,7 +17,9 @@ export function login(username, password, code, uuid) {
     },
     method: 'post',
     data: data
-  })
+  }).then(response => ({
+    token: response.token
+  }))
 }
 
 // 注册方法
@@ -33,10 +36,17 @@ export function register(data) {
 
 // 获取用户详细信息
 export function getInfo() {
-  return request({
+  return adminRequest({
     url: '/getInfo',
     method: 'get'
-  })
+  }).then(response => ({
+    user: response.user,
+    roles: response.roles,
+    permissions: response.permissions,
+    pwdChrtype: response.pwdChrtype,
+    isDefaultModifyPwd: response.defaultModifyPwd,
+    isPasswordExpired: response.passwordExpired
+  }))
 }
 
 // 解锁屏幕
