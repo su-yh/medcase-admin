@@ -1,7 +1,7 @@
-import bizRequest from '@/utils/bizRequest'
+import adminRequest from '@/utils/adminRequest'
 
 export function listCaseReview(query) {
-  return bizRequest({
+  return adminRequest({
     url: '/biz/case-review/list',
     method: 'get',
     params: query
@@ -9,7 +9,7 @@ export function listCaseReview(query) {
 }
 
 export function reviewCaseReview(id, data) {
-  return bizRequest({
+  return adminRequest({
     url: `/biz/case-review/${id}/review`,
     method: 'post',
     data
@@ -24,5 +24,5 @@ export function settleCaseReview(id, data) {
   if (data && Object.keys(data).length) {
     request.data = data
   }
-  return bizRequest(request)
+  return adminRequest(request)
 }

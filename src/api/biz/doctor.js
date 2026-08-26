@@ -1,7 +1,7 @@
-import bizRequest from '@/utils/bizRequest'
+import adminRequest from '@/utils/adminRequest'
 
 export function listDoctor(query) {
-  return bizRequest({
+  return adminRequest({
     url: '/biz/doctor-user/list',
     method: 'get',
     params: query
@@ -9,14 +9,14 @@ export function listDoctor(query) {
 }
 
 export function getDoctor(userId) {
-  return bizRequest({
+  return adminRequest({
     url: '/biz/doctor-user/' + userId,
     method: 'get'
   })
 }
 
 export function reviewDoctor(userId, data) {
-  return bizRequest({
+  return adminRequest({
     url: `/biz/doctor-user/${userId}/review`,
     method: 'post',
     data

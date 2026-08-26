@@ -5,6 +5,8 @@ import errorCode from '@/utils/errorCode'
 import { tansParams } from '@/utils/ruoyi'
 import cache from '@/plugins/cache'
 import useUserStore from '@/store/modules/user'
+import { createBizError } from '@/utils/bizResponse'
+import { isBizUnauthorized } from '@/utils/bizAuth'
 
 // 是否显示重新登录
 export let isRelogin = { show: false }
@@ -18,6 +20,48 @@ const adminRequest = axios.create({
 
 function getHttpStatusMessage(status) {
   return errorCode[status] || (status >= 500 ? '服务器异常，请稍后再试' : '请求失败，请稍后再试')
+}
+
+function isBinaryResponse(response) {
+  const responseType = response?.config?.responseType || response?.request?.responseType
+  return responseType === 'blob' || responseType === 'arraybuffer'
+}
+
+function rejectUnauthorized(message, status = 401) {
+  if (!isRelogin.show) {
+    isRelogin.show = true
+    ElMessageBox.confirm('登录状态已过期，您可以继续留在该页面，或者重新登录', '系统提示', {
+      confirmButtonText: '重新登录',
+      cancelButtonText: '取消',
+      type: 'warning'
+    }).then(() => {
+      isRelogin.show = false
+      useUserStore().logOut().then(() => {
+        location.href = '/index'
+      })
+    }).catch(() => {
+      isRelogin.show = false
+    })
+  }
+
+  const error = new Error(message || '登录状态已过期，请重新登录')
+  error.code = 401
+  error.status = status
+  return Promise.reject(error)
+}
+
+function rejectBusinessError(error) {
+  if (error.code === 401) {
+    return rejectUnauthorized(error.message, error.status)
+  }
+  if (error.code === 500) {
+    ElMessage({ message: error.message, type: 'error' })
+  } else if (error.code === 601) {
+    ElMessage({ message: error.message, type: 'warning' })
+  } else {
+    ElNotification.error({ title: error.message })
+  }
+  return Promise.reject(error)
 }
 
 adminRequest.interceptors.request.use(config => {
@@ -70,81 +114,49 @@ adminRequest.interceptors.request.use(config => {
   return config
 }, error => {
   console.log(error)
-  Promise.reject(error)
+  return Promise.reject(error)
 })
 
 adminRequest.interceptors.response.use(res => {
     const payload = res.data
 
-    if (res.request.responseType === 'blob' || res.request.responseType === 'arraybuffer') {
+    if (isBinaryResponse(res)) {
       return payload
     }
 
     if (typeof payload === 'string') {
-      ElMessage({ message: payload, type: 'error' })
-      return Promise.reject(new Error(payload))
+      return rejectBusinessError(createBizError(res))
     }
 
-    const code = payload?.code
-    const msg = errorCode[code] || payload?.msg || errorCode['default']
-
-    if (code === 401) {
-      if (!isRelogin.show) {
-        isRelogin.show = true
-        ElMessageBox.confirm('登录状态已过期，您可以继续留在该页面，或者重新登录', '系统提示', { confirmButtonText: '重新登录', cancelButtonText: '取消', type: 'warning' }).then(() => {
-          isRelogin.show = false
-          useUserStore().logOut().then(() => {
-            location.href = '/index'
-          })
-        }).catch(() => {
-          isRelogin.show = false
-        })
-      }
-      return Promise.reject(new Error('无效的会话，或者会话已过期，请重新登录。'))
-    } else if (code === 0) {
-      return Promise.resolve(payload.data)
-    } else if (code === 500) {
-      ElMessage({ message: msg, type: 'error' })
-      return Promise.reject(new Error(msg))
-    } else if (code === 601) {
-      ElMessage({ message: msg, type: 'warning' })
-      return Promise.reject(new Error(msg))
-    } else {
-      ElNotification.error({ title: msg })
-      const error = new Error(msg)
-      if (code !== undefined && code !== null) {
-        error.code = code
-      }
-      return Promise.reject(error)
+    if (payload?.code === 0) {
+      return payload.data
     }
+
+    return rejectBusinessError(createBizError(res))
   },
   error => {
     console.log('err' + error)
-    const status = error.response?.status
-    if (status === 401 || error.response?.data?.code === 401) {
-      if (!isRelogin.show) {
-        isRelogin.show = true
-        ElMessageBox.confirm('登录状态已过期，您可以继续留在该页面，或者重新登录', '系统提示', { confirmButtonText: '重新登录', cancelButtonText: '取消', type: 'warning' }).then(() => {
-          isRelogin.show = false
-          useUserStore().logOut().then(() => {
-            location.href = '/index'
-          })
-        }).catch(() => {
-          isRelogin.show = false
-        })
-      }
-      return Promise.reject(new Error('无效的会话，或者会话已过期，请重新登录。'))
+    const response = error.response
+    const status = response?.status
+    if (isBizUnauthorized({
+      status,
+      data: response?.data
+    })) {
+      return rejectUnauthorized(response?.data?.msg || getHttpStatusMessage(status), status)
     }
-    let message = error.response?.data?.msg || getHttpStatusMessage(status)
+
+    let fallbackMessage = getHttpStatusMessage(status)
     if (!status && error.message === 'Network Error') {
-      message = '后端接口连接异常'
+      fallbackMessage = '后端接口连接异常'
     } else if (!status && error.message?.includes('timeout')) {
-      message = '系统接口请求超时'
+      fallbackMessage = '系统接口请求超时'
     } else if (!status && error.message?.includes('Request failed with status code')) {
-      message = '系统接口' + error.message.slice(-3) + '异常'
+      fallbackMessage = '系统接口' + error.message.slice(-3) + '异常'
     }
-    ElMessage({ message: message, type: 'error', duration: 5 * 1000 })
-    return Promise.reject(error)
+
+    const normalizedError = createBizError(response, fallbackMessage)
+    ElMessage({ message: normalizedError.message, type: 'error', duration: 5 * 1000 })
+    return Promise.reject(normalizedError)
   }
 )
 
