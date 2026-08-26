@@ -116,6 +116,20 @@ adminRequest.interceptors.response.use(res => {
   },
   error => {
     console.log('err' + error)
+    if (error.response?.status === 401 || error.response?.data?.code === 401) {
+      if (!isRelogin.show) {
+        isRelogin.show = true
+        ElMessageBox.confirm('登录状态已过期，您可以继续留在该页面，或者重新登录', '系统提示', { confirmButtonText: '重新登录', cancelButtonText: '取消', type: 'warning' }).then(() => {
+          isRelogin.show = false
+          useUserStore().logOut().then(() => {
+            location.href = '/index'
+          })
+        }).catch(() => {
+          isRelogin.show = false
+        })
+      }
+      return Promise.reject(new Error('无效的会话，或者会话已过期，请重新登录。'))
+    }
     let { message } = error
     if (message === 'Network Error') {
       message = '后端接口连接异常'

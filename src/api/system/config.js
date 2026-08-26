@@ -1,4 +1,5 @@
 import request from '@/utils/request'
+import adminRequest from '@/utils/adminRequest'
 
 // 查询参数列表
 export function listConfig(query) {
@@ -11,23 +12,23 @@ export function listConfig(query) {
 
 // 查询参数详细
 export function getConfig(configId) {
-  return request({
+  return adminRequest({
     url: '/system/config/' + configId,
     method: 'get'
-  })
+  }).then(data => ({ data }))
 }
 
 // 根据参数键名查询参数值
 export function getConfigKey(configKey) {
-  return request({
+  return adminRequest({
     url: '/system/config/configKey/' + configKey,
     method: 'get'
-  })
+  }).then(data => ({ msg: data }))
 }
 
 // 新增参数配置
 export function addConfig(data) {
-  return request({
+  return adminRequest({
     url: '/system/config',
     method: 'post',
     data: data
@@ -36,7 +37,7 @@ export function addConfig(data) {
 
 // 修改参数配置
 export function updateConfig(data) {
-  return request({
+  return adminRequest({
     url: '/system/config',
     method: 'put',
     data: data
@@ -45,7 +46,7 @@ export function updateConfig(data) {
 
 // 删除参数配置
 export function delConfig(configId) {
-  return request({
+  return adminRequest({
     url: '/system/config/' + configId,
     method: 'delete'
   })
@@ -53,7 +54,7 @@ export function delConfig(configId) {
 
 // 刷新参数缓存
 export function refreshCache() {
-  return request({
+  return adminRequest({
     url: '/system/config/refreshCache',
     method: 'delete'
   })

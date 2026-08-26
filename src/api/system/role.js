@@ -1,4 +1,5 @@
 import request from '@/utils/request'
+import adminRequest from '@/utils/adminRequest'
 
 // 查询角色列表
 export function listRole(query) {
@@ -11,15 +12,15 @@ export function listRole(query) {
 
 // 查询角色详细
 export function getRole(roleId) {
-  return request({
+  return adminRequest({
     url: '/system/role/' + roleId,
     method: 'get'
-  })
+  }).then(data => ({ data }))
 }
 
 // 新增角色
 export function addRole(data) {
-  return request({
+  return adminRequest({
     url: '/system/role',
     method: 'post',
     data: data
@@ -28,7 +29,7 @@ export function addRole(data) {
 
 // 修改角色
 export function updateRole(data) {
-  return request({
+  return adminRequest({
     url: '/system/role',
     method: 'put',
     data: data
@@ -37,7 +38,7 @@ export function updateRole(data) {
 
 // 角色数据权限
 export function dataScope(data) {
-  return request({
+  return adminRequest({
     url: '/system/role/dataScope',
     method: 'put',
     data: data
@@ -50,7 +51,7 @@ export function changeRoleStatus(roleId, status) {
     roleId,
     status
   }
-  return request({
+  return adminRequest({
     url: '/system/role/changeStatus',
     method: 'put',
     data: data
@@ -59,7 +60,7 @@ export function changeRoleStatus(roleId, status) {
 
 // 删除角色
 export function delRole(roleId) {
-  return request({
+  return adminRequest({
     url: '/system/role/' + roleId,
     method: 'delete'
   })
@@ -85,7 +86,7 @@ export function unallocatedUserList(query) {
 
 // 取消用户授权角色
 export function authUserCancel(data) {
-  return request({
+  return adminRequest({
     url: '/system/role/authUser/cancel',
     method: 'put',
     data: data
@@ -94,7 +95,7 @@ export function authUserCancel(data) {
 
 // 批量取消用户授权角色
 export function authUserCancelAll(data) {
-  return request({
+  return adminRequest({
     url: '/system/role/authUser/cancelAll',
     method: 'put',
     params: data
@@ -103,7 +104,7 @@ export function authUserCancelAll(data) {
 
 // 授权用户选择
 export function authUserSelectAll(data) {
-  return request({
+  return adminRequest({
     url: '/system/role/authUser/selectAll',
     method: 'put',
     params: data
@@ -112,7 +113,7 @@ export function authUserSelectAll(data) {
 
 // 根据角色ID查询部门树结构
 export function deptTreeSelect(roleId) {
-  return request({
+  return adminRequest({
     url: '/system/role/deptTree/' + roleId,
     method: 'get'
   })
