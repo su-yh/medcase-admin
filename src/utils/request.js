@@ -20,6 +20,10 @@ const service = axios.create({
   timeout: 10000
 })
 
+function getHttpStatusMessage(status) {
+  return errorCode[status] || (status >= 500 ? '服务器异常，请稍后再试' : '请求失败，请稍后再试')
+}
+
 // request拦截器
 service.interceptors.request.use(config => {
   // 是否需要设置 token
@@ -110,13 +114,29 @@ service.interceptors.response.use(res => {
   },
   error => {
     console.log('err' + error)
+    const status = error.response?.status
     let { message } = error
-    if (message == "Network Error") {
-      message = "后端接口连接异常"
-    } else if (message.includes("timeout")) {
-      message = "系统接口请求超时"
-    } else if (message.includes("Request failed with status code")) {
-      message = "系统接口" + message.slice(-3) + "异常"
+    if (status === 401) {
+      if (!isRelogin.show) {
+        isRelogin.show = true
+        ElMessageBox.confirm('登录状态已过期，您可以继续留在该页面，或者重新登录', '系统提示', { confirmButtonText: '重新登录', cancelButtonText: '取消', type: 'warning' }).then(() => {
+          isRelogin.show = false
+          useUserStore().logOut().then(() => {
+            location.href = '/index'
+          })
+        }).catch(() => {
+          isRelogin.show = false
+        })
+      }
+      message = error.response?.data?.msg || getHttpStatusMessage(status)
+    } else if (status) {
+      message = error.response?.data?.msg || getHttpStatusMessage(status)
+    } else if (message === 'Network Error') {
+      message = '后端接口连接异常'
+    } else if (message?.includes('timeout')) {
+      message = '系统接口请求超时'
+    } else if (message?.includes('Request failed with status code')) {
+      message = '系统接口' + message.slice(-3) + '异常'
     }
     ElMessage({ message: message, type: 'error', duration: 5 * 1000 })
     return Promise.reject(error)
