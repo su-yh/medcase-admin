@@ -387,64 +387,16 @@ function getStatusOption(status) {
 }
 
 function getAttachmentList(attachments) {
-  if (!attachments) {
+  if (!Array.isArray(attachments)) {
     return []
   }
 
-  let attachmentList = attachments
-  if (typeof attachments === 'string') {
-    try {
-      attachmentList = JSON.parse(attachments)
-    } catch {
-      attachmentList = [attachments]
-    }
-  }
-
-  if (!Array.isArray(attachmentList)) {
-    attachmentList = [attachmentList]
-  }
-
-  return attachmentList
-    .map((attachment, index) => {
-      let value = attachment
-      if (typeof attachment === 'string') {
-        try {
-          value = JSON.parse(attachment)
-        } catch {
-          value = attachment
-        }
-      }
-
-      if (value && typeof value === 'object') {
-        const name = value.originalFilename
-          || value.newFileName
-          || value.fileName
-          || getAttachmentNameFromUrl(value.url)
-          || `附件${index + 1}`
-        return {
-          key: `${index}-${value.url || name}`,
-          name
-        }
-      }
-
-      const name = String(value || '').trim()
-      return name ? { key: `${index}-${name}`, name } : null
-    })
-    .filter(Boolean)
-}
-
-function getAttachmentNameFromUrl(url) {
-  if (!url) {
-    return ''
-  }
-
-  const path = String(url).split('?')[0]
-  const name = path.substring(path.lastIndexOf('/') + 1)
-  try {
-    return decodeURIComponent(name) || ''
-  } catch {
-    return name
-  }
+  return attachments
+    .filter(attachment => attachment?.filePath)
+    .map((attachment, index) => ({
+      key: `${index}-${attachment.filePath}`,
+      name: attachment.originalFilename || attachment.filePath
+    }))
 }
 
 function handleView(row) {
