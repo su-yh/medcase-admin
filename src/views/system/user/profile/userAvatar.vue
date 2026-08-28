@@ -130,10 +130,11 @@ function beforeUpload(file) {
 function uploadImg() {
   proxy.$refs.cropper.getCropBlob(data => {
     let formData = new FormData()
-    formData.append("avatarfile", data, options.filename)
+    formData.append("file", data, options.filename)
     uploadAvatar(formData).then(response => {
       open.value = false
-      options.img = import.meta.env.VITE_APP_BASE_API + response.imgUrl
+      options.img = import.meta.env.VITE_APP_BASE_API
+        + "/file/download?filePath=" + encodeURIComponent(response.filePath)
       userStore.avatar = options.img
       proxy.$modal.msgSuccess("修改成功")
       visible.value = false

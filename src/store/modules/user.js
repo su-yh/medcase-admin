@@ -7,6 +7,11 @@ import { isHttp, isEmpty } from "@/utils/validate"
 import useLockStore from '@/store/modules/lock'
 import defAva from '@/assets/images/profile.jpg'
 
+function attachmentUrl(filePath) {
+  return import.meta.env.VITE_APP_BASE_API
+    + '/file/download?filePath=' + encodeURIComponent(filePath)
+}
+
 const useUserStore = defineStore(
   'user',
   {
@@ -44,7 +49,7 @@ const useUserStore = defineStore(
             const user = res.user
             let avatar = user.avatar || ""
             if (!isHttp(avatar)) {
-              avatar = (isEmpty(avatar)) ? defAva : import.meta.env.VITE_APP_BASE_API + avatar
+              avatar = isEmpty(avatar) ? defAva : attachmentUrl(avatar)
             }
             if (res.roles && res.roles.length > 0) { // 验证返回的roles是否是一个非空数组
               this.roles = res.roles

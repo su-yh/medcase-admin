@@ -2,12 +2,12 @@
   <div>
     <el-upload
       :action="uploadUrl"
+      :http-request="handleUploadRequest"
       :before-upload="handleBeforeUpload"
       :on-success="handleUploadSuccess"
       :on-error="handleUploadError"
       name="file"
       :show-file-list="false"
-      :headers="headers"
       class="editor-img-uploader"
       v-if="type == 'url'"
     >
@@ -27,18 +27,14 @@
 </template>
 
 <script setup>
-import axios from 'axios'
 import { QuillEditor } from "@vueup/vue-quill"
 import "@vueup/vue-quill/dist/vue-quill.snow.css"
-import { getToken } from "@/utils/auth"
+import adminRequest from "@/utils/adminRequest"
 
 const { proxy } = getCurrentInstance()
 
 const quillEditorRef = ref()
-const uploadUrl = ref(import.meta.env.VITE_APP_BASE_API + "/common/upload") // 上传的图片服务器地址
-const headers = ref({
-  Authorization: "Bearer " + getToken()
-})
+const uploadUrl = ref("/file/upload/notice")
 
 const props = defineProps({
   /* 编辑器的内容 */
@@ -151,14 +147,14 @@ function handleBeforeUpload(file) {
 
 // 上传成功处理
 function handleUploadSuccess(res, file) {
-  // 如果上传成功
-  if (res.code == 200) {
+  if (res?.filePath) {
     // 获取富文本实例
     let quill = toRaw(quillEditorRef.value).getQuill()
     // 获取光标位置
     let length = quill.selection.savedRange.index
-    // 插入图片，res.url为服务器返回的图片链接地址
-    quill.insertEmbed(length, "image", import.meta.env.VITE_APP_BASE_API + res.fileName)
+    const imageUrl = import.meta.env.VITE_APP_BASE_API
+      + "/file/download?filePath=" + encodeURIComponent(res.filePath)
+    quill.insertEmbed(length, "image", imageUrl)
     // 调整光标到最后
     quill.setSelection(length + 1)
   } else {
@@ -169,6 +165,23 @@ function handleUploadSuccess(res, file) {
 // 上传失败处理
 function handleUploadError() {
   proxy.$modal.msgError("图片插入失败")
+}
+
+function handleUploadRequest(options) {
+  uploadNoticeImage(options.file)
+    .then(response => options.onSuccess(response))
+    .catch(error => options.onError(error))
+}
+
+function uploadNoticeImage(file) {
+  const formData = new FormData()
+  formData.append("file", file)
+  return adminRequest({
+    url: uploadUrl.value,
+    method: "post",
+    headers: { "Content-Type": "multipart/form-data", repeatSubmit: false },
+    data: formData
+  })
 }
 
 // 复制粘贴图片处理
@@ -187,11 +200,9 @@ function handlePasteCapture(e) {
 }
 
 function insertImage(file) {
-  const formData = new FormData()
-  formData.append("file", file)
-  axios.post(uploadUrl.value, formData, { headers: { "Content-Type": "multipart/form-data", Authorization: headers.value.Authorization } }).then(res => {
-    handleUploadSuccess(res.data)
-  })
+  uploadNoticeImage(file)
+    .then(handleUploadSuccess)
+    .catch(handleUploadError)
 }
 </script>
 
