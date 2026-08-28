@@ -496,6 +496,26 @@
   resolved "https://registry.npmmirror.com/@vitejs/plugin-vue/-/plugin-vue-5.2.4.tgz#9e8a512eb174bfc2a333ba959bbf9de428d89ad8"
   integrity sha512-7Yx/SXSOcQq5HiiV3orevHUFn+pmMB4cgbEkDYgnkUWb0WfeQ/wa2yFv6D5ICiCQOVpjA7vYDXrC7AGO8yjDHA==
 
+"@vue-office/docx@^1.6.3":
+  version "1.6.3"
+  resolved "https://registry.npmmirror.com/@vue-office/docx/-/docx-1.6.3.tgz#0c183b13553c029fea702eb8b8b4260a7e1f0961"
+  integrity sha512-Cs+3CAaRBOWOiW4XAhTwwxJ0dy8cPIf6DqfNvYcD3YACiLwO4kuawLF2IAXxyijhbuOeoFsfvoVbOc16A/4bZA==
+
+"@vue-office/excel@1.7.14":
+  version "1.7.14"
+  resolved "https://registry.npmmirror.com/@vue-office/excel/-/excel-1.7.14.tgz#6e1446abae9690a09eed6f5e8c09bb923b3d5b10"
+  integrity sha512-pVUgt+emDQUnW7q22CfnQ+jl43mM/7IFwYzOg7lwOwPEbiVB4K4qEQf+y/bc4xGXz75w1/e3Kz3G6wAafmFBFg==
+
+"@vue-office/pdf@^2.0.10":
+  version "2.0.10"
+  resolved "https://registry.npmmirror.com/@vue-office/pdf/-/pdf-2.0.10.tgz#2d85e449c017289084e64dc029613d05767afa5c"
+  integrity sha512-yHVLrMAKpMPBkhBwofFyGEtEeJF0Zd7oGmf56Pe5aj/xObdRq3E1CIZqTqhWJNgHV8oLQqaX0vs4p5T1zq+GIA==
+
+"@vue-office/pptx@1.0.1":
+  version "1.0.1"
+  resolved "https://registry.npmmirror.com/@vue-office/pptx/-/pptx-1.0.1.tgz#f34d5a7aa78cd534c5724540dbe53f0539e94b3e"
+  integrity sha512-+V7Kctzl6f6+Yk4NaD/wQGRIkqLWcowe0jEhPexWQb8Oilbzt1OyhWRWcMsxNDTdrgm6aMLP+0/tmw27cxddMg==
+
 "@vue/compiler-core@3.5.26":
   version "3.5.26"
   resolved "https://registry.npmmirror.com/@vue/compiler-core/-/compiler-core-3.5.26.tgz#1a91ea90980528bedff7b1c292690bfb30612485"
@@ -3577,7 +3597,7 @@ vue-cropper@1.1.1:
   resolved "https://registry.npmmirror.com/vue-cropper/-/vue-cropper-1.1.1.tgz#e1d2729f7139182a893e8badcb8f33257aa2a40f"
   integrity sha512-WsqKMpaBf9Osi1LQlE/5AKdD0nHWOy1asLXocaG8NomOWO07jiZi968+/PbMmnD0QbPJOumDQaGuGa13qys85A==
 
-vue-demi@>=0.14.8:
+vue-demi@0.14.10, vue-demi@>=0.14.8:
   version "0.14.10"
   resolved "https://registry.npmmirror.com/vue-demi/-/vue-demi-0.14.10.tgz#afc78de3d6f9e11bf78c55e8510ee12814522f04"
   integrity sha512-nMZBOwuzabUO0nLgIcc6rycZEebF6eeUfaiQx9+WSk8e29IbLvPU9feI6tqW4kTo3hvoYAJkMh8n8D0fuISphg==

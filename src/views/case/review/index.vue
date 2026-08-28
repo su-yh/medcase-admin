@@ -72,6 +72,27 @@
         show-overflow-tooltip
       />
       <el-table-column
+        v-if="columns.attachments.visible"
+        label="附件"
+        min-width="240"
+      >
+        <template #default="{ row }">
+          <div v-if="getAttachmentList(row.attachments).length" class="table-attachment-list">
+            <el-button
+              v-for="attachment in getAttachmentList(row.attachments)"
+              :key="attachment.key"
+              link
+              type="primary"
+              class="table-attachment-button"
+              @click="openAttachmentPreview(attachment)"
+            >
+              {{ attachment.name }}
+            </el-button>
+          </div>
+          <span v-else class="empty-attachment">暂无附件</span>
+        </template>
+      </el-table-column>
+      <el-table-column
         v-if="columns.status.visible"
         label="状态"
         align="center"
@@ -218,13 +239,16 @@
         </el-descriptions-item>
         <el-descriptions-item label="附件" :span="2">
           <div v-if="attachmentList.length" class="attachment-list">
-            <el-tag
+            <el-button
               v-for="attachment in attachmentList"
               :key="attachment.key"
-              class="attachment-tag"
+              link
+              type="primary"
+              class="attachment-button"
+              @click="openAttachmentPreview(attachment)"
             >
               {{ attachment.name }}
-            </el-tag>
+            </el-button>
           </div>
           <span v-else>暂无附件</span>
         </el-descriptions-item>
@@ -291,6 +315,11 @@
         </template>
       </template>
     </el-dialog>
+
+    <AttachmentPreviewDialog
+      v-model="attachmentPreviewOpen"
+      :attachment="previewAttachment"
+    />
   </div>
 </template>
 
@@ -305,6 +334,7 @@ import {
 import {
   CASE_STATUS_OPTIONS
 } from './mock'
+import AttachmentPreviewDialog from '@/components/attachments/AttachmentPreviewDialog.vue'
 
 const loading = ref(false)
 const showSearch = ref(true)
@@ -315,6 +345,8 @@ const currentCase = ref(null)
 const dialogMode = ref('detail')
 const reviewSubmitting = ref(false)
 const settleSubmitting = ref(false)
+const attachmentPreviewOpen = ref(false)
+const previewAttachment = ref(null)
 const reviewFormRef = ref()
 const reviewForm = reactive({
   status: 'approved_pending_settlement',
@@ -335,6 +367,7 @@ const dialogTitle = computed(() => {
 const columns = reactive({
   id: { label: '病例编号', visible: true },
   title: { label: '病例标题', visible: true },
+  attachments: { label: '附件', visible: true },
   status: { label: '状态', visible: true },
   submitInfo: { label: '提交', visible: true },
   reviewInfo: { label: '审核', visible: true },
@@ -394,9 +427,15 @@ function getAttachmentList(attachments) {
   return attachments
     .filter(attachment => attachment?.filePath)
     .map((attachment, index) => ({
+      ...attachment,
       key: `${index}-${attachment.filePath}`,
       name: attachment.originalFilename || attachment.filePath
     }))
+}
+
+function openAttachmentPreview(attachment) {
+  previewAttachment.value = attachment
+  attachmentPreviewOpen.value = true
 }
 
 function handleView(row) {
@@ -588,24 +627,27 @@ onMounted(getList)
   max-width: 100%;
 }
 
-.attachment-tag {
+.table-attachment-list {
   display: flex;
-  width: 100%;
-  height: auto;
-  max-width: 100%;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
   min-width: 0;
-  min-height: 24px;
-  line-height: 18px;
-  text-align: left;
+  max-width: 100%;
 }
 
-.attachment-tag :deep(.el-tag__content) {
-  display: block;
-  width: 100%;
-  min-width: 0;
+.table-attachment-button {
   max-width: 100%;
+  min-width: 0;
+  height: auto;
+  padding: 4px 0;
   white-space: normal;
   overflow-wrap: anywhere;
   word-break: break-all;
+  text-align: left;
+}
+
+.empty-attachment {
+  color: var(--el-text-color-placeholder);
 }
 </style>
