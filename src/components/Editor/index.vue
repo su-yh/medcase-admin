@@ -34,7 +34,7 @@ import adminRequest from "@/utils/adminRequest"
 const { proxy } = getCurrentInstance()
 
 const quillEditorRef = ref()
-const uploadUrl = ref("/file/upload/notice")
+const uploadUrl = ref("/file/upload")
 
 const props = defineProps({
   /* 编辑器的内容 */
@@ -179,6 +179,7 @@ function uploadNoticeImage(file) {
   return adminRequest({
     url: uploadUrl.value,
     method: "post",
+    params: { business: "notice" },
     headers: { "Content-Type": "multipart/form-data", repeatSubmit: false },
     data: formData
   })

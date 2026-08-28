@@ -110,8 +110,9 @@ export function updateUserPwd(oldPassword, newPassword) {
 // 用户头像上传
 export function uploadAvatar(data) {
   return adminRequest({
-    url: '/file/upload/avatar',
+    url: '/file/upload',
     method: 'post',
+    params: { business: 'avatar' },
     headers: { 'Content-Type': 'multipart/form-data', repeatSubmit: false },
     data: data
   })

@@ -3,13 +3,21 @@ import cache from '@/plugins/cache'
 import { ElMessageBox, } from 'element-plus'
 import { login, logout, getInfo } from '@/api/login'
 import { getToken, setToken, removeToken } from '@/utils/auth'
-import { isHttp, isEmpty } from "@/utils/validate"
+import { isHttp } from "@/utils/validate"
 import useLockStore from '@/store/modules/lock'
 import defAva from '@/assets/images/profile.jpg'
 
 function attachmentUrl(filePath) {
   return import.meta.env.VITE_APP_BASE_API
     + '/file/download?filePath=' + encodeURIComponent(filePath)
+}
+
+function resolveAvatarUrl(avatar) {
+  const filePath = typeof avatar === 'string' ? avatar : avatar?.filePath
+  if (!filePath) {
+    return defAva
+  }
+  return isHttp(filePath) ? filePath : attachmentUrl(filePath)
 }
 
 const useUserStore = defineStore(
@@ -47,10 +55,7 @@ const useUserStore = defineStore(
         return new Promise((resolve, reject) => {
           getInfo().then(res => {
             const user = res.user
-            let avatar = user.avatar || ""
-            if (!isHttp(avatar)) {
-              avatar = isEmpty(avatar) ? defAva : attachmentUrl(avatar)
-            }
+            const avatar = resolveAvatarUrl(user.avatar)
             if (res.roles && res.roles.length > 0) { // 验证返回的roles是否是一个非空数组
               this.roles = res.roles
               this.permissions = res.permissions
