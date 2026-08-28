@@ -35,10 +35,6 @@ import Pagination from '@/components/Pagination'
 import RightToolbar from '@/components/RightToolbar'
 // 富文本组件
 import Editor from "@/components/Editor"
-// 文件上传组件
-import FileUpload from "@/components/FileUpload"
-// 图片上传组件
-import ImageUpload from "@/components/ImageUpload"
 // 图片预览组件
 import ImagePreview from "@/components/ImagePreview"
 // 字典标签组件
@@ -60,8 +56,6 @@ app.config.globalProperties.selectDictLabels = selectDictLabels
 // 全局组件挂载
 app.component('DictTag', DictTag)
 app.component('Pagination', Pagination)
-app.component('FileUpload', FileUpload)
-app.component('ImageUpload', ImageUpload)
 app.component('ImagePreview', ImagePreview)
 app.component('RightToolbar', RightToolbar)
 app.component('Editor', Editor)
