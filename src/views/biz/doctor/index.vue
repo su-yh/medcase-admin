@@ -8,9 +8,9 @@
       label-width="82px"
       class="query-form"
     >
-      <el-form-item label="医生姓名" prop="name">
+      <el-form-item label="医生姓名" prop="nickName">
         <el-input
-          v-model="queryParams.name"
+          v-model="queryParams.nickName"
           placeholder="请输入医生姓名"
           clearable
           style="width: 220px"
@@ -65,19 +65,22 @@
         width="100"
       />
       <el-table-column
-        v-if="columns.name.visible"
+        v-if="columns.nickName.visible"
         label="医生姓名"
-        prop="name"
+        prop="nickName"
         align="center"
         width="120"
       />
       <el-table-column
-        v-if="columns.username.visible"
-        label="登录账号"
-        prop="username"
+        v-if="columns.idCardNumber.visible"
+        label="身份证号"
         align="center"
-        width="140"
-      />
+        width="180"
+      >
+        <template #default="{ row }">
+          {{ maskIdCardNumber(row.idCardNumber) }}
+        </template>
+      </el-table-column>
       <el-table-column
         v-if="columns.title.visible"
         label="职称"
@@ -85,6 +88,66 @@
         align="center"
         width="140"
       />
+      <el-table-column
+        v-if="columns.idCardFront.visible"
+        label="身份证正面"
+        align="center"
+        width="190"
+      >
+        <template #default="{ row }">
+          <div class="doctor-attachment">
+            <span>{{ attachmentName(row.idCardFront) }}</span>
+            <el-button
+              v-if="row.idCardFront?.filePath"
+              text
+              type="primary"
+              @click="openPreview(row.idCardFront)"
+            >
+              预览
+            </el-button>
+          </div>
+        </template>
+      </el-table-column>
+      <el-table-column
+        v-if="columns.idCardBack.visible"
+        label="身份证反面"
+        align="center"
+        width="190"
+      >
+        <template #default="{ row }">
+          <div class="doctor-attachment">
+            <span>{{ attachmentName(row.idCardBack) }}</span>
+            <el-button
+              v-if="row.idCardBack?.filePath"
+              text
+              type="primary"
+              @click="openPreview(row.idCardBack)"
+            >
+              预览
+            </el-button>
+          </div>
+        </template>
+      </el-table-column>
+      <el-table-column
+        v-if="columns.qualificationCertificate.visible"
+        label="职业资格证"
+        align="center"
+        width="190"
+      >
+        <template #default="{ row }">
+          <div class="doctor-attachment">
+            <span>{{ attachmentName(row.qualificationCertificate) }}</span>
+            <el-button
+              v-if="row.qualificationCertificate?.filePath"
+              text
+              type="primary"
+              @click="openPreview(row.qualificationCertificate)"
+            >
+              预览
+            </el-button>
+          </div>
+        </template>
+      </el-table-column>
       <el-table-column
         v-if="columns.phone.visible"
         label="手机号"
@@ -165,16 +228,55 @@
           {{ currentDoctor.id }}
         </el-descriptions-item>
         <el-descriptions-item label="医生姓名">
-          {{ currentDoctor.name }}
-        </el-descriptions-item>
-        <el-descriptions-item label="登录账号">
-          {{ currentDoctor.username }}
+          {{ currentDoctor.nickName }}
         </el-descriptions-item>
         <el-descriptions-item label="手机号">
           {{ currentDoctor.phone }}
         </el-descriptions-item>
+        <el-descriptions-item label="身份证号">
+          {{ maskIdCardNumber(currentDoctor.idCardNumber) }}
+        </el-descriptions-item>
         <el-descriptions-item label="职称">
           {{ currentDoctor.title }}
+        </el-descriptions-item>
+        <el-descriptions-item label="身份证正面">
+          <div class="doctor-attachment">
+            <span>{{ attachmentName(currentDoctor.idCardFront) }}</span>
+            <el-button
+              v-if="currentDoctor.idCardFront?.filePath"
+              text
+              type="primary"
+              @click="openPreview(currentDoctor.idCardFront)"
+            >
+              预览
+            </el-button>
+          </div>
+        </el-descriptions-item>
+        <el-descriptions-item label="身份证反面">
+          <div class="doctor-attachment">
+            <span>{{ attachmentName(currentDoctor.idCardBack) }}</span>
+            <el-button
+              v-if="currentDoctor.idCardBack?.filePath"
+              text
+              type="primary"
+              @click="openPreview(currentDoctor.idCardBack)"
+            >
+              预览
+            </el-button>
+          </div>
+        </el-descriptions-item>
+        <el-descriptions-item label="职业资格证">
+          <div class="doctor-attachment">
+            <span>{{ attachmentName(currentDoctor.qualificationCertificate) }}</span>
+            <el-button
+              v-if="currentDoctor.qualificationCertificate?.filePath"
+              text
+              type="primary"
+              @click="openPreview(currentDoctor.qualificationCertificate)"
+            >
+              预览
+            </el-button>
+          </div>
         </el-descriptions-item>
         <el-descriptions-item label="状态">
           <el-tag :type="getStatusOption(currentDoctor.status).tagType">
@@ -199,13 +301,55 @@
         border
       >
         <el-descriptions-item label="医生姓名">
-          {{ reviewDoctorInfo.name }}
-        </el-descriptions-item>
-        <el-descriptions-item label="登录账号">
-          {{ reviewDoctorInfo.username }}
+          {{ reviewDoctorInfo.nickName }}
         </el-descriptions-item>
         <el-descriptions-item label="手机号">
           {{ reviewDoctorInfo.phone }}
+        </el-descriptions-item>
+        <el-descriptions-item label="身份证号">
+          {{ maskIdCardNumber(reviewDoctorInfo.idCardNumber) }}
+        </el-descriptions-item>
+        <el-descriptions-item label="职称">
+          {{ reviewDoctorInfo.title }}
+        </el-descriptions-item>
+        <el-descriptions-item label="身份证正面">
+          <div class="doctor-attachment">
+            <span>{{ attachmentName(reviewDoctorInfo.idCardFront) }}</span>
+            <el-button
+              v-if="reviewDoctorInfo.idCardFront?.filePath"
+              text
+              type="primary"
+              @click="openPreview(reviewDoctorInfo.idCardFront)"
+            >
+              预览
+            </el-button>
+          </div>
+        </el-descriptions-item>
+        <el-descriptions-item label="身份证反面">
+          <div class="doctor-attachment">
+            <span>{{ attachmentName(reviewDoctorInfo.idCardBack) }}</span>
+            <el-button
+              v-if="reviewDoctorInfo.idCardBack?.filePath"
+              text
+              type="primary"
+              @click="openPreview(reviewDoctorInfo.idCardBack)"
+            >
+              预览
+            </el-button>
+          </div>
+        </el-descriptions-item>
+        <el-descriptions-item label="职业资格证">
+          <div class="doctor-attachment">
+            <span>{{ attachmentName(reviewDoctorInfo.qualificationCertificate) }}</span>
+            <el-button
+              v-if="reviewDoctorInfo.qualificationCertificate?.filePath"
+              text
+              type="primary"
+              @click="openPreview(reviewDoctorInfo.qualificationCertificate)"
+            >
+              预览
+            </el-button>
+          </div>
         </el-descriptions-item>
       </el-descriptions>
       <el-form label-width="90px" class="review-form">
@@ -235,6 +379,11 @@
         </el-button>
       </template>
     </el-dialog>
+
+    <AttachmentPreviewDialog
+      v-model="previewOpen"
+      :attachment="previewAttachment"
+    />
   </div>
 </template>
 
@@ -242,7 +391,9 @@
 import { onMounted, reactive, ref } from 'vue'
 import { getDoctor, listDoctor, reviewDoctor } from '@/api/biz/doctor'
 import { ElMessage, ElMessageBox } from 'element-plus'
+import AttachmentPreviewDialog from '@/components/attachments/AttachmentPreviewDialog.vue'
 import {
+  DOCTOR_LIST_COLUMNS,
   DOCTOR_STATUS_OPTIONS
 } from './mock'
 
@@ -254,26 +405,21 @@ const detailOpen = ref(false)
 const currentDoctor = ref(null)
 const reviewOpen = ref(false)
 const reviewDoctorInfo = ref(null)
+const previewOpen = ref(false)
+const previewAttachment = ref(null)
 const reviewSubmitting = ref(false)
 const reviewForm = reactive({
   approve: true
 })
 
-const columns = reactive({
-  id: { label: '医生编号', visible: true },
-  name: { label: '医生姓名', visible: true },
-  username: { label: '登录账号', visible: true },
-  title: { label: '职称', visible: true },
-  phone: { label: '手机号', visible: true },
-  status: { label: '状态', visible: true },
-  createTime: { label: '创建时间', visible: true },
-  actions: { label: '操作', visible: true }
-})
+const columns = reactive(Object.fromEntries(
+  DOCTOR_LIST_COLUMNS.map(({ key, label }) => [key, { label, visible: true }])
+))
 
 const queryParams = reactive({
   pageNum: 1,
   pageSize: 10,
-  name: '',
+  nickName: '',
   phone: '',
   status: ''
 })
@@ -283,7 +429,7 @@ function getList() {
   listDoctor({
     pageNum: queryParams.pageNum,
     pageSize: queryParams.pageSize,
-    name: queryParams.name || undefined,
+    nickName: queryParams.nickName || undefined,
     phone: queryParams.phone || undefined,
     status: queryParams.status || undefined
   }).then(res => {
@@ -301,7 +447,7 @@ function handleQuery() {
 
 function resetQuery() {
   queryParams.pageNum = 1
-  queryParams.name = ''
+  queryParams.nickName = ''
   queryParams.phone = ''
   queryParams.status = ''
   getList()
@@ -327,6 +473,26 @@ function handleReview(row) {
   reviewOpen.value = true
 }
 
+function attachmentName(attachment) {
+  return attachment?.originalFilename || attachment?.filePath || '未上传'
+}
+
+function openPreview(attachment) {
+  previewAttachment.value = attachment
+  previewOpen.value = true
+}
+
+function maskIdCardNumber(idCardNumber) {
+  if (!idCardNumber) {
+    return '-'
+  }
+  const value = String(idCardNumber)
+  if (value.length <= 8) {
+    return value
+  }
+  return `${value.slice(0, 4)}********${value.slice(-4)}`
+}
+
 async function handleSubmitReview() {
   if (!reviewDoctorInfo.value || reviewSubmitting.value) {
     return
@@ -335,7 +501,7 @@ async function handleSubmitReview() {
   const isApprove = reviewForm.approve
   try {
     await ElMessageBox.confirm(
-      `确认${isApprove ? '通过' : '拒绝'}医生「${reviewDoctorInfo.value.name}」的注册申请吗？`,
+      `确认${isApprove ? '通过' : '拒绝'}医生「${reviewDoctorInfo.value.nickName}」的注册申请吗？`,
       '审核确认',
       {
         type: 'warning',
@@ -398,6 +564,20 @@ onMounted(getList)
 }
 
 :deep(.doctor-descriptions .el-descriptions__label) {
+  white-space: nowrap;
+}
+
+.doctor-attachment {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 24px;
+}
+
+.doctor-attachment span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
   white-space: nowrap;
 }
 </style>
