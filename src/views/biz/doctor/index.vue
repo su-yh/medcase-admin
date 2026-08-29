@@ -72,6 +72,13 @@
         width="120"
       />
       <el-table-column
+        v-if="columns.title.visible"
+        label="职称"
+        prop="title"
+        align="center"
+        width="140"
+      />
+      <el-table-column
         v-if="columns.idCardNumber.visible"
         label="身份证号"
         align="center"
@@ -82,48 +89,28 @@
         </template>
       </el-table-column>
       <el-table-column
-        v-if="columns.title.visible"
-        label="职称"
-        prop="title"
+        v-if="columns.idCard.visible"
+        label="身份证"
         align="center"
-        width="140"
-      />
-      <el-table-column
-        v-if="columns.idCardFront.visible"
-        label="身份证正面"
-        align="center"
-        width="190"
+        width="170"
       >
         <template #default="{ row }">
           <div class="doctor-attachment">
-            <span>{{ attachmentName(row.idCardFront) }}</span>
             <el-button
-              v-if="row.idCardFront?.filePath"
+              :disabled="!row.idCardFront?.filePath"
               text
               type="primary"
               @click="openPreview(row.idCardFront)"
             >
-              预览
+              正面
             </el-button>
-          </div>
-        </template>
-      </el-table-column>
-      <el-table-column
-        v-if="columns.idCardBack.visible"
-        label="身份证反面"
-        align="center"
-        width="190"
-      >
-        <template #default="{ row }">
-          <div class="doctor-attachment">
-            <span>{{ attachmentName(row.idCardBack) }}</span>
             <el-button
-              v-if="row.idCardBack?.filePath"
+              :disabled="!row.idCardBack?.filePath"
               text
               type="primary"
               @click="openPreview(row.idCardBack)"
             >
-              预览
+              反面
             </el-button>
           </div>
         </template>
@@ -136,9 +123,8 @@
       >
         <template #default="{ row }">
           <div class="doctor-attachment">
-            <span>{{ attachmentName(row.qualificationCertificate) }}</span>
             <el-button
-              v-if="row.qualificationCertificate?.filePath"
+              :disabled="!row.qualificationCertificate?.filePath"
               text
               type="primary"
               @click="openPreview(row.qualificationCertificate)"
@@ -230,46 +216,42 @@
         <el-descriptions-item label="医生姓名">
           {{ currentDoctor.nickName }}
         </el-descriptions-item>
+        <el-descriptions-item label="性别">
+          {{ sexLabel(currentDoctor.sex) }}
+        </el-descriptions-item>
         <el-descriptions-item label="手机号">
           {{ currentDoctor.phone }}
-        </el-descriptions-item>
-        <el-descriptions-item label="身份证号">
-          {{ maskIdCardNumber(currentDoctor.idCardNumber) }}
         </el-descriptions-item>
         <el-descriptions-item label="职称">
           {{ currentDoctor.title }}
         </el-descriptions-item>
-        <el-descriptions-item label="身份证正面">
+        <el-descriptions-item label="身份证号">
+          {{ maskIdCardNumber(currentDoctor.idCardNumber) }}
+        </el-descriptions-item>
+        <el-descriptions-item label="身份证">
           <div class="doctor-attachment">
-            <span>{{ attachmentName(currentDoctor.idCardFront) }}</span>
             <el-button
-              v-if="currentDoctor.idCardFront?.filePath"
+              :disabled="!currentDoctor.idCardFront?.filePath"
               text
               type="primary"
               @click="openPreview(currentDoctor.idCardFront)"
             >
-              预览
+              正面
             </el-button>
-          </div>
-        </el-descriptions-item>
-        <el-descriptions-item label="身份证反面">
-          <div class="doctor-attachment">
-            <span>{{ attachmentName(currentDoctor.idCardBack) }}</span>
             <el-button
-              v-if="currentDoctor.idCardBack?.filePath"
+              :disabled="!currentDoctor.idCardBack?.filePath"
               text
               type="primary"
               @click="openPreview(currentDoctor.idCardBack)"
             >
-              预览
+              反面
             </el-button>
           </div>
         </el-descriptions-item>
         <el-descriptions-item label="职业资格证">
           <div class="doctor-attachment">
-            <span>{{ attachmentName(currentDoctor.qualificationCertificate) }}</span>
             <el-button
-              v-if="currentDoctor.qualificationCertificate?.filePath"
+              :disabled="!currentDoctor.qualificationCertificate?.filePath"
               text
               type="primary"
               @click="openPreview(currentDoctor.qualificationCertificate)"
@@ -303,46 +285,42 @@
         <el-descriptions-item label="医生姓名">
           {{ reviewDoctorInfo.nickName }}
         </el-descriptions-item>
+        <el-descriptions-item label="性别">
+          {{ sexLabel(reviewDoctorInfo.sex) }}
+        </el-descriptions-item>
         <el-descriptions-item label="手机号">
           {{ reviewDoctorInfo.phone }}
-        </el-descriptions-item>
-        <el-descriptions-item label="身份证号">
-          {{ maskIdCardNumber(reviewDoctorInfo.idCardNumber) }}
         </el-descriptions-item>
         <el-descriptions-item label="职称">
           {{ reviewDoctorInfo.title }}
         </el-descriptions-item>
-        <el-descriptions-item label="身份证正面">
+        <el-descriptions-item label="身份证号">
+          {{ maskIdCardNumber(reviewDoctorInfo.idCardNumber) }}
+        </el-descriptions-item>
+        <el-descriptions-item label="身份证">
           <div class="doctor-attachment">
-            <span>{{ attachmentName(reviewDoctorInfo.idCardFront) }}</span>
             <el-button
-              v-if="reviewDoctorInfo.idCardFront?.filePath"
+              :disabled="!reviewDoctorInfo.idCardFront?.filePath"
               text
               type="primary"
               @click="openPreview(reviewDoctorInfo.idCardFront)"
             >
-              预览
+              正面
             </el-button>
-          </div>
-        </el-descriptions-item>
-        <el-descriptions-item label="身份证反面">
-          <div class="doctor-attachment">
-            <span>{{ attachmentName(reviewDoctorInfo.idCardBack) }}</span>
             <el-button
-              v-if="reviewDoctorInfo.idCardBack?.filePath"
+              :disabled="!reviewDoctorInfo.idCardBack?.filePath"
               text
               type="primary"
               @click="openPreview(reviewDoctorInfo.idCardBack)"
             >
-              预览
+              反面
             </el-button>
           </div>
         </el-descriptions-item>
         <el-descriptions-item label="职业资格证">
           <div class="doctor-attachment">
-            <span>{{ attachmentName(reviewDoctorInfo.qualificationCertificate) }}</span>
             <el-button
-              v-if="reviewDoctorInfo.qualificationCertificate?.filePath"
+              :disabled="!reviewDoctorInfo.qualificationCertificate?.filePath"
               text
               type="primary"
               @click="openPreview(reviewDoctorInfo.qualificationCertificate)"
@@ -352,12 +330,28 @@
           </div>
         </el-descriptions-item>
       </el-descriptions>
-      <el-form label-width="90px" class="review-form">
+      <el-form
+        ref="reviewFormRef"
+        :model="reviewForm"
+        :rules="reviewRules"
+        label-width="90px"
+        class="review-form"
+      >
         <el-form-item label="审核结果">
           <el-radio-group v-model="reviewForm.approve">
             <el-radio :value="true">审核通过</el-radio>
             <el-radio :value="false">审核拒绝</el-radio>
           </el-radio-group>
+        </el-form-item>
+        <el-form-item v-if="!reviewForm.approve" label="拒绝原因" prop="reason">
+          <el-input
+            v-model="reviewForm.reason"
+            type="textarea"
+            :rows="4"
+            maxlength="500"
+            show-word-limit
+            placeholder="请输入审核拒绝原因"
+          />
         </el-form-item>
         <el-alert
           v-if="!reviewForm.approve"
@@ -391,6 +385,8 @@
 import { onMounted, reactive, ref } from 'vue'
 import { getDoctor, listDoctor, reviewDoctor } from '@/api/biz/doctor'
 import { ElMessage, ElMessageBox } from 'element-plus'
+import { useDict } from '@/utils/dict'
+import { selectDictLabel } from '@/utils/ruoyi'
 import AttachmentPreviewDialog from '@/components/attachments/AttachmentPreviewDialog.vue'
 import {
   DOCTOR_LIST_COLUMNS,
@@ -408,9 +404,17 @@ const reviewDoctorInfo = ref(null)
 const previewOpen = ref(false)
 const previewAttachment = ref(null)
 const reviewSubmitting = ref(false)
+const reviewFormRef = ref()
 const reviewForm = reactive({
-  approve: true
+  approve: true,
+  reason: ''
 })
+const reviewRules = {
+  reason: [
+    { required: true, message: '请输入审核拒绝原因', trigger: 'blur' }
+  ]
+}
+const { sys_user_sex } = useDict('sys_user_sex')
 
 const columns = reactive(Object.fromEntries(
   DOCTOR_LIST_COLUMNS.map(({ key, label }) => [key, { label, visible: true }])
@@ -470,11 +474,12 @@ function handleView(row) {
 function handleReview(row) {
   reviewDoctorInfo.value = row
   reviewForm.approve = true
+  reviewForm.reason = ''
   reviewOpen.value = true
 }
 
-function attachmentName(attachment) {
-  return attachment?.originalFilename || attachment?.filePath || '未上传'
+function sexLabel(sex) {
+  return selectDictLabel(sys_user_sex.value, sex) || '-'
 }
 
 function openPreview(attachment) {
@@ -499,6 +504,12 @@ async function handleSubmitReview() {
   }
 
   const isApprove = reviewForm.approve
+  if (!isApprove) {
+    const valid = await reviewFormRef.value?.validate().catch(() => false)
+    if (!valid) {
+      return
+    }
+  }
   try {
     await ElMessageBox.confirm(
       `确认${isApprove ? '通过' : '拒绝'}医生「${reviewDoctorInfo.value.nickName}」的注册申请吗？`,
@@ -516,7 +527,8 @@ async function handleSubmitReview() {
   reviewSubmitting.value = true
   try {
     await reviewDoctor(reviewDoctorInfo.value.id, {
-      approve: isApprove
+      approve: isApprove,
+      reason: isApprove ? undefined : reviewForm.reason.trim()
     })
     ElMessage.success(isApprove ? '医生审核通过' : '医生审核已拒绝')
     reviewOpen.value = false
@@ -574,10 +586,4 @@ onMounted(getList)
   min-height: 24px;
 }
 
-.doctor-attachment span {
-  min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
 </style>

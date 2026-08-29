@@ -21,8 +21,7 @@ test('doctor list includes attachment columns without login account', () => {
       'nickName',
       'idCardNumber',
       'title',
-      'idCardFront',
-      'idCardBack',
+      'idCard',
       'qualificationCertificate',
       'phone',
       'status',
@@ -30,6 +29,17 @@ test('doctor list includes attachment columns without login account', () => {
       'actions'
     ]
   )
+})
+
+test('doctor view combines identity card attachments and supports review reason', () => {
+  assert.match(doctorViewSource, /label="身份证"/)
+  assert.doesNotMatch(doctorViewSource, /label="身份证正面"/)
+  assert.doesNotMatch(doctorViewSource, /label="身份证反面"/)
+  assert.doesNotMatch(doctorViewSource, /attachmentName\(row\.idCardFront\)/)
+  assert.doesNotMatch(doctorViewSource, /attachmentName\(row\.idCardBack\)/)
+  assert.doesNotMatch(doctorViewSource, /attachmentName\(row\.qualificationCertificate\)/)
+  assert.match(doctorViewSource, /reviewForm\.reason/)
+  assert.match(doctorViewSource, /请输入审核拒绝原因/)
 })
 
 test('doctor detail and review views do not expose login account', () => {
