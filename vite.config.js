@@ -4,17 +4,15 @@ import createVitePlugins from './vite/plugins'
 
 export default defineConfig(({ mode, command }) => {
   const env = loadEnv(mode, process.cwd())
-  const { VITE_APP_ENV, VITE_DEV_SERVER_PROXY: proxyTarget } = env
+  const { VITE_APP_BASE_PATH = '/', VITE_DEV_SERVER_PROXY: proxyTarget } = env
 
   if (command === 'serve' && !proxyTarget) {
     throw new Error('Missing required env: VITE_DEV_SERVER_PROXY')
   }
 
   return {
-    // 部署生产环境和开发环境下的URL。
-    // 默认情况下，vite 会假设你的应用是被部署在一个域名的根路径上
-    // 如果应用被部署在子路径下，需要通过base指定应用访问前缀。
-    base: VITE_APP_ENV === 'production' ? '/' : '/',
+    // 静态资源和前端路由的公共访问前缀。
+    base: VITE_APP_BASE_PATH,
     plugins: createVitePlugins(env, command === 'build'),
     resolve: {
       alias: {
