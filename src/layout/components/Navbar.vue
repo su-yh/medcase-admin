@@ -9,6 +9,11 @@
     </template>
 
     <div class="right-menu">
+      <div class="version-info">
+        <span>前端 v{{ appVersion }}</span>
+        <span>后端 v{{ backendVersion }}</span>
+      </div>
+
       <template v-if="appStore.device !== 'mobile'">
         <header-search id="header-search" class="right-menu-item" />
 
@@ -71,6 +76,8 @@ import useUserStore from '@/store/modules/user'
 import useLockStore from '@/store/modules/lock'
 import useSettingsStore from '@/store/modules/settings'
 import HeaderNotice from './HeaderNotice'
+import { APP_VERSION } from '@/utils/version'
+import { getSystemVersion } from '@/api/system/version'
 
 const route = useRoute()
 const router = useRouter()
@@ -78,6 +85,19 @@ const appStore = useAppStore()
 const userStore = useUserStore()
 const lockStore = useLockStore()
 const settingsStore = useSettingsStore()
+const appVersion = APP_VERSION
+const backendVersion = ref('unknown')
+
+async function loadBackendVersion() {
+  try {
+    const result = await getSystemVersion()
+    backendVersion.value = result?.version || 'unknown'
+  } catch (error) {
+    backendVersion.value = 'unknown'
+  }
+}
+
+onMounted(loadBackendVersion)
 
 function toggleSideBar() {
   appStore.toggleSideBar()
@@ -255,6 +275,19 @@ async function toggleTheme(event) {
           }
         }
       }
+    }
+
+    .version-info {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 2px;
+      height: 100%;
+      padding: 0 10px;
+      color: #909399;
+      font-size: 12px;
+      line-height: 1.2;
+      white-space: nowrap;
     }
 
     .avatar-container {
