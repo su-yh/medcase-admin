@@ -101,7 +101,7 @@ function loadData() {
   loading.value = true
   dataList.value = []
   listData({ dictType: props.row.dictType, pageSize: 100, pageNum: 1 }).then(response => {
-    dataList.value = response.rows || []
+    dataList.value = response.list || []
   }).catch(() => {}).finally(() => {
     loading.value = false
   })

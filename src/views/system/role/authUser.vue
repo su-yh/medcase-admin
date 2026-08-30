@@ -118,7 +118,7 @@ const queryParams = reactive({
 function getList() {
   loading.value = true
   allocatedUserList(queryParams).then(response => {
-    userList.value = response.rows
+    userList.value = response.list
     total.value = response.total
     loading.value = false
   })

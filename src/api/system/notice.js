@@ -1,9 +1,8 @@
-import request from '@/utils/request'
 import adminRequest from '@/utils/adminRequest'
 
 // 查询公告列表
 export function listNotice(query) {
-  return request({
+  return adminRequest({
     url: '/system/notice/list',
     method: 'get',
     params: query
@@ -72,7 +71,7 @@ export function markNoticeReadAll(ids) {
 
 // 查询公告已读用户列表
 export function listNoticeReadUsers(query) {
-  return request({
+  return adminRequest({
     url: '/system/notice/readUsers/list',
     method: 'get',
     params: query

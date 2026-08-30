@@ -1,9 +1,8 @@
-import request from '@/utils/request'
 import adminRequest from '@/utils/adminRequest'
 
 // 查询岗位列表
 export function listPost(query) {
-  return request({
+  return adminRequest({
     url: '/system/post/list',
     method: 'get',
     params: query

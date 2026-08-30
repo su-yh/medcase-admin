@@ -38,7 +38,7 @@ test('paginates filtered case records with one-based pages', () => {
     { pageNum: 2, pageSize: 2 }
   )
 
-  assert.deepEqual(result, { rows: [{ id: 3 }], total: 3 })
+  assert.deepEqual(result, { list: [{ id: 3 }], total: 3 })
 })
 
 test('empty case filters return all records and status filters are exact', () => {

@@ -70,7 +70,7 @@ test('paginates doctor records with total count', () => {
     { pageNum: 1, pageSize: 2 }
   )
 
-  assert.deepEqual(result, { rows: [{ id: 1 }, { id: 2 }], total: 3 })
+  assert.deepEqual(result, { list: [{ id: 1 }, { id: 2 }], total: 3 })
 })
 
 test('empty doctor filters return all records', () => {

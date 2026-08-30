@@ -1,9 +1,8 @@
-import request from '@/utils/request'
 import adminRequest from '@/utils/adminRequest'
 
 // 查询参数列表
 export function listConfig(query) {
-  return request({
+  return adminRequest({
     url: '/system/config/list',
     method: 'get',
     params: query

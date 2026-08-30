@@ -238,7 +238,7 @@ function getList() {
   loading.value = true
   listUser(proxy.addDateRange(queryParams.value, dateRange.value)).then(res => {
     loading.value = false
-    userList.value = res.rows
+    userList.value = res.list
     total.value = res.total
   })
 }

@@ -190,7 +190,7 @@ export function filterDoctorRecords(records, filters = {}) {
 export function paginateDoctorRecords(records, { pageNum = 1, pageSize = 10 } = {}) {
   const start = Math.max(pageNum - 1, 0) * pageSize
   return {
-    rows: records.slice(start, start + pageSize),
+    list: records.slice(start, start + pageSize),
     total: records.length
   }
 }

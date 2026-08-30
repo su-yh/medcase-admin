@@ -1,8 +1,8 @@
-import request from '@/utils/request'
+import adminRequest from '@/utils/adminRequest'
 
 // 查询在线用户列表
 export function list(query) {
-  return request({
+  return adminRequest({
     url: '/monitor/online/list',
     method: 'get',
     params: query
@@ -11,7 +11,7 @@ export function list(query) {
 
 // 强退用户
 export function forceLogout(tokenId) {
-  return request({
+  return adminRequest({
     url: '/monitor/online/' + tokenId,
     method: 'delete'
   })

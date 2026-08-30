@@ -26,7 +26,7 @@
       </el-form>
       <el-table
          v-loading="loading"
-         :data="onlineList.slice((pageNum - 1) * pageSize, pageNum * pageSize)"
+         :data="onlineList"
          style="width: 100%;"
       >
          <el-table-column label="序号" width="50" type="index" align="center">
@@ -53,7 +53,13 @@
          </el-table-column>
       </el-table>
 
-      <pagination v-show="total > 0" :total="total" v-model:page="pageNum" v-model:limit="pageSize" />
+      <pagination
+         v-show="total > 0"
+         :total="total"
+         v-model:page="pageNum"
+         v-model:limit="pageSize"
+         @pagination="getList"
+      />
    </div>
 </template>
 
@@ -70,14 +76,18 @@ const pageSize = ref(10)
 
 const queryParams = ref({
   ipaddr: undefined,
-  userName: undefined
+  userName: undefined,
+  pageNum: pageNum.value,
+  pageSize: pageSize.value
 })
 
 /** 查询登录日志列表 */
 function getList() {
   loading.value = true
+  queryParams.value.pageNum = pageNum.value
+  queryParams.value.pageSize = pageSize.value
   initData(queryParams.value).then(response => {
-    onlineList.value = response.rows
+    onlineList.value = response.list || []
     total.value = response.total
     loading.value = false
   })

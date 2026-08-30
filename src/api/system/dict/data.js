@@ -1,9 +1,8 @@
-import request from '@/utils/request'
 import adminRequest from '@/utils/adminRequest'
 
 // 查询字典数据列表
 export function listData(query) {
-  return request({
+  return adminRequest({
     url: '/system/dict/data/list',
     method: 'get',
     params: query

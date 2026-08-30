@@ -234,7 +234,7 @@ function getTypeList() {
 function getList() {
   loading.value = true
   listData(queryParams.value).then(response => {
-    dataList.value = response.rows
+    dataList.value = response.list
     total.value = response.total
     loading.value = false
   })

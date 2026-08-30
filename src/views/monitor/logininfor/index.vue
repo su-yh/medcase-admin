@@ -147,7 +147,7 @@ const queryParams = ref({
 function getList() {
   loading.value = true
   list(proxy.addDateRange(queryParams.value, dateRange.value)).then(response => {
-    logininforList.value = response.rows
+    logininforList.value = response.list
     total.value = response.total
     loading.value = false
   })

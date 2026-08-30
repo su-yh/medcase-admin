@@ -105,7 +105,7 @@ function handleSelectionChange(selection) {
 // 查询表数据
 function getList() {
   unallocatedUserList(queryParams).then(res => {
-    userList.value = res.rows
+    userList.value = res.list
     total.value = res.total
   })
 }
