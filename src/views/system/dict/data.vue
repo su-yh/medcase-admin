@@ -70,15 +70,6 @@
             <el-button
                type="warning"
                plain
-               icon="Download"
-               @click="handleExport"
-               v-hasPermi="['system:dict:export']"
-            >导出</el-button>
-         </el-col>
-         <el-col :span="1.5">
-            <el-button
-               type="warning"
-               plain
                icon="Close"
                @click="handleClose"
             >关闭</el-button>
@@ -348,13 +339,6 @@ function handleDelete(row) {
     proxy.$modal.msgSuccess("删除成功")
     useDictStore().removeDict(queryParams.value.dictType)
   }).catch(() => {})
-}
-
-/** 导出按钮操作 */
-function handleExport() {
-  proxy.download("system/dict/data/export", {
-    ...queryParams.value
-  }, `dict_data_${new Date().getTime()}.xlsx`)
 }
 
 getTypes(route.params && route.params.dictId)

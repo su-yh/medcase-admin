@@ -34,12 +34,6 @@
           <el-col :span="1.5">
             <el-button type="danger" plain icon="Delete" :disabled="multiple" @click="handleDelete" v-hasPermi="['system:user:remove']">删除</el-button>
           </el-col>
-          <el-col :span="1.5">
-            <el-button type="info" plain icon="Upload" @click="handleImport" v-hasPermi="['system:user:import']">导入</el-button>
-          </el-col>
-          <el-col :span="1.5">
-            <el-button type="warning" plain icon="Download" @click="handleExport" v-hasPermi="['system:user:export']">导出</el-button>
-          </el-col>
           <right-toolbar v-model:showSearch="showSearch" @queryTable="getList" :columns="columns" storageKey="xxxxxxxx"></right-toolbar>
         </el-row>
 
@@ -179,14 +173,11 @@
 
     <!-- 用户详情抽屉 -->
     <user-view-drawer ref="userViewRef" />
-    <!-- 用户导入对话框 -->
-    <excel-import-dialog ref="importUserRef" title="用户导入" action="/system/user/importData" template-action="/system/user/importTemplate" template-file-name="user_template" update-support-label="是否更新已经存在的用户数据" @success="getList" />
   </div>
 </template>
 
 <script setup name="User">
 import TreePanel from "@/components/TreePanel"
-import ExcelImportDialog from "@/components/ExcelImportDialog"
 import UserViewDrawer from "./view"
 import { usePasswordRule } from "@/utils/passwordRule"
 import { changeUserStatus, listUser, resetUserPwd, delUser, getUser, updateUser, addUser, deptTreeSelect } from "@/api/system/user"
@@ -305,13 +296,6 @@ function handleDelete(row) {
   }).catch(() => {})
 }
 
-/** 导出按钮操作 */
-function handleExport() {
-  proxy.download("system/user/export", {
-    ...queryParams.value,
-  },`user_${new Date().getTime()}.xlsx`)
-}
-
 /** 用户状态修改  */
 function handleStatusChange(row) {
   let text = row.status === "0" ? "启用" : "停用"
@@ -368,11 +352,6 @@ function handleSelectionChange(selection) {
 /** 详情按钮操作 */
 function handleViewData(row) {
   proxy.$refs["userViewRef"].open(row.userId)
-}
-
-/** 导入按钮操作 */
-function handleImport() {
-  proxy.$refs["importUserRef"].open()
 }
 
 /** 重置操作表单 */

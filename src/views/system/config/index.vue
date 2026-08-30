@@ -77,15 +77,6 @@
          </el-col>
          <el-col :span="1.5">
             <el-button
-               type="warning"
-               plain
-               icon="Download"
-               @click="handleExport"
-               v-hasPermi="['system:config:export']"
-            >导出</el-button>
-         </el-col>
-         <el-col :span="1.5">
-            <el-button
                type="danger"
                plain
                icon="Refresh"
@@ -296,13 +287,6 @@ function handleDelete(row) {
     getList()
     proxy.$modal.msgSuccess("删除成功")
   }).catch(() => {})
-}
-
-/** 导出按钮操作 */
-function handleExport() {
-  proxy.download("system/config/export", {
-    ...queryParams.value
-  }, `config_${new Date().getTime()}.xlsx`)
 }
 
 /** 刷新缓存按钮操作 */

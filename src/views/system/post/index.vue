@@ -65,15 +65,6 @@
                v-hasPermi="['system:post:remove']"
             >删除</el-button>
          </el-col>
-         <el-col :span="1.5">
-            <el-button
-               type="warning"
-               plain
-               icon="Download"
-               @click="handleExport"
-               v-hasPermi="['system:post:export']"
-            >导出</el-button>
-         </el-col>
          <right-toolbar v-model:showSearch="showSearch" @queryTable="getList"></right-toolbar>
       </el-row>
 
@@ -274,13 +265,6 @@ function handleDelete(row) {
     getList()
     proxy.$modal.msgSuccess("删除成功")
   }).catch(() => {})
-}
-
-/** 导出按钮操作 */
-function handleExport() {
-  proxy.download("system/post/export", {
-    ...queryParams.value
-  }, `post_${new Date().getTime()}.xlsx`)
 }
 
 getList()
