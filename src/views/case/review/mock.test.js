@@ -1,10 +1,17 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
+import { readFileSync } from 'node:fs'
+import { fileURLToPath } from 'node:url'
 import {
   CASE_STATUS_OPTIONS,
   filterCaseRecords,
   paginateCaseRecords
 } from './mock.js'
+
+const caseReviewViewSource = readFileSync(
+  fileURLToPath(new URL('./index.vue', import.meta.url)),
+  'utf8'
+)
 
 test('exposes the complete case lifecycle status vocabulary', () => {
   assert.deepEqual(
@@ -45,4 +52,10 @@ test('empty case filters return all records and status filters are exact', () =>
     filterCaseRecords(records, { status: 'draft' }).map(item => item.id),
     [1]
   )
+})
+
+test('case review actions require independent button permissions', () => {
+  assert.match(caseReviewViewSource, /v-hasPermi="\['case:review:query'\]"/)
+  assert.match(caseReviewViewSource, /v-hasPermi="\['case:review:review'\]"/)
+  assert.match(caseReviewViewSource, /v-hasPermi="\['case:review:settle'\]"/)
 })

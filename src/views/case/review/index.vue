@@ -153,11 +153,18 @@
         label-class-name="case-review-actions-header"
       >
         <template #default="{ row }">
-          <el-button link type="primary" icon="View" @click="handleView(row)">
+          <el-button
+            v-hasPermi="['case:review:query']"
+            link
+            type="primary"
+            icon="View"
+            @click="handleView(row)"
+          >
             查看
           </el-button>
           <el-button
             v-if="row.status === 'pending_review'"
+            v-hasPermi="['case:review:review']"
             link
             type="primary"
             icon="Edit"
@@ -167,6 +174,7 @@
           </el-button>
           <el-button
             v-if="row.status === 'approved_pending_settlement'"
+            v-hasPermi="['case:review:settle']"
             link
             type="warning"
             icon="Money"
