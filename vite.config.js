@@ -27,6 +27,7 @@ export default defineConfig(({ mode, command }) => {
     build: {
       sourcemap: command === 'build' ? false : 'inline',
       outDir: 'dist',
+      emptyOutDir: true,
       assetsDir: 'assets',
       chunkSizeWarningLimit: 2000,
       rollupOptions: {
