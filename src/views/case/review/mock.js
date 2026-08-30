@@ -9,124 +9,124 @@ export const CASE_STATUS_OPTIONS = [
 export const CASE_RECORDS = [
   {
     id: 10001,
-    title: '胸痛病例讨论',
+    caseName: '胸痛病例讨论',
     doctorName: '张医生',
     status: 'pending_review',
     createTime: '2026-08-23 09:12:00',
-    remark: '需要重点关注既往用药记录。',
+    content: '需要重点关注既往用药记录。',
     reviewReason: '',
     attachments: ['胸痛病例讨论.docx']
   },
   {
     id: 10002,
-    title: '术后复诊记录',
+    caseName: '术后复诊记录',
     doctorName: '李医生',
     status: 'settled',
     createTime: '2026-08-22 16:40:00',
-    remark: '复诊资料已整理。',
+    content: '复诊资料已整理。',
     reviewReason: '',
     attachments: ['术后复诊记录.pdf']
   },
   {
     id: 10003,
-    title: '慢病随访病例',
+    caseName: '慢病随访病例',
     doctorName: '王医生',
     status: 'draft',
     createTime: '2026-08-22 14:05:00',
-    remark: '待补充实验室检查结果。',
+    content: '待补充实验室检查结果。',
     reviewReason: '',
     attachments: []
   },
   {
     id: 10004,
-    title: '门诊初诊记录',
+    caseName: '门诊初诊记录',
     doctorName: '赵医生',
     status: 'review_failed',
     createTime: '2026-08-21 11:28:00',
-    remark: '初诊资料已提交。',
+    content: '初诊资料已提交。',
     reviewReason: '请补充完整的检查报告。',
     attachments: ['门诊初诊记录.jpg']
   },
   {
     id: 10005,
-    title: '发热病例分析',
+    caseName: '发热病例分析',
     doctorName: '陈医生',
     status: 'approved_pending_settlement',
     createTime: '2026-08-20 17:18:00',
-    remark: '病例分析已完成。',
+    content: '病例分析已完成。',
     reviewReason: '',
     attachments: ['发热病例分析.docx']
   },
   {
     id: 10006,
-    title: '消化道症状病例',
+    caseName: '消化道症状病例',
     doctorName: '刘医生',
     status: 'pending_review',
     createTime: '2026-08-20 10:46:00',
-    remark: '等待管理端审核。',
+    content: '等待管理端审核。',
     reviewReason: '',
     attachments: []
   },
   {
     id: 10007,
-    title: '高血压管理病例',
+    caseName: '高血压管理病例',
     doctorName: '周医生',
     status: 'settled',
     createTime: '2026-08-19 15:30:00',
-    remark: '结算已完成。',
+    content: '结算已完成。',
     reviewReason: '',
     attachments: ['高血压管理病例.pdf']
   },
   {
     id: 10008,
-    title: '皮肤症状病例',
+    caseName: '皮肤症状病例',
     doctorName: '吴医生',
     status: 'approved_pending_settlement',
     createTime: '2026-08-18 13:20:00',
-    remark: '审核已通过。',
+    content: '审核已通过。',
     reviewReason: '',
     attachments: []
   },
   {
     id: 10009,
-    title: '呼吸道感染病例',
+    caseName: '呼吸道感染病例',
     doctorName: '孙医生',
     status: 'review_failed',
     createTime: '2026-08-17 09:50:00',
-    remark: '资料需要重新整理。',
+    content: '资料需要重新整理。',
     reviewReason: '病例备注内容不完整。',
     attachments: ['呼吸道感染病例.pdf']
   },
   {
     id: 10010,
-    title: '糖尿病复诊病例',
+    caseName: '糖尿病复诊病例',
     doctorName: '郑医生',
     status: 'draft',
     createTime: '2026-08-16 16:12:00',
-    remark: '草稿待医生补充。',
+    content: '草稿待医生补充。',
     reviewReason: '',
     attachments: []
   },
   {
     id: 10011,
-    title: '骨科康复病例',
+    caseName: '骨科康复病例',
     doctorName: '何医生',
     status: 'pending_review',
     createTime: '2026-08-15 14:08:00',
-    remark: '康复记录已上传。',
+    content: '康复记录已上传。',
     reviewReason: '',
     attachments: ['骨科康复病例.docx']
   }
 ]
 
 export function filterCaseRecords(records, filters = {}) {
-  const title = filters.title?.trim().toLowerCase()
+  const caseName = filters.caseName?.trim().toLowerCase()
 
   return records.filter(record => {
-    const titleMatches = !title || record.title.toLowerCase().includes(title)
+    const caseNameMatches = !caseName || record.caseName.toLowerCase().includes(caseName)
     const statusMatches = !filters.status || record.status === filters.status
     const idMatches = !filters.id || String(record.id).includes(String(filters.id).trim())
-    return titleMatches && statusMatches && idMatches
+    return caseNameMatches && statusMatches && idMatches
   })
 }
 

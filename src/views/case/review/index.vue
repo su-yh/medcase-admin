@@ -17,10 +17,10 @@
           @keyup.enter="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="病例标题" prop="title">
+      <el-form-item label="病例名称" prop="caseName">
         <el-input
-          v-model="queryParams.title"
-          placeholder="请输入病例标题"
+          v-model="queryParams.caseName"
+          placeholder="请输入病例名称"
           clearable
           style="width: 220px"
           @keyup.enter="handleQuery"
@@ -65,9 +65,9 @@
         width="100"
       />
       <el-table-column
-        v-if="columns.title.visible"
-        label="病例标题"
-        prop="title"
+        v-if="columns.caseName.visible"
+        label="病例名称"
+        prop="caseName"
         min-width="220"
         show-overflow-tooltip
       />
@@ -205,11 +205,11 @@
         <el-descriptions-item label="病例编号">
           {{ currentCase.id }}
         </el-descriptions-item>
-        <el-descriptions-item label="提交医生">
+        <el-descriptions-item label="医生名">
           {{ currentCase.doctorName }}
         </el-descriptions-item>
-        <el-descriptions-item label="病例标题" :span="2">
-          {{ currentCase.title }}
+        <el-descriptions-item label="病例名称" :span="2">
+          {{ currentCase.caseName }}
         </el-descriptions-item>
         <el-descriptions-item label="病例状态">
           <el-tag :type="getStatusOption(currentCase.status).tagType">
@@ -227,8 +227,8 @@
           {{ currentCase.settlerNickname || '暂无' }}
           <span v-if="currentCase.settlerId">（{{ currentCase.settlerId }}）</span>
         </el-descriptions-item>
-        <el-descriptions-item label="备注" :span="2">
-          {{ currentCase.remark || '暂无备注' }}
+        <el-descriptions-item label="病例内容" :span="2">
+          {{ currentCase.content || '暂无病例内容' }}
         </el-descriptions-item>
         <el-descriptions-item
           v-if="currentCase.reviewReason"
@@ -366,7 +366,7 @@ const dialogTitle = computed(() => {
 
 const columns = reactive({
   id: { label: '病例编号', visible: true },
-  title: { label: '病例标题', visible: true },
+  caseName: { label: '病例名称', visible: true },
   attachments: { label: '附件', visible: true },
   status: { label: '状态', visible: true },
   submitInfo: { label: '提交', visible: true },
@@ -379,7 +379,7 @@ const queryParams = reactive({
   pageNum: 1,
   pageSize: 10,
   id: '',
-  title: '',
+  caseName: '',
   status: ''
 })
 
@@ -389,7 +389,7 @@ function getList() {
     pageNum: queryParams.pageNum,
     pageSize: queryParams.pageSize,
     id: queryParams.id || undefined,
-    title: queryParams.title || undefined,
+    caseName: queryParams.caseName || undefined,
     status: queryParams.status || undefined
   }).then(res => {
     caseList.value = res.list || []
@@ -407,7 +407,7 @@ function handleQuery() {
 function resetQuery() {
   queryParams.pageNum = 1
   queryParams.id = ''
-  queryParams.title = ''
+  queryParams.caseName = ''
   queryParams.status = ''
   getList()
 }
@@ -466,7 +466,7 @@ async function handleSubmitReview() {
 
   try {
     await ElMessageBox.confirm(
-      `确认${isReject ? '拒绝' : '通过'}病例「${currentCase.value.title}」吗？`,
+      `确认${isReject ? '拒绝' : '通过'}病例「${currentCase.value.caseName}」吗？`,
       '审核确认',
       {
         type: 'warning',
@@ -510,7 +510,7 @@ async function handleSubmitSettle() {
 
   try {
     await ElMessageBox.confirm(
-      `确认结算病例「${currentCase.value.title}」吗？`,
+      `确认结算病例「${currentCase.value.caseName}」吗？`,
       '结算确认',
       {
         type: 'warning',

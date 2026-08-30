@@ -13,13 +13,13 @@ test('exposes the complete case lifecycle status vocabulary', () => {
   )
 })
 
-test('filters case records by title and status', () => {
+test('filters case records by case name and status', () => {
   const result = filterCaseRecords(
     [
-      { id: 1, title: '胸痛病例讨论', status: 'pending_review' },
-      { id: 2, title: '术后复诊记录', status: 'settled' }
+      { id: 1, caseName: '胸痛病例讨论', status: 'pending_review' },
+      { id: 2, caseName: '术后复诊记录', status: 'settled' }
     ],
-    { title: '胸痛', status: 'pending_review' }
+    { caseName: '胸痛', status: 'pending_review' }
   )
 
   assert.deepEqual(result.map(item => item.id), [1])
@@ -36,8 +36,8 @@ test('paginates filtered case records with one-based pages', () => {
 
 test('empty case filters return all records and status filters are exact', () => {
   const records = [
-    { id: 1, title: '草稿病例', status: 'draft' },
-    { id: 2, title: '待审病例', status: 'pending_review' }
+    { id: 1, caseName: '草稿病例', status: 'draft' },
+    { id: 2, caseName: '待审病例', status: 'pending_review' }
   ]
 
   assert.equal(filterCaseRecords(records, {}).length, 2)
