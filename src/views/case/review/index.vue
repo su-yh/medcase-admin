@@ -106,7 +106,7 @@
       </el-table-column>
       <el-table-column
         v-if="columns.submitInfo.visible"
-        label="提交"
+        label="医生姓名"
         align="center"
         width="180"
       >
