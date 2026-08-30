@@ -5,7 +5,7 @@ import { login, logout, getInfo } from '@/api/login'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import { isHttp } from "@/utils/validate"
 import useLockStore from '@/store/modules/lock'
-import defAva from '@/assets/images/profile.jpg'
+import defAva from '@/assets/images/default-avatar.svg'
 
 function attachmentUrl(filePath) {
   return import.meta.env.VITE_APP_BASE_API
@@ -28,7 +28,7 @@ const useUserStore = defineStore(
       id: '',
       name: '',
       nickName: '',
-      avatar: '',
+      avatar: defAva,
       roles: [],
       permissions: []
     }),
@@ -92,6 +92,7 @@ const useUserStore = defineStore(
             this.token = ''
             this.roles = []
             this.permissions = []
+            this.avatar = defAva
             removeToken()
             resolve()
           }).catch(error => {
