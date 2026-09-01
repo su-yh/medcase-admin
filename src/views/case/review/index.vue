@@ -106,13 +106,13 @@
       </el-table-column>
       <el-table-column
         v-if="columns.submitInfo.visible"
-        label="医生姓名"
+        label="提交人"
         align="center"
         width="180"
       >
         <template #default="{ row }">
           <div class="case-operator-info">
-            <span>{{ row.doctorName || '暂无' }}</span>
+            <span>{{ row.userName || '暂无' }}</span>
             <small>{{ row.createTime || '—' }}</small>
           </div>
         </template>
@@ -154,7 +154,7 @@
       >
         <template #default="{ row }">
           <el-button
-            v-hasPermi="['case:review:query']"
+            v-hasPermi="[queryPerm]"
             link
             type="primary"
             icon="View"
@@ -164,7 +164,7 @@
           </el-button>
           <el-button
             v-if="row.status === 'pending_review'"
-            v-hasPermi="['case:review:review']"
+            v-hasPermi="[reviewPerm]"
             link
             type="primary"
             icon="Edit"
@@ -174,7 +174,7 @@
           </el-button>
           <el-button
             v-if="row.status === 'approved_pending_settlement'"
-            v-hasPermi="['case:review:settle']"
+            v-hasPermi="[settlePerm]"
             link
             type="warning"
             icon="Money"
@@ -213,8 +213,8 @@
         <el-descriptions-item label="病例编号">
           {{ currentCase.id }}
         </el-descriptions-item>
-        <el-descriptions-item label="医生名">
-          {{ currentCase.doctorName }}
+        <el-descriptions-item label="提交人">
+          {{ currentCase.userName }}
         </el-descriptions-item>
         <el-descriptions-item label="病例名称" :span="2">
           {{ currentCase.caseName }}
@@ -333,6 +333,7 @@
 
 <script setup name="CaseReview">
 import { computed, onMounted, reactive, ref } from 'vue'
+import { useRoute } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import {
   listCaseReview,
@@ -343,6 +344,8 @@ import {
   CASE_STATUS_OPTIONS
 } from './mock'
 import AttachmentPreviewDialog from '@/components/attachments/AttachmentPreviewDialog.vue'
+
+const route = useRoute()
 
 const loading = ref(false)
 const showSearch = ref(true)
@@ -361,15 +364,20 @@ const reviewForm = reactive({
   reason: ''
 })
 const settleForm = reactive({})
+const caseType = computed(() => (route.path.includes('/patient') ? 'patient' : 'doctor'))
+const queryPerm = computed(() => `${caseType.value}:case:query`)
+const reviewPerm = computed(() => `${caseType.value}:case:review`)
+const settlePerm = computed(() => `${caseType.value}:case:settle`)
+const pageTitle = computed(() => (caseType.value === 'patient' ? '患者病例' : '医生病例'))
 const attachmentList = computed(() => getAttachmentList(currentCase.value?.attachments))
 const dialogTitle = computed(() => {
   if (dialogMode.value === 'review') {
-    return '病例审核'
+    return `${pageTitle.value}审核`
   }
   if (dialogMode.value === 'settle') {
-    return '病例结算'
+    return `${pageTitle.value}结算`
   }
-  return '病例详情'
+  return `${pageTitle.value}详情`
 })
 
 const columns = reactive({
@@ -393,7 +401,7 @@ const queryParams = reactive({
 
 function getList() {
   loading.value = true
-  listCaseReview({
+  listCaseReview(caseType.value, {
     pageNum: queryParams.pageNum,
     pageSize: queryParams.pageSize,
     id: queryParams.id || undefined,
@@ -401,7 +409,7 @@ function getList() {
     status: queryParams.status || undefined
   }).then(res => {
     caseList.value = res.list || []
-    total.value = Number(res.total || 0)
+    total.value = res.total || 0
   }).finally(() => {
     loading.value = false
   })
@@ -488,7 +496,7 @@ async function handleSubmitReview() {
 
   reviewSubmitting.value = true
   try {
-    await reviewCaseReview(currentCase.value.id, {
+    await reviewCaseReview(caseType.value, currentCase.value.id, {
       approve: !isReject,
       reason: isReject ? reason : undefined
     })
@@ -532,7 +540,7 @@ async function handleSubmitSettle() {
 
   settleSubmitting.value = true
   try {
-    await settleCaseReview(currentCase.value.id, settleForm)
+    await settleCaseReview(caseType.value, currentCase.value.id, settleForm)
     ElMessage.success('病例已结算')
     detailOpen.value = false
     getList()

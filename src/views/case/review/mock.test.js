@@ -55,7 +55,7 @@ test('empty case filters return all records and status filters are exact', () =>
 })
 
 test('case review actions require independent button permissions', () => {
-  assert.match(caseReviewViewSource, /v-hasPermi="\['case:review:query'\]"/)
-  assert.match(caseReviewViewSource, /v-hasPermi="\['case:review:review'\]"/)
-  assert.match(caseReviewViewSource, /v-hasPermi="\['case:review:settle'\]"/)
+  assert.match(caseReviewViewSource, /queryPerm/)
+  assert.match(caseReviewViewSource, /reviewPerm/)
+  assert.match(caseReviewViewSource, /settlePerm/)
 })

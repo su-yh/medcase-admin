@@ -8,10 +8,10 @@
       label-width="82px"
       class="query-form"
     >
-      <el-form-item label="医生姓名" prop="nickName">
+      <el-form-item label="患者姓名" prop="nickName">
         <el-input
           v-model="queryParams.nickName"
-          placeholder="请输入医生姓名"
+          placeholder="请输入患者姓名"
           clearable
           style="width: 220px"
           @keyup.enter="handleQuery"
@@ -34,7 +34,7 @@
           style="width: 180px"
         >
           <el-option
-            v-for="item in DOCTOR_STATUS_OPTIONS"
+            v-for="item in PATIENT_STATUS_OPTIONS"
             :key="item.value"
             :label="item.label"
             :value="item.value"
@@ -51,32 +51,25 @@
       <right-toolbar
         v-model:showSearch="showSearch"
         :columns="columns"
-        storage-key="doctor-management-columns"
+        storage-key="patient-management-columns"
         @queryTable="getList"
       />
     </el-row>
 
-    <el-table v-loading="loading" :data="doctorList" row-key="id">
+    <el-table v-loading="loading" :data="patientList" row-key="id">
       <el-table-column
         v-if="columns.id.visible"
-        label="医生编号"
+        label="患者编号"
         prop="id"
         align="center"
         width="100"
       />
       <el-table-column
         v-if="columns.nickName.visible"
-        label="医生姓名"
+        label="患者姓名"
         prop="nickName"
         align="center"
         width="120"
-      />
-      <el-table-column
-        v-if="columns.title.visible"
-        label="职称"
-        prop="title"
-        align="center"
-        width="140"
       />
       <el-table-column
         v-if="columns.idCardNumber.visible"
@@ -95,7 +88,7 @@
         width="170"
       >
         <template #default="{ row }">
-          <div class="doctor-attachment">
+          <div class="patient-attachment">
             <el-button
               :disabled="!row.idCardFront?.filePath"
               text
@@ -111,25 +104,6 @@
               @click="openPreview(row.idCardBack)"
             >
               反面
-            </el-button>
-          </div>
-        </template>
-      </el-table-column>
-      <el-table-column
-        v-if="columns.qualificationCertificate.visible"
-        label="职业资格证"
-        align="center"
-        width="190"
-      >
-        <template #default="{ row }">
-          <div class="doctor-attachment">
-            <el-button
-              :disabled="!row.qualificationCertificate?.filePath"
-              text
-              type="primary"
-              @click="openPreview(row.qualificationCertificate)"
-            >
-              预览
             </el-button>
           </div>
         </template>
@@ -166,8 +140,8 @@
         align="center"
         width="140"
         fixed="right"
-        class-name="doctor-actions-column"
-        label-class-name="doctor-actions-header"
+        class-name="patient-actions-column"
+        label-class-name="patient-actions-header"
       >
         <template #default="{ row }">
           <el-button link type="primary" icon="View" @click="handleView(row)">
@@ -175,7 +149,7 @@
           </el-button>
           <el-button
             v-if="row.status === '3' || row.status === '5'"
-            v-hasPermi="['biz:doctor:review']"
+            v-hasPermi="['patient:user:review']"
             link
             type="primary"
             icon="Checked"
@@ -202,71 +176,56 @@
       @pagination="getList"
     />
 
-    <el-dialog v-model="detailOpen" title="医生详情" width="620px" append-to-body>
+    <el-dialog v-model="detailOpen" title="患者详情" width="620px" append-to-body>
       <el-descriptions
-        v-if="currentDoctor"
+        v-if="currentPatient"
         :column="2"
         label-width="100px"
-        class="doctor-descriptions"
+        class="patient-descriptions"
         border
       >
-        <el-descriptions-item label="医生编号">
-          {{ currentDoctor.id }}
+        <el-descriptions-item label="患者编号">
+          {{ currentPatient.id }}
         </el-descriptions-item>
-        <el-descriptions-item label="医生姓名">
-          {{ currentDoctor.nickName }}
+        <el-descriptions-item label="患者姓名">
+          {{ currentPatient.nickName }}
         </el-descriptions-item>
         <el-descriptions-item label="性别">
-          {{ sexLabel(currentDoctor.sex) }}
+          {{ sexLabel(currentPatient.sex) }}
         </el-descriptions-item>
         <el-descriptions-item label="手机号">
-          {{ currentDoctor.phone }}
-        </el-descriptions-item>
-        <el-descriptions-item label="职称">
-          {{ currentDoctor.title }}
+          {{ currentPatient.phone }}
         </el-descriptions-item>
         <el-descriptions-item label="身份证号">
-          {{ maskIdCardNumber(currentDoctor.idCardNumber) }}
+          {{ maskIdCardNumber(currentPatient.idCardNumber) }}
         </el-descriptions-item>
         <el-descriptions-item label="身份证">
-          <div class="doctor-attachment">
+          <div class="patient-attachment">
             <el-button
-              :disabled="!currentDoctor.idCardFront?.filePath"
+              :disabled="!currentPatient.idCardFront?.filePath"
               text
               type="primary"
-              @click="openPreview(currentDoctor.idCardFront)"
+              @click="openPreview(currentPatient.idCardFront)"
             >
               正面
             </el-button>
             <el-button
-              :disabled="!currentDoctor.idCardBack?.filePath"
+              :disabled="!currentPatient.idCardBack?.filePath"
               text
               type="primary"
-              @click="openPreview(currentDoctor.idCardBack)"
+              @click="openPreview(currentPatient.idCardBack)"
             >
               反面
             </el-button>
           </div>
         </el-descriptions-item>
-        <el-descriptions-item label="职业资格证">
-          <div class="doctor-attachment">
-            <el-button
-              :disabled="!currentDoctor.qualificationCertificate?.filePath"
-              text
-              type="primary"
-              @click="openPreview(currentDoctor.qualificationCertificate)"
-            >
-              预览
-            </el-button>
-          </div>
-        </el-descriptions-item>
         <el-descriptions-item label="状态">
-          <el-tag :type="getStatusOption(currentDoctor.status).tagType">
-            {{ getStatusOption(currentDoctor.status).label }}
+          <el-tag :type="getStatusOption(currentPatient.status).tagType">
+            {{ getStatusOption(currentPatient.status).label }}
           </el-tag>
         </el-descriptions-item>
         <el-descriptions-item label="创建时间">
-          {{ currentDoctor.createTime }}
+          {{ currentPatient.createTime }}
         </el-descriptions-item>
       </el-descriptions>
       <template #footer>
@@ -274,58 +233,43 @@
       </template>
     </el-dialog>
 
-    <el-dialog v-model="reviewOpen" title="医生审核" width="520px" append-to-body>
+    <el-dialog v-model="reviewOpen" title="患者审核" width="520px" append-to-body>
       <el-descriptions
-        v-if="reviewDoctorInfo"
+        v-if="reviewPatientInfo"
         :column="1"
         label-width="90px"
-        class="doctor-descriptions"
+        class="patient-descriptions"
         border
       >
-        <el-descriptions-item label="医生姓名">
-          {{ reviewDoctorInfo.nickName }}
+        <el-descriptions-item label="患者姓名">
+          {{ reviewPatientInfo.nickName }}
         </el-descriptions-item>
         <el-descriptions-item label="性别">
-          {{ sexLabel(reviewDoctorInfo.sex) }}
+          {{ sexLabel(reviewPatientInfo.sex) }}
         </el-descriptions-item>
         <el-descriptions-item label="手机号">
-          {{ reviewDoctorInfo.phone }}
-        </el-descriptions-item>
-        <el-descriptions-item label="职称">
-          {{ reviewDoctorInfo.title }}
+          {{ reviewPatientInfo.phone }}
         </el-descriptions-item>
         <el-descriptions-item label="身份证号">
-          {{ maskIdCardNumber(reviewDoctorInfo.idCardNumber) }}
+          {{ maskIdCardNumber(reviewPatientInfo.idCardNumber) }}
         </el-descriptions-item>
         <el-descriptions-item label="身份证">
-          <div class="doctor-attachment">
+          <div class="patient-attachment">
             <el-button
-              :disabled="!reviewDoctorInfo.idCardFront?.filePath"
+              :disabled="!reviewPatientInfo.idCardFront?.filePath"
               text
               type="primary"
-              @click="openPreview(reviewDoctorInfo.idCardFront)"
+              @click="openPreview(reviewPatientInfo.idCardFront)"
             >
               正面
             </el-button>
             <el-button
-              :disabled="!reviewDoctorInfo.idCardBack?.filePath"
+              :disabled="!reviewPatientInfo.idCardBack?.filePath"
               text
               type="primary"
-              @click="openPreview(reviewDoctorInfo.idCardBack)"
+              @click="openPreview(reviewPatientInfo.idCardBack)"
             >
               反面
-            </el-button>
-          </div>
-        </el-descriptions-item>
-        <el-descriptions-item label="职业资格证">
-          <div class="doctor-attachment">
-            <el-button
-              :disabled="!reviewDoctorInfo.qualificationCertificate?.filePath"
-              text
-              type="primary"
-              @click="openPreview(reviewDoctorInfo.qualificationCertificate)"
-            >
-              预览
             </el-button>
           </div>
         </el-descriptions-item>
@@ -355,7 +299,7 @@
         </el-form-item>
         <el-alert
           v-if="!reviewForm.approve"
-          title="审核失败后，医生可使用原账号重新提交审核。"
+          title="审核失败后，患者可使用原账号重新提交审核。"
           type="warning"
           :closable="false"
           show-icon
@@ -381,26 +325,26 @@
   </div>
 </template>
 
-<script setup name="Doctor">
+<script setup name="Patient">
 import { onMounted, reactive, ref } from 'vue'
-import { getDoctor, listDoctor, reviewDoctor } from '@/api/biz/doctor'
+import { getPatient, listPatient, reviewPatient } from '@/api/biz/patient'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { useDict } from '@/utils/dict'
 import { selectDictLabel } from '@/utils/ruoyi'
 import AttachmentPreviewDialog from '@/components/attachments/AttachmentPreviewDialog.vue'
 import {
-  DOCTOR_LIST_COLUMNS,
-  DOCTOR_STATUS_OPTIONS
+  PATIENT_LIST_COLUMNS,
+  PATIENT_STATUS_OPTIONS
 } from './mock'
 
 const loading = ref(false)
 const showSearch = ref(true)
-const doctorList = ref([])
+const patientList = ref([])
 const total = ref(0)
 const detailOpen = ref(false)
-const currentDoctor = ref(null)
+const currentPatient = ref(null)
 const reviewOpen = ref(false)
-const reviewDoctorInfo = ref(null)
+const reviewPatientInfo = ref(null)
 const previewOpen = ref(false)
 const previewAttachment = ref(null)
 const reviewSubmitting = ref(false)
@@ -417,7 +361,7 @@ const reviewRules = {
 const { sys_user_sex } = useDict('sys_user_sex')
 
 const columns = reactive(Object.fromEntries(
-  DOCTOR_LIST_COLUMNS.map(({ key, label }) => [key, { label, visible: true }])
+  PATIENT_LIST_COLUMNS.map(({ key, label }) => [key, { label, visible: true }])
 ))
 
 const queryParams = reactive({
@@ -430,14 +374,14 @@ const queryParams = reactive({
 
 function getList() {
   loading.value = true
-  listDoctor({
+  listPatient({
     pageNum: queryParams.pageNum,
     pageSize: queryParams.pageSize,
     nickName: queryParams.nickName || undefined,
     phone: queryParams.phone || undefined,
     status: queryParams.status || undefined
   }).then(res => {
-    doctorList.value = res.list || []
+    patientList.value = res.list || []
     total.value = res.total || 0
   }).finally(() => {
     loading.value = false
@@ -458,21 +402,21 @@ function resetQuery() {
 }
 
 function getStatusOption(status) {
-  return DOCTOR_STATUS_OPTIONS.find(item => item.value === status) || {
+  return PATIENT_STATUS_OPTIONS.find(item => item.value === status) || {
     label: '未知状态',
     tagType: 'info'
   }
 }
 
 function handleView(row) {
-  getDoctor(row.id).then(res => {
-    currentDoctor.value = res
+  getPatient(row.id).then(res => {
+    currentPatient.value = res
     detailOpen.value = true
   })
 }
 
 function handleReview(row) {
-  reviewDoctorInfo.value = row
+  reviewPatientInfo.value = row
   reviewForm.approve = true
   reviewForm.reason = ''
   reviewOpen.value = true
@@ -499,7 +443,7 @@ function maskIdCardNumber(idCardNumber) {
 }
 
 async function handleSubmitReview() {
-  if (!reviewDoctorInfo.value || reviewSubmitting.value) {
+  if (!reviewPatientInfo.value || reviewSubmitting.value) {
     return
   }
 
@@ -512,7 +456,7 @@ async function handleSubmitReview() {
   }
   try {
     await ElMessageBox.confirm(
-      `确认${isApprove ? '通过' : '拒绝'}医生「${reviewDoctorInfo.value.nickName}」的注册申请吗？`,
+      `确认${isApprove ? '通过' : '拒绝'}患者「${reviewPatientInfo.value.nickName}」的注册申请吗？`,
       '审核确认',
       {
         type: 'warning',
@@ -526,11 +470,11 @@ async function handleSubmitReview() {
 
   reviewSubmitting.value = true
   try {
-    await reviewDoctor(reviewDoctorInfo.value.id, {
+    await reviewPatient(reviewPatientInfo.value.id, {
       approve: isApprove,
       reason: isApprove ? undefined : reviewForm.reason.trim()
     })
-    ElMessage.success(isApprove ? '医生审核通过' : '医生审核已拒绝')
+    ElMessage.success(isApprove ? '患者审核通过' : '患者审核已拒绝')
     reviewOpen.value = false
     getList()
   } finally {
@@ -539,7 +483,7 @@ async function handleSubmitReview() {
 }
 
 function handleMore() {
-  ElMessage.info('医生操作功能待补充')
+  ElMessage.info('患者操作功能待补充')
 }
 
 onMounted(getList)
@@ -561,25 +505,25 @@ onMounted(getList)
   box-shadow: -6px 0 8px -6px rgb(0 0 0 / 25%);
 }
 
-:deep(.doctor-actions-column) {
+:deep(.patient-actions-column) {
   background-color: #fafafa;
   border-left: 1px solid var(--el-border-color-lighter);
 }
 
-:deep(.doctor-actions-header) {
+:deep(.patient-actions-header) {
   background-color: #f5f7fa;
   border-left: 1px solid var(--el-border-color-light);
 }
 
-:deep(.el-table__body tr.hover-row > td.doctor-actions-column) {
+:deep(.el-table__body tr.hover-row > td.patient-actions-column) {
   background-color: var(--el-table-row-hover-bg-color);
 }
 
-:deep(.doctor-descriptions .el-descriptions__label) {
+:deep(.patient-descriptions .el-descriptions__label) {
   white-space: nowrap;
 }
 
-.doctor-attachment {
+.patient-attachment {
   display: flex;
   align-items: center;
   gap: 8px;

@@ -1,24 +1,28 @@
 import adminRequest from '@/utils/adminRequest'
 
-export function listCaseReview(query) {
+function buildBaseUrl(caseType) {
+  return caseType === 'patient' ? '/biz/patient-case' : '/biz/doctor-case'
+}
+
+export function listCaseReview(caseType, query) {
   return adminRequest({
-    url: '/biz/case-review/list',
+    url: `${buildBaseUrl(caseType)}/list`,
     method: 'get',
     params: query
   })
 }
 
-export function reviewCaseReview(id, data) {
+export function reviewCaseReview(caseType, id, data) {
   return adminRequest({
-    url: `/biz/case-review/${id}/review`,
+    url: `${buildBaseUrl(caseType)}/${id}/review`,
     method: 'post',
     data
   })
 }
 
-export function settleCaseReview(id, data) {
+export function settleCaseReview(caseType, id, data) {
   const request = {
-    url: `/biz/case-review/${id}/settle`,
+    url: `${buildBaseUrl(caseType)}/${id}/settle`,
     method: 'post'
   }
   if (data && Object.keys(data).length) {
