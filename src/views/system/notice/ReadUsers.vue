@@ -37,7 +37,7 @@
     <pagination
       v-show="total > 0"
       :total="total"
-      v-model:page="queryParams.pageNum"
+      v-model:page="queryParams.pageNo"
       v-model:limit="queryParams.pageSize"
       @pagination="getList"
       style="padding: 6px 0px;"
@@ -58,7 +58,7 @@ const total = ref(0)
 const userList = ref([])
 
 const queryParams = reactive({
-  pageNum: 1,
+  pageNo: 1,
   pageSize: 10,
   noticeId: undefined,
   searchValue: undefined
@@ -68,7 +68,7 @@ function open(row) {
   queryParams.noticeId = row.noticeId
   noticeTitle.value = row.noticeTitle
   queryParams.searchValue = undefined
-  queryParams.pageNum = 1
+  queryParams.pageNo = 1
   visible.value = true
   getList()
 }
@@ -84,7 +84,7 @@ function getList() {
 }
 
 function handleQuery() {
-  queryParams.pageNum = 1
+  queryParams.pageNo = 1
   getList()
 }
 
