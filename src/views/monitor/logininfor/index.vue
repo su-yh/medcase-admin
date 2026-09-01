@@ -108,7 +108,7 @@
       <pagination
          v-show="total > 0"
          :total="total"
-         v-model:page="queryParams.pageNum"
+         v-model:page="queryParams.pageNo"
          v-model:limit="queryParams.pageSize"
          @pagination="getList"
       />
@@ -134,7 +134,7 @@ const defaultSort = ref({ prop: "loginTime", order: "descending" })
 
 // 查询参数
 const queryParams = ref({
-  pageNum: 1,
+  pageNo: 1,
   pageSize: 10,
   ipaddr: undefined,
   userName: undefined,
@@ -155,7 +155,7 @@ function getList() {
 
 /** 搜索按钮操作 */
 function handleQuery() {
-  queryParams.value.pageNum = 1
+  queryParams.value.pageNo = 1
   getList()
 }
 
@@ -163,7 +163,7 @@ function handleQuery() {
 function resetQuery() {
   dateRange.value = []
   proxy.resetForm("queryRef")
-  queryParams.value.pageNum = 1
+  queryParams.value.pageNo = 1
   proxy.$refs["logininforRef"].sort(defaultSort.value.prop, defaultSort.value.order)
 }
 
