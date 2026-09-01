@@ -31,7 +31,7 @@
       >
          <el-table-column label="序号" width="50" type="index" align="center">
             <template #default="scope">
-               <span>{{ (pageNum - 1) * pageSize + scope.$index + 1 }}</span>
+               <span>{{ (pageNo - 1) * pageSize + scope.$index + 1 }}</span>
             </template>
          </el-table-column>
          <el-table-column label="会话编号" align="center" prop="tokenId" :show-overflow-tooltip="true" />
@@ -56,7 +56,7 @@
       <pagination
          v-show="total > 0"
          :total="total"
-         v-model:page="pageNum"
+         v-model:page="pageNo"
          v-model:limit="pageSize"
          @pagination="getList"
       />
@@ -71,20 +71,20 @@ const { proxy } = getCurrentInstance()
 const onlineList = ref([])
 const loading = ref(true)
 const total = ref(0)
-const pageNum = ref(1)
+const pageNo = ref(1)
 const pageSize = ref(10)
 
 const queryParams = ref({
   ipaddr: undefined,
   userName: undefined,
-  pageNum: pageNum.value,
+  pageNo: pageNo.value,
   pageSize: pageSize.value
 })
 
 /** 查询登录日志列表 */
 function getList() {
   loading.value = true
-  queryParams.value.pageNum = pageNum.value
+  queryParams.value.pageNo = pageNo.value
   queryParams.value.pageSize = pageSize.value
   initData(queryParams.value).then(response => {
     onlineList.value = response.list || []
@@ -95,7 +95,7 @@ function getList() {
 
 /** 搜索按钮操作 */
 function handleQuery() {
-  pageNum.value = 1
+  pageNo.value = 1
   getList()
 }
 
