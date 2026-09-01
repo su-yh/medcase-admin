@@ -46,7 +46,7 @@
          <pagination
             v-show="total > 0"
             :total="total"
-            v-model:page="queryParams.pageNum"
+            v-model:page="queryParams.pageNo"
             v-model:limit="queryParams.pageSize"
             @pagination="getList"
          />
@@ -78,7 +78,7 @@ const total = ref(0)
 const userIds = ref([])
 
 const queryParams = reactive({
-  pageNum: 1,
+  pageNo: 1,
   pageSize: 10,
   roleId: undefined,
   userName: undefined,
@@ -112,7 +112,7 @@ function getList() {
 
 /** 搜索按钮操作 */
 function handleQuery() {
-  queryParams.pageNum = 1
+  queryParams.pageNo = 1
   getList()
 }
 
