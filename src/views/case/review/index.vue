@@ -188,7 +188,7 @@
     </el-table>
 
     <pagination
-      v-model:page="queryParams.pageNum"
+      v-model:page="queryParams.pageNo"
       v-model:limit="queryParams.pageSize"
       :total="total"
       @pagination="getList"
@@ -392,7 +392,7 @@ const columns = reactive({
 })
 
 const queryParams = reactive({
-  pageNum: 1,
+  pageNo: 1,
   pageSize: 10,
   id: '',
   caseName: '',
@@ -402,7 +402,7 @@ const queryParams = reactive({
 function getList() {
   loading.value = true
   listCaseReview(caseType.value, {
-    pageNum: queryParams.pageNum,
+    pageNo: queryParams.pageNo,
     pageSize: queryParams.pageSize,
     id: queryParams.id || undefined,
     caseName: queryParams.caseName || undefined,
@@ -416,12 +416,12 @@ function getList() {
 }
 
 function handleQuery() {
-  queryParams.pageNum = 1
+  queryParams.pageNo = 1
   getList()
 }
 
 function resetQuery() {
-  queryParams.pageNum = 1
+  queryParams.pageNo = 1
   queryParams.id = ''
   queryParams.caseName = ''
   queryParams.status = ''
