@@ -38,3 +38,19 @@ export function updateSupplierStatus(supplierId, status) {
     data: { status }
   })
 }
+
+export function listSupplierUsers(supplierId, query) {
+  return adminRequest({
+    url: `/biz/supplier/${supplierId}/users`,
+    method: 'get',
+    params: query
+  })
+}
+
+export function listSupplierUserCases(supplierId, userId, query) {
+  return adminRequest({
+    url: `/biz/supplier/${supplierId}/users/${userId}/cases`,
+    method: 'get',
+    params: query
+  })
+}

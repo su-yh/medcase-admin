@@ -7,10 +7,10 @@
       :inline="true"
       label-width="82px"
     >
-      <el-form-item label="供应商昵称" prop="nickName">
+      <el-form-item label="供应商姓名" prop="name">
         <el-input
-          v-model="queryParams.nickName"
-          placeholder="请输入供应商昵称"
+          v-model="queryParams.name"
+          placeholder="请输入供应商姓名"
           clearable
           style="width: 220px"
           @keyup.enter="handleQuery"
@@ -61,9 +61,106 @@
       <right-toolbar v-model:showSearch="showSearch" @queryTable="getList" />
     </el-row>
 
-    <el-table v-loading="loading" :data="supplierList" row-key="id">
+    <el-table
+      v-loading="loading"
+      :data="supplierList"
+      row-key="id"
+      @expand-change="handleSupplierExpand"
+    >
+      <el-table-column type="expand">
+        <template #default="{ row }">
+          <section class="related-section">
+            <div class="related-heading">
+              <strong>关联用户</strong>
+              <el-form :inline="true" :model="userQuery(row.id)" @submit.prevent>
+                <el-input
+                  :model-value="userQuery(row.id).nickName"
+                  placeholder="用户姓名"
+                  clearable
+                  style="width: 150px"
+                  @update:model-value="value => userQuery(row.id).nickName = value"
+                  @keyup.enter="loadSupplierUsers(row.id, true)"
+                />
+                <el-input
+                  :model-value="userQuery(row.id).phone"
+                  placeholder="手机号"
+                  clearable
+                  style="width: 150px"
+                  @update:model-value="value => userQuery(row.id).phone = value"
+                  @keyup.enter="loadSupplierUsers(row.id, true)"
+                />
+                <el-button type="primary" link @click="loadSupplierUsers(row.id, true)">
+                  查询
+                </el-button>
+              </el-form>
+            </div>
+            <el-table
+              :data="supplierUsers[row.id] || []"
+              row-key="id"
+              @expand-change="(user, expandedRows) => handleUserExpand(row, user, expandedRows)"
+            >
+              <el-table-column type="expand">
+                <template #default="{ row: user }">
+                  <section class="related-section related-case-section">
+                    <div class="related-heading">
+                      <strong>关联病例</strong>
+                      <el-input
+                        :model-value="caseQuery(user.id).caseNameLike"
+                        placeholder="病例名称"
+                        clearable
+                        style="width: 180px"
+                        @update:model-value="value => caseQuery(user.id).caseNameLike = value"
+                        @keyup.enter="loadUserCases(row.id, user.id, true)"
+                      />
+                      <el-button
+                        type="primary"
+                        link
+                        @click="loadUserCases(row.id, user.id, true)"
+                      >
+                        查询
+                      </el-button>
+                    </div>
+                    <el-table :data="supplierCases[user.id] || []" row-key="id">
+                      <el-table-column label="病例编号" prop="id" width="100" />
+                      <el-table-column label="病例名称" prop="caseName" min-width="180" />
+                      <el-table-column label="状态" prop="statusDesc" width="120" />
+                      <el-table-column label="创建时间" prop="createTime" width="180" />
+                    </el-table>
+                    <el-pagination
+                      v-if="(caseTotals[user.id] || 0) > 0"
+                      layout="prev, pager, next"
+                      :current-page="caseQuery(user.id).pageNo"
+                      :page-size="caseQuery(user.id).pageSize"
+                      :total="caseTotals[user.id] || 0"
+                      @current-change="page => handleCasePageChange(row.id, user.id, page)"
+                    />
+                  </section>
+                </template>
+              </el-table-column>
+              <el-table-column label="用户编号" prop="id" width="100" />
+              <el-table-column label="用户姓名" prop="nickName" min-width="130" />
+              <el-table-column label="用户类型" width="110">
+                <template #default="{ row: user }">
+                  {{ userTypeLabel(user.userType) }}
+                </template>
+              </el-table-column>
+              <el-table-column label="手机号" prop="phone" width="140" />
+              <el-table-column label="审核状态" prop="status" width="110" />
+              <el-table-column label="创建时间" prop="createTime" width="180" />
+            </el-table>
+            <el-pagination
+              v-if="(supplierUserTotals[row.id] || 0) > 0"
+              layout="prev, pager, next"
+              :current-page="userQuery(row.id).pageNo"
+              :page-size="userQuery(row.id).pageSize"
+              :total="supplierUserTotals[row.id] || 0"
+              @current-change="page => handleUserPageChange(row.id, page)"
+            />
+          </section>
+        </template>
+      </el-table-column>
       <el-table-column label="编号" prop="id" align="center" width="90" />
-      <el-table-column label="供应商昵称" prop="nickName" align="center" min-width="140" />
+      <el-table-column label="供应商姓名" prop="name" align="center" min-width="140" />
       <el-table-column label="性别" align="center" width="80">
         <template #default="{ row }">
           {{ sexLabel(row.sex) }}
@@ -112,16 +209,12 @@
 
     <el-dialog v-model="dialogOpen" :title="dialogTitle" width="620px" append-to-body>
       <el-form ref="formRef" :model="form" :rules="rules" label-width="100px">
-        <el-form-item label="供应商昵称" prop="nickName">
-          <el-input v-model="form.nickName" maxlength="30" placeholder="请输入供应商昵称" />
+        <el-form-item label="供应商姓名" prop="name">
+          <el-input v-model="form.name" maxlength="30" placeholder="请输入供应商姓名" />
         </el-form-item>
         <el-form-item label="性别" prop="sex">
           <el-radio-group v-model="form.sex">
-            <el-radio
-              v-for="dict in sys_user_sex"
-              :key="dict.value"
-              :value="dict.value"
-            >
+            <el-radio v-for="dict in sys_user_sex" :key="dict.value" :value="dict.value">
               {{ dict.label }}
             </el-radio>
           </el-radio-group>
@@ -137,11 +230,7 @@
         </el-form-item>
         <el-form-item label="状态" prop="status">
           <el-radio-group v-model="form.status">
-            <el-radio
-              v-for="dict in sys_normal_disable"
-              :key="dict.value"
-              :value="dict.value"
-            >
+            <el-radio v-for="dict in sys_normal_disable" :key="dict.value" :value="dict.value">
               {{ dict.label }}
             </el-radio>
           </el-radio-group>
@@ -167,7 +256,15 @@
 <script setup name="Supplier">
 import { onMounted, reactive, ref } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { addSupplier, getSupplier, listSupplier, updateSupplier, updateSupplierStatus } from '@/api/biz/supplier'
+import {
+  addSupplier,
+  getSupplier,
+  listSupplier,
+  listSupplierUserCases,
+  listSupplierUsers,
+  updateSupplier,
+  updateSupplierStatus
+} from '@/api/biz/supplier'
 import { useDict } from '@/utils/dict'
 import { selectDictLabel } from '@/utils/ruoyi'
 
@@ -181,18 +278,24 @@ const dialogTitle = ref('')
 const queryRef = ref()
 const formRef = ref()
 const { sys_user_sex, sys_normal_disable } = useDict('sys_user_sex', 'sys_normal_disable')
+const supplierUsers = reactive({})
+const supplierUserTotals = reactive({})
+const supplierUserQueries = reactive({})
+const supplierCases = reactive({})
+const caseTotals = reactive({})
+const caseQueries = reactive({})
 
 const queryParams = reactive({
   pageNo: 1,
   pageSize: 10,
-  nickName: '',
+  name: '',
   phone: '',
   status: ''
 })
 
 const form = reactive({
   supplierId: undefined,
-  nickName: '',
+  name: '',
   sex: '',
   phone: '',
   email: '',
@@ -202,7 +305,7 @@ const form = reactive({
 })
 
 const rules = {
-  nickName: [{ required: true, message: '供应商昵称不能为空', trigger: 'blur' }],
+  name: [{ required: true, message: '供应商姓名不能为空', trigger: 'blur' }],
   sex: [{ required: true, message: '供应商性别不能为空', trigger: 'change' }],
   phone: [
     { required: true, message: '供应商手机号不能为空', trigger: 'blur' },
@@ -218,7 +321,7 @@ function getList() {
   listSupplier({
     pageNo: queryParams.pageNo,
     pageSize: queryParams.pageSize,
-    nickName: queryParams.nickName || undefined,
+    name: queryParams.name || undefined,
     phone: queryParams.phone || undefined,
     status: queryParams.status || undefined
   }).then(response => {
@@ -227,6 +330,73 @@ function getList() {
   }).finally(() => {
     loading.value = false
   })
+}
+
+function userQuery(supplierId) {
+  if (!supplierUserQueries[supplierId]) {
+    supplierUserQueries[supplierId] = {
+      pageNo: 1,
+      pageSize: 10,
+      nickName: '',
+      phone: ''
+    }
+  }
+  return supplierUserQueries[supplierId]
+}
+
+function caseQuery(userId) {
+  if (!caseQueries[userId]) {
+    caseQueries[userId] = {
+      pageNo: 1,
+      pageSize: 10,
+      caseNameLike: ''
+    }
+  }
+  return caseQueries[userId]
+}
+
+function loadSupplierUsers(supplierId, resetPage = false) {
+  const query = userQuery(supplierId)
+  if (resetPage) {
+    query.pageNo = 1
+  }
+  return listSupplierUsers(supplierId, query).then(response => {
+    supplierUsers[supplierId] = response.list || []
+    supplierUserTotals[supplierId] = response.total || 0
+  })
+}
+
+function loadUserCases(supplierId, userId, resetPage = false) {
+  const query = caseQuery(userId)
+  if (resetPage) {
+    query.pageNo = 1
+  }
+  return listSupplierUserCases(supplierId, userId, query).then(response => {
+    supplierCases[userId] = response.list || []
+    caseTotals[userId] = response.total || 0
+  })
+}
+
+function handleSupplierExpand(row, expandedRows) {
+  if (expandedRows.includes(row)) {
+    loadSupplierUsers(row.id)
+  }
+}
+
+function handleUserExpand(supplier, user, expandedRows) {
+  if (expandedRows.includes(user)) {
+    loadUserCases(supplier.id, user.id)
+  }
+}
+
+function handleUserPageChange(supplierId, page) {
+  userQuery(supplierId).pageNo = page
+  loadSupplierUsers(supplierId)
+}
+
+function handleCasePageChange(supplierId, userId, page) {
+  caseQuery(userId).pageNo = page
+  loadUserCases(supplierId, userId)
 }
 
 function handleQuery() {
@@ -243,7 +413,7 @@ function resetQuery() {
 function resetForm() {
   Object.assign(form, {
     supplierId: undefined,
-    nickName: '',
+    name: '',
     sex: '',
     phone: '',
     email: '',
@@ -265,7 +435,7 @@ function handleUpdate(row) {
   getSupplier(row.id).then(response => {
     Object.assign(form, {
       supplierId: response.id,
-      nickName: response.nickName,
+      name: response.name,
       sex: response.sex,
       phone: response.phone,
       email: response.email || '',
@@ -304,7 +474,7 @@ async function handleStatusChange(row, status) {
   const oldStatus = status === '0' ? '1' : '0'
   try {
     await ElMessageBox.confirm(
-      `确认${status === '0' ? '启用' : '停用'}供应商「${row.nickName}」吗？`,
+      `确认${status === '0' ? '启用' : '停用'}供应商「${row.name}」吗？`,
       '状态确认',
       {
         type: 'warning',
@@ -321,6 +491,11 @@ async function handleStatusChange(row, status) {
 
 function sexLabel(sex) {
   return selectDictLabel(sys_user_sex.value, sex) || '-'
+}
+
+function userTypeLabel(userType) {
+  const code = typeof userType === 'object' ? userType.code : userType
+  return code === '01' ? '医生' : code === '02' ? '患者' : '-'
 }
 
 onMounted(getList)
