@@ -7,23 +7,46 @@ const routes = [
     path: '/system',
     children: [
       { path: 'role', component: 'system/role/index' },
-      { path: 'menu', component: 'system/menu/index' }
+      { path: 'menu', component: 'system/menu/index' },
+      {
+        path: 'log',
+        meta: { title: '日志管理' },
+        children: [
+          { path: 'operlog', component: 'monitor/operlog/index' },
+          { path: 'logininfor', component: 'monitor/logininfor/index' }
+        ]
+      },
+      { path: 'dict', component: 'system/dict/index', meta: { title: '字典管理' } },
+      { path: 'config', component: 'system/config/index', meta: { title: '参数设置' } }
+    ]
+  },
+  {
+    path: 'monitor',
+    meta: { title: '系统监控' },
+    children: [
+      { path: 'online', component: 'monitor/online/index' },
+      { path: 'server', component: 'monitor/server/index' }
     ]
   }
 ]
 
-test('keeps menu management outside staging and production', () => {
-  for (const environment of ['development', 'test', 'local', undefined]) {
-    const filteredRoutes = filterRoutesByEnvironment(routes, environment)
+test('keeps restricted menus in development', () => {
+  const filteredRoutes = filterRoutesByEnvironment(routes, 'development')
 
-    assert.deepEqual(filteredRoutes[0].children, routes[0].children)
-  }
+  assert.deepEqual(filteredRoutes, routes)
 })
 
-test('hides menu management in staging and production', () => {
-  for (const environment of ['staging', 'production']) {
+test('hides restricted menus outside development', () => {
+  for (const environment of ['staging', 'production', 'test', 'local', undefined]) {
     const filteredRoutes = filterRoutesByEnvironment(routes, environment)
 
-    assert.deepEqual(filteredRoutes[0].children, [routes[0].children[0]])
+    assert.deepEqual(filteredRoutes, [
+      {
+        path: '/system',
+        children: [
+          { path: 'role', component: 'system/role/index' }
+        ]
+      }
+    ])
   }
 })
