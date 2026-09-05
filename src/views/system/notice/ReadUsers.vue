@@ -1,10 +1,10 @@
 <template>
   <el-dialog v-model="visible" :title="`「${noticeTitle}」已读用户`" width="760px" top="6vh" append-to-body @close="handleClose">
     <el-form ref="queryRef" :model="queryParams" size="small" :inline="true" style="margin-bottom: 4px;">
-      <el-form-item prop="searchValue">
+      <el-form-item prop="nickNameLike">
         <el-input
-          v-model="queryParams.searchValue"
-          placeholder="登录名称 / 用户名称"
+          v-model="queryParams.nickNameLike"
+          placeholder="用户名称"
           clearable
           :prefix-icon="Search"
           style="width: 220px;"
@@ -61,13 +61,13 @@ const queryParams = reactive({
   pageNo: 1,
   pageSize: 10,
   noticeId: undefined,
-  searchValue: undefined
+  nickNameLike: undefined
 })
 
 function open(row) {
   queryParams.noticeId = row.noticeId
   noticeTitle.value = row.noticeTitle
-  queryParams.searchValue = undefined
+  queryParams.nickNameLike = undefined
   queryParams.pageNo = 1
   visible.value = true
   getList()
@@ -96,7 +96,7 @@ function resetQuery() {
 function handleClose() {
   userList.value = []
   total.value = 0
-  queryParams.searchValue = undefined
+  queryParams.nickNameLike = undefined
 }
 
 defineExpose({
