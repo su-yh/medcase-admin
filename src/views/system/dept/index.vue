@@ -1,9 +1,9 @@
 <template>
    <div class="app-container">
       <el-form :model="queryParams" ref="queryRef" :inline="true" v-show="showSearch">
-         <el-form-item label="部门名称" prop="deptName">
+         <el-form-item label="部门名称" prop="deptNameLike">
             <el-input
-               v-model="queryParams.deptName"
+               v-model="queryParams.deptNameLike"
                placeholder="请输入部门名称"
                clearable
                style="width: 200px"
@@ -172,7 +172,7 @@ const originalOrders = ref({})
 const data = reactive({
   form: {},
   queryParams: {
-    deptName: undefined,
+    deptNameLike: undefined,
     status: undefined
   },
   rules: {
