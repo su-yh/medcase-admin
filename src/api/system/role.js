@@ -17,6 +17,23 @@ export function getRole(roleId) {
   }).then(data => ({ data }))
 }
 
+// 查询角色关联的菜单ID
+export function getRoleMenuIds(roleId) {
+  return adminRequest({
+    url: '/system/role/' + roleId + '/menuIds',
+    method: 'get'
+  })
+}
+
+// 修改角色关联菜单
+export function updateRoleMenus(roleId, data) {
+  return adminRequest({
+    url: '/system/role/' + roleId + '/menus',
+    method: 'put',
+    data: data
+  })
+}
+
 // 新增角色
 export function addRole(data) {
   return adminRequest({
