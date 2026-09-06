@@ -4,13 +4,13 @@ import { createBizError, unwrapBizResponse } from './bizResponse.js'
 const data = { id: 1, name: '张医生' }
 
 assert.deepEqual(
-  unwrapBizResponse({ data: { code: 0, msg: '操作成功', data } }),
+  unwrapBizResponse({ data: { code: 'OK', msg: '操作成功', data } }),
   data
 )
 
 assert.throws(
-  () => unwrapBizResponse({ data: { code: 403, msg: '无权限' } }),
-  error => error.code === 403 && error.message === '无权限'
+  () => unwrapBizResponse({ data: { code: 'error.code.access.denied', msg: '无权限' } }),
+  error => error.code === 'error.code.access.denied' && error.message === '无权限'
 )
 
 const methodError = createBizError({
@@ -24,7 +24,7 @@ assert.equal(methodError.message, '请求方法不支持')
 
 const forbiddenError = createBizError({
   status: 403,
-  data: { code: 0, msg: '当前操作没有权限' }
+  data: { code: 'error.code.access.denied', msg: '当前操作没有权限' }
 })
 
 assert.equal(forbiddenError.code, 403)

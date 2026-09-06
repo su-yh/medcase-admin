@@ -2,7 +2,7 @@ import assert from 'node:assert/strict'
 import { isBizUnauthorized } from './bizAuth.js'
 
 assert.equal(
-  isBizUnauthorized({ data: { code: 401 } }),
+  isBizUnauthorized({ data: { code: 'error.code.user.not.login' } }),
   true
 )
 

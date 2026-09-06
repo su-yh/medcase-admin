@@ -5,7 +5,7 @@ import errorCode from '@/utils/errorCode'
 import { tansParams } from '@/utils/ruoyi'
 import cache from '@/plugins/cache'
 import useUserStore from '@/store/modules/user'
-import { createBizError } from '@/utils/bizResponse'
+import { BIZ_SUCCESS_CODE, createBizError } from '@/utils/bizResponse'
 import { isBizUnauthorized } from '@/utils/bizAuth'
 
 // 是否显示重新登录
@@ -128,7 +128,7 @@ adminRequest.interceptors.response.use(res => {
       return rejectBusinessError(createBizError(res))
     }
 
-    if (payload?.code === 0) {
+    if (payload?.code === BIZ_SUCCESS_CODE) {
       return payload.data
     }
 

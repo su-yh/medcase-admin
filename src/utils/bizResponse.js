@@ -1,4 +1,4 @@
-export const BIZ_SUCCESS_CODE = 0
+export const BIZ_SUCCESS_CODE = 'OK'
 
 export function createBizError(response, fallbackMessage = '接口请求失败') {
   const payload = response?.data
