@@ -368,10 +368,9 @@ function handleAuthMenu(row) {
 
 /** 树权限（展开/折叠）*/
 function handleCheckedTreeExpand(value) {
-  let treeList = menuOptions.value
-  for (let i = 0; i < treeList.length; i++) {
-    menuRef.value.store.nodesMap[treeList[i].id].expanded = value
-  }
+  Object.values(menuRef.value.store.nodesMap).forEach(node => {
+    node.expanded = value
+  })
 }
 
 /** 树权限（全选/全不选） */
