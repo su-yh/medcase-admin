@@ -1,18 +1,18 @@
 <template>
    <div class="app-container">
       <el-form :model="queryParams" ref="queryRef" v-show="showSearch" :inline="true" label-width="68px">
-         <el-form-item label="角色名称" prop="roleName">
+         <el-form-item label="角色名称" prop="roleNameLike">
             <el-input
-               v-model="queryParams.roleName"
+               v-model="queryParams.roleNameLike"
                placeholder="请输入角色名称"
                clearable
                style="width: 240px"
                @keyup.enter="handleQuery"
             />
          </el-form-item>
-         <el-form-item label="权限字符" prop="roleKey">
+         <el-form-item label="权限字符" prop="roleKeyLike">
             <el-input
-               v-model="queryParams.roleKey"
+               v-model="queryParams.roleKeyLike"
                placeholder="请输入权限字符"
                clearable
                style="width: 240px"
@@ -106,13 +106,13 @@
          </el-table-column>
          <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
             <template #default="scope">
-              <el-tooltip content="修改" placement="top" v-if="scope.row.roleId !== 1">
+              <el-tooltip content="修改" placement="top">
                 <el-button link type="primary" icon="Edit" @click="handleUpdate(scope.row)" v-hasPermi="['system:role:edit']"></el-button>
               </el-tooltip>
-              <el-tooltip content="删除" placement="top" v-if="scope.row.roleId !== 1">
+              <el-tooltip content="删除" placement="top">
                 <el-button link type="primary" icon="Delete" @click="handleDelete(scope.row)" v-hasPermi="['system:role:remove']"></el-button>
               </el-tooltip>
-              <el-tooltip content="分配用户" placement="top" v-if="scope.row.roleId !== 1">
+              <el-tooltip content="分配用户" placement="top">
                 <el-button link type="primary" icon="User" @click="handleAuthUser(scope.row)" v-hasPermi="['system:role:edit']"></el-button>
               </el-tooltip>
             </template>
@@ -214,8 +214,8 @@ const data = reactive({
   queryParams: {
     pageNo: 1,
     pageSize: 10,
-    roleName: undefined,
-    roleKey: undefined,
+    roleNameLike: undefined,
+    roleKeyLike: undefined,
     status: undefined
   },
   rules: {
