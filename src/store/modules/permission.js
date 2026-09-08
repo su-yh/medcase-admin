@@ -33,10 +33,11 @@ const usePermissionStore = defineStore(
       setSidebarRouters(routes) {
         this.sidebarRouters = routes
       },
-      generateRoutes(roles) {
+      generateRoutes() {
         return new Promise(resolve => {
           // 向后端请求路由数据
           getRouters().then(res => {
+            // 按环境过滤掉一些路由
             const routeData = filterRoutesByEnvironment(res.data, import.meta.env.VITE_APP_ENV)
             const sdata = JSON.parse(JSON.stringify(routeData))
             const rdata = JSON.parse(JSON.stringify(routeData))

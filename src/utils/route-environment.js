@@ -7,6 +7,13 @@ const HIDDEN_MENU_COMPONENTS = new Set([
 const HIDDEN_MENU_PATHS = new Set(['monitor'])
 const HIDDEN_MENU_TITLES = new Set(['系统监控', '日志管理'])
 
+/**
+ * 就是将一些非开发环境要隐藏的菜单剔除掉，也就是隐藏起来不显示在菜单中
+ *
+ * @param routes
+ * @param environment
+ * @returns {*}
+ */
 export function filterRoutesByEnvironment(routes, environment) {
   const shouldHideRestrictedMenus = environment !== 'development'
 
