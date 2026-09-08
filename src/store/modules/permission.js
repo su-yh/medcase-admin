@@ -14,14 +14,12 @@ const usePermissionStore = defineStore(
   {
     state: () => ({
       routes: [],
-      addRoutes: [],
       defaultRoutes: [],
       topbarRouters: [],
       sidebarRouters: []
     }),
     actions: {
       setRoutes(routes) {
-        this.addRoutes = routes
         this.routes = constantRoutes.concat(routes)
       },
       setDefaultRoutes(routes) {
