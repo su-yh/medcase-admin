@@ -20,10 +20,10 @@ const usePermissionStore = defineStore(
     }),
     actions: {
       setRoutes(routes) {
-        this.routes = constantRoutes.concat(routes)
+        this.routes = routes
       },
       setDefaultRoutes(routes) {
-        this.defaultRoutes = constantRoutes.concat(routes)
+        this.defaultRoutes = routes
       },
       setTopbarRoutes(routes) {
         this.topbarRouters = routes
@@ -45,9 +45,9 @@ const usePermissionStore = defineStore(
             const defaultRoutes = filterAsyncRouter(defaultData)
             const asyncRoutes = filterDynamicRoutes(dynamicRoutes)
             asyncRoutes.forEach(route => { router.addRoute(route) })
-            this.setRoutes(rewriteRoutes)
+            this.setRoutes(constantRoutes.concat(rewriteRoutes))
             this.setSidebarRouters(constantRoutes.concat(sidebarRoutes))
-            this.setDefaultRoutes(sidebarRoutes)
+            this.setDefaultRoutes(constantRoutes.concat(sidebarRoutes))
             this.setTopbarRoutes(defaultRoutes)
             resolve(rewriteRoutes)
           })
