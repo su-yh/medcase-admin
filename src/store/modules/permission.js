@@ -63,16 +63,7 @@ function filterAsyncRouter(asyncRouterMap, lastRouter = false, type = false) {
       route.children = filterChildren(route.children)
     }
     if (route.component) {
-      // Layout ParentView 组件特殊处理
-      if (route.component === 'Layout') {
-        route.component = Layout
-      } else if (route.component === 'ParentView') {
-        route.component = ParentView
-      } else if (route.component === 'InnerLink') {
-        route.component = InnerLink
-      } else {
-        route.component = loadView(route.component)
-      }
+      route.component = loadView(route.component)
     }
     if (route.children != null && route.children && route.children.length) {
       route.children = filterAsyncRouter(route.children, route, type)
