@@ -60,7 +60,7 @@
          v-if="refreshTable"
          v-loading="loading"
          :data="menuList"
-         row-key="menuId"
+         row-key="id"
          :default-expand-all="isExpandAll"
          :tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
       >
@@ -83,7 +83,7 @@
             </template>
          </el-table-column>
          <el-table-column prop="perms" label="权限标识" :show-overflow-tooltip="true" />
-         <el-table-column prop="component" label="组件路径" :show-overflow-tooltip="true" />
+         <el-table-column prop="vueComponentPath" label="组件路径" :show-overflow-tooltip="true" />
          <el-table-column prop="status" label="状态" width="80">
             <template #default="scope">
                <dict-tag :options="sys_normal_disable" :value="scope.row.status" />
@@ -107,8 +107,8 @@
                      <el-tree-select
                         v-model="form.parentId"
                         :data="menuOptions"
-                        :props="{ value: 'menuId', label: 'menuName', children: 'children' }"
-                        value-key="menuId"
+                        :props="{ value: 'id', label: 'menuName', children: 'children' }"
+                        value-key="id"
                         placeholder="选择上级菜单"
                         check-strictly
                      />
@@ -161,7 +161,7 @@
                   <el-form-item prop="routeName">
                      <template #label>
                         <span>
-                           <el-tooltip content="默认不填则和路由地址相同：如地址为：`user`，则名称为`User`（注意：因为router会删除名称相同路由，为避免名字的冲突，特殊情况下请自定义，保证唯一性）" placement="top">
+                           <el-tooltip content="菜单必须填写路由名称，且路由名称必须全局唯一" placement="top">
                               <el-icon><question-filled /></el-icon>
                            </el-tooltip>
                            路由名称
@@ -171,7 +171,7 @@
                   </el-form-item>
                </el-col>
                <el-col :span="12" v-if="form.menuType != 'F'">
-                  <el-form-item prop="path">
+                  <el-form-item prop="routePath">
                      <template #label>
                         <span>
                            <el-tooltip content="访问的路由地址，如：`user`" placement="top">
@@ -180,11 +180,11 @@
                            路由地址
                         </span>
                      </template>
-                     <el-input v-model="form.path" placeholder="请输入路由地址" />
+                     <el-input v-model="form.routePath" placeholder="请输入路由地址" />
                   </el-form-item>
                </el-col>
                <el-col :span="12" v-if="form.menuType == 'C'">
-                  <el-form-item prop="component">
+                  <el-form-item prop="vueComponentPath">
                      <template #label>
                         <span>
                            <el-tooltip content="访问的组件路径，如：`system/user/index`，默认在`views`目录下" placement="top">
@@ -193,7 +193,7 @@
                            组件路径
                         </span>
                      </template>
-                     <el-input v-model="form.component" placeholder="请输入组件路径" />
+                     <el-input v-model="form.vueComponentPath" placeholder="请输入组件路径" />
                   </el-form-item>
                </el-col>
                <el-col :span="12" v-if="form.menuType != 'M'">
@@ -237,10 +237,10 @@
                      </template>
                      <el-radio-group v-model="form.visible">
                         <el-radio
-                           v-for="dict in sys_show_hide"
-                           :key="dict.value"
-                           :value="dict.value"
-                        >{{ dict.label }}</el-radio>
+                           v-for="option in visibleOptions"
+                           :key="String(option.value)"
+                           :value="option.value"
+                        >{{ option.label }}</el-radio>
                      </el-radio-group>
                   </el-form-item>
                </el-col>
@@ -281,7 +281,11 @@ import SvgIcon from "@/components/SvgIcon"
 import IconSelect from "@/components/IconSelect"
 
 const { proxy } = getCurrentInstance()
-const { sys_show_hide, sys_normal_disable } = useDict("sys_show_hide", "sys_normal_disable")
+const { sys_normal_disable } = useDict("sys_normal_disable")
+const visibleOptions = [
+  { label: "显示", value: true },
+  { label: "隐藏", value: false }
+]
 
 const menuList = ref([])
 const open = ref(false)
@@ -303,7 +307,8 @@ const data = reactive({
   rules: {
     menuName: [{ required: true, message: "菜单名称不能为空", trigger: "blur" }],
     orderNum: [{ required: true, message: "菜单顺序不能为空", trigger: "blur" }],
-    path: [{ required: true, message: "路由地址不能为空", trigger: "blur" }]
+    routeName: [{ required: true, message: "路由名称不能为空", trigger: "blur" }],
+    routePath: [{ required: true, message: "路由地址不能为空", trigger: "blur" }]
   },
 })
 
@@ -313,7 +318,7 @@ const { queryParams, form, rules } = toRefs(data)
 function getList() {
   loading.value = true
   listMenu(queryParams.value).then(response => {
-    menuList.value = proxy.handleTree(response.data, "menuId")
+    menuList.value = proxy.handleTree(response.data, "id")
     recordOriginalOrders(menuList.value)
     loading.value = false
   })
@@ -323,8 +328,8 @@ function getList() {
 async function getTreeselect() {
   menuOptions.value = []
   const response = await listMenu()
-  const menu = { menuId: "0", menuName: "主菜单", children: [] }
-  menu.children = proxy.handleTree(response.data, "menuId")
+  const menu = { id: "0", menuName: "主菜单", children: [] }
+  menu.children = proxy.handleTree(response.data, "id")
   menuOptions.value.push(menu)
 }
 
@@ -337,14 +342,14 @@ function cancel() {
 /** 表单重置 */
 function reset() {
   form.value = {
-    menuId: undefined,
+    id: undefined,
     parentId: "0",
     menuName: undefined,
     icon: undefined,
     menuType: "M",
     orderNum: undefined,
     isCache: "0",
-    visible: "0",
+    visible: true,
     status: "0"
   }
   proxy.resetForm("menuRef")
@@ -375,8 +380,8 @@ function resetQuery() {
 function handleAdd(row) {
   reset()
   getTreeselect()
-  if (row != null && row.menuId) {
-    form.value.parentId = row.menuId
+  if (row != null && row.id) {
+    form.value.parentId = row.id
   } else {
     form.value.parentId = "0"
   }
@@ -397,7 +402,7 @@ function toggleExpandAll() {
 async function handleUpdate(row) {
   reset()
   await getTreeselect()
-  getMenu(row.menuId).then(response => {
+  getMenu(row.id).then(response => {
     form.value = response.data
     open.value = true
     title.value = "修改菜单"
@@ -408,7 +413,7 @@ async function handleUpdate(row) {
 function submitForm() {
   proxy.$refs["menuRef"].validate(valid => {
     if (valid) {
-      if (form.value.menuId != undefined) {
+      if (form.value.id != undefined) {
         updateMenu(form.value).then(response => {
           proxy.$modal.msgSuccess("修改成功")
           open.value = false
@@ -429,7 +434,7 @@ function submitForm() {
 /** 递归记录原始排序 */
 function recordOriginalOrders(list) {
   list.forEach(item => {
-    originalOrders.value[item.menuId] = item.orderNum
+    originalOrders.value[item.id] = item.orderNum
     if (item.children && item.children.length) {
       recordOriginalOrders(item.children)
     }
@@ -442,8 +447,8 @@ function handleSaveSort() {
   const changedOrderNums = []
   const collectChanged = (list) => {
     list.forEach(item => {
-      if (String(originalOrders.value[item.menuId]) !== String(item.orderNum)) {
-        changedMenuIds.push(item.menuId)
+      if (String(originalOrders.value[item.id]) !== String(item.orderNum)) {
+        changedMenuIds.push(item.id)
         changedOrderNums.push(item.orderNum)
       }
       if (item.children && item.children.length) {
@@ -465,7 +470,7 @@ function handleSaveSort() {
 /** 删除按钮操作 */
 function handleDelete(row) {
   proxy.$modal.confirm('是否确认删除名称为"' + row.menuName + '"的数据项?').then(function() {
-    return delMenu(row.menuId)
+    return delMenu(row.id)
   }).then(() => {
     getList()
     proxy.$modal.msgSuccess("删除成功")

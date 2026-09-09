@@ -34,7 +34,7 @@ const usePermissionStore = defineStore(
           // 向后端请求路由数据
           getRouters().then(res => {
             // 按环境过滤掉一些路由
-            const routeData = filterRoutesByEnvironment(res.data, import.meta.env.VITE_APP_ENV)
+            const routeData = filterRoutesByEnvironment(normalizeBackendRoutes(res.data), import.meta.env.VITE_APP_ENV)
             const sdata = JSON.parse(JSON.stringify(routeData))
             const rdata = JSON.parse(JSON.stringify(routeData))
             const defaultData = JSON.parse(JSON.stringify(routeData))
@@ -55,6 +55,21 @@ const usePermissionStore = defineStore(
   })
 
 // 遍历后台传来的路由字符串，转换为组件对象
+function normalizeBackendRoutes(routes) {
+  return routes.map(route => {
+    const normalized = {
+      ...route,
+      name: route.routeName,
+      path: route.routePath,
+      component: route.vueComponentPath
+    }
+    if (Array.isArray(route.children)) {
+      normalized.children = normalizeBackendRoutes(route.children)
+    }
+    return normalized
+  })
+}
+
 function filterAsyncRouter(asyncRouterMap, root = true) {
   return asyncRouterMap.filter(route => {
     if (root) {
