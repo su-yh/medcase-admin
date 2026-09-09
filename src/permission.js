@@ -3,7 +3,7 @@ import { ElMessage } from 'element-plus'
 import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
 import { getToken } from '@/utils/auth'
-import { isHttp, isPathMatch } from '@/utils/validate'
+import { isPathMatch } from '@/utils/validate'
 import { isRelogin } from '@/utils/adminRequest'
 import useUserStore from '@/store/modules/user'
 import useLockStore from '@/store/modules/lock'
@@ -46,11 +46,7 @@ router.beforeEach(async (to, from) => {
         isRelogin.show = false
         // 根据roles权限生成可访问的路由
         const accessRoutes = await usePermissionStore().generateRoutes()
-        accessRoutes.forEach(route => {
-          if (!isHttp(route.path)) {
-            router.addRoute(route)
-          }
-        })
+        accessRoutes.forEach(route => router.addRoute(route))
         // 重新导航到目标路由，确保动态路由已注册
         return { ...to, replace: true }
       } catch (err) {

@@ -12,7 +12,7 @@ export default {
     if (obj === undefined) {
       matched.forEach((m) => {
         if (m.components && m.components.default && m.components.default.name) {
-          if (!['Layout', 'ParentView'].includes(m.components.default.name)) {
+          if (m.components.default.name !== 'Layout') {
             obj = { name: m.components.default.name, path: path, query: query }
           }
         }

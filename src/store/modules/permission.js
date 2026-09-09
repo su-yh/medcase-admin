@@ -2,8 +2,6 @@ import auth from '@/plugins/auth'
 import router, { constantRoutes, dynamicRoutes } from '@/router'
 import { getRouters } from '@/api/menu'
 import Layout from '@/layout/index'
-import ParentView from '@/components/ParentView'
-import InnerLink from '@/layout/components/InnerLink'
 import { filterRoutesByEnvironment } from '@/utils/route-environment'
 
 // 匹配views里面所有的.vue文件
@@ -41,7 +39,7 @@ const usePermissionStore = defineStore(
             const rdata = JSON.parse(JSON.stringify(routeData))
             const defaultData = JSON.parse(JSON.stringify(routeData))
             const sidebarRoutes = filterAsyncRouter(sdata)
-            const rewriteRoutes = filterAsyncRouter(rdata, false, true)
+            const rewriteRoutes = filterAsyncRouter(rdata)
             const defaultRoutes = filterAsyncRouter(defaultData)
             const asyncRoutes = filterDynamicRoutes(dynamicRoutes)
             asyncRoutes.forEach(route => { router.addRoute(route) })
@@ -57,35 +55,22 @@ const usePermissionStore = defineStore(
   })
 
 // 遍历后台传来的路由字符串，转换为组件对象
-function filterAsyncRouter(asyncRouterMap, lastRouter = false, type = false) {
+function filterAsyncRouter(asyncRouterMap, root = true) {
   return asyncRouterMap.filter(route => {
-    if (type && route.children) {
-      route.children = filterChildren(route.children)
-    }
-    if (route.component) {
+    if (root) {
+      route.path = route.path.startsWith('/') ? route.path : '/' + route.path
+      route.component = Layout
+    } else if (route.component) {
       route.component = loadView(route.component)
     }
     if (route.children != null && route.children && route.children.length) {
-      route.children = filterAsyncRouter(route.children, route, type)
+      route.children = filterAsyncRouter(route.children, false)
     } else {
       delete route['children']
       delete route['redirect']
     }
     return true
   })
-}
-
-function filterChildren(childrenMap, lastRouter = false) {
-  var children = []
-  childrenMap.forEach(el => {
-    el.path = lastRouter ? lastRouter.path + '/' + el.path : el.path
-    if (el.children && el.children.length && el.component === 'ParentView') {
-      children = children.concat(filterChildren(el.children, el))
-    } else {
-      children.push(el)
-    }
-  })
-  return children
 }
 
 // 动态路由遍历，验证是否具备权限

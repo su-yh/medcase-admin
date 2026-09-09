@@ -34,7 +34,6 @@
 
 <script setup>
 import { constantRoutes } from "@/router"
-import { isHttp } from '@/utils/validate'
 import useAppStore from '@/store/modules/app'
 import useSettingsStore from '@/store/modules/settings'
 import usePermissionStore from '@/store/modules/permission'
@@ -82,9 +81,7 @@ const childrenMenus = computed(() => {
         if(router.path === "/") {
           router.children[item].path = "/" + router.children[item].path
         } else {
-          if(!isHttp(router.children[item].path)) {
-            router.children[item].path = router.path + "/" + router.children[item].path
-          }
+          router.children[item].path = router.path + "/" + router.children[item].path
         }
         router.children[item].parentPath = router.path
       }
@@ -100,10 +97,8 @@ const activeMenu = computed(() => {
   let activePath = path
   if (path !== undefined && path.lastIndexOf("/") > 0 && hideList.indexOf(path) === -1) {
     const tmpPath = path.substring(1, path.length)
-    if (!route.meta.link) {
-      activePath = "/" + tmpPath.substring(0, tmpPath.indexOf("/"))
-      appStore.toggleSideBarHide(false)
-    }
+    activePath = "/" + tmpPath.substring(0, tmpPath.indexOf("/"))
+    appStore.toggleSideBarHide(false)
   } else if(!route.children) {
     activePath = path
     appStore.toggleSideBarHide(true)
@@ -120,18 +115,9 @@ function setVisibleNumber() {
 function handleSelect(key, keyPath) {
   currentIndex.value = key
   const route = routers.value.find(item => item.path === key)
-  if (isHttp(key)) {
-    // http(s):// 路径新窗口打开
-    window.open(key, "_blank")
-  } else if (!route || !route.children) {
+  if (!route || !route.children) {
     // 没有子路由路径内部打开
-    const routeMenu = childrenMenus.value.find(item => item.path === key)
-    if (routeMenu && routeMenu.query) {
-      let query = JSON.parse(routeMenu.query)
-      router.push({ path: key, query: query })
-    } else {
-      router.push({ path: key })
-    }
+    router.push({ path: key })
     appStore.toggleSideBarHide(true)
   } else {
     // 显示左侧联动菜单

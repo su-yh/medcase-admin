@@ -294,9 +294,6 @@ function handleDropdownCommand(command) {
 
 function refreshSelectedTag(view) {
   proxy.$tab.refreshPage(view)
-  if (route.meta.link) {
-    useTagsViewStore().delIframeView(route)
-  }
 }
 
 function closeSelectedTag(view) {

@@ -5,8 +5,6 @@
 </template>
 
 <script setup>
-import { isExternal } from '@/utils/validate'
-
 const props = defineProps({
   to: {
     type: [String, Object],
@@ -14,27 +12,9 @@ const props = defineProps({
   }
 })
 
-const isExt = computed(() => {
-  return isExternal(props.to)
-})
-
-const type = computed(() => {
-  if (isExt.value) {
-    return 'a'
-  }
-  return 'router-link'
-})
+const type = 'router-link'
 
 function linkProps() {
-  if (isExt.value) {
-    return {
-      href: props.to,
-      target: '_blank',
-      rel: 'noopener'
-    }
-  }
-  return {
-    to: props.to
-  }
+  return { to: props.to }
 }
 </script>

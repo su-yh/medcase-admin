@@ -79,7 +79,6 @@
 <script setup>
 import Fuse from 'fuse.js'
 import { getNormalPath } from '@/utils/ruoyi'
-import { isHttp } from '@/utils/validate'
 import useSettingsStore from '@/store/modules/settings'
 import usePermissionStore from '@/store/modules/permission'
 
@@ -117,18 +116,7 @@ function close() {
 
 function change(val) {
   const p = val.path
-  const query = val.query
-  if (isHttp(p)) {
-    // http(s):// 路径新窗口打开
-    const pindex = p.indexOf("http")
-    window.open(p.substr(pindex, p.length), "_blank")
-  } else {
-    if (query) {
-      router.push({ path: p, query: JSON.parse(query) })
-    } else {
-      router.push(p)
-    }
-  }
+  router.push(p)
   search.value = ''
   options.value = searchPool.value
   nextTick(() => {
@@ -158,7 +146,7 @@ function generateRoutes(routes, basePath = '', prefixTitle = []) {
     if (r.hidden) { continue }
     const p = r.path.length > 0 && r.path[0] === '/' ? r.path : '/' + r.path
     const data = {
-      path: !isHttp(r.path) ? getNormalPath(basePath + p) : r.path,
+      path: getNormalPath(basePath + p),
       title: [...prefixTitle],
       icon: ''
     }
@@ -168,9 +156,6 @@ function generateRoutes(routes, basePath = '', prefixTitle = []) {
       if (r.redirect !== "noRedirect") {
         res.push(data)
       }
-    }
-    if (r.query) {
-      data.query = r.query
     }
     if (r.children) {
       const tempRoutes = generateRoutes(r.children, data.path, data.title)

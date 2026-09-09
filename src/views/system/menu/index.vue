@@ -72,9 +72,7 @@
          </el-table-column>
          <el-table-column prop="menuName" label="类型" :show-overflow-tooltip="true" width="100">
             <template #default="scope">
-               <el-tag v-if="scope.row.menuType === 'M' && scope.row.isFrame === '0'" type="danger" size="small">外链</el-tag>
-               <el-tag v-else-if="scope.row.menuType === 'M'" type="primary" size="small">目录</el-tag>
-               <el-tag v-else-if="scope.row.menuType === 'C' && scope.row.isFrame === '0'" type="danger" size="small">外链</el-tag>
+               <el-tag v-if="scope.row.menuType === 'M'" type="primary" size="small">目录</el-tag>
                <el-tag v-else-if="scope.row.menuType === 'C'" type="success" size="small">菜单</el-tag>
                <el-tag v-else-if="scope.row.menuType === 'F'" type="warning" size="small">按钮</el-tag>
             </template>
@@ -173,25 +171,10 @@
                   </el-form-item>
                </el-col>
                <el-col :span="12" v-if="form.menuType != 'F'">
-                  <el-form-item>
-                     <template #label>
-                        <span>
-                           <el-tooltip content="选择是外链则路由地址需要以`http(s)://`开头" placement="top">
-                              <el-icon><question-filled /></el-icon>
-                           </el-tooltip>是否外链
-                        </span>
-                     </template>
-                     <el-radio-group v-model="form.isFrame">
-                        <el-radio value="0">是</el-radio>
-                        <el-radio value="1">否</el-radio>
-                     </el-radio-group>
-                  </el-form-item>
-               </el-col>
-               <el-col :span="12" v-if="form.menuType != 'F'">
                   <el-form-item prop="path">
                      <template #label>
                         <span>
-                           <el-tooltip content="访问的路由地址，如：`user`，如外网地址需内链访问则以`http(s)://`开头" placement="top">
+                           <el-tooltip content="访问的路由地址，如：`user`" placement="top">
                               <el-icon><question-filled /></el-icon>
                            </el-tooltip>
                            路由地址
@@ -222,19 +205,6 @@
                               <el-icon><question-filled /></el-icon>
                            </el-tooltip>
                            权限字符
-                        </span>
-                     </template>
-                  </el-form-item>
-               </el-col>
-               <el-col :span="12" v-if="form.menuType == 'C'">
-                  <el-form-item>
-                     <el-input v-model="form.query" placeholder="请输入路由参数" maxlength="255" />
-                     <template #label>
-                        <span>
-                           <el-tooltip content='访问路由的默认传递参数，如：`{"id": 1, "name": "ry"}`' placement="top">
-                              <el-icon><question-filled /></el-icon>
-                           </el-tooltip>
-                           路由参数
                         </span>
                      </template>
                   </el-form-item>
@@ -373,7 +343,6 @@ function reset() {
     icon: undefined,
     menuType: "M",
     orderNum: undefined,
-    isFrame: "1",
     isCache: "0",
     visible: "0",
     status: "0"
