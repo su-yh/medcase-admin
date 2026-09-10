@@ -34,8 +34,11 @@ const usePermissionStore = defineStore(
         return new Promise(resolve => {
           // 向后端请求路由数据
           getRouters().then(res => {
-            // 按环境过滤掉一些路由
-            const routeData = filterRoutesByEnvironment(normalizeBackendRoutes(res.data), import.meta.env.VITE_APP_ENV)
+            // 保留后端菜单字段，仅补充前端路由树所需的 children
+            const routeData = filterRoutesByEnvironment(
+              handleTree(res.data.map(route => ({ ...route })), 'id', 'parentId'),
+              import.meta.env.VITE_APP_ENV
+            )
             const sdata = JSON.parse(JSON.stringify(routeData))
             const rdata = JSON.parse(JSON.stringify(routeData))
             const defaultData = JSON.parse(JSON.stringify(routeData))
@@ -55,40 +58,32 @@ const usePermissionStore = defineStore(
     }
   })
 
-// 遍历后台传来的路由字符串，转换为组件对象
-function normalizeBackendRoutes(routes) {
-  const normalizedRoutes = routes.map(route => ({
-      ...route,
-      name: route.routeName,
-      path: route.routePath,
-      component: route.vueComponentPath,
-      hidden: !route.visible,
-      meta: {
-        title: route.menuName,
-        icon: route.icon,
-        noCache: route.isCache === '1'
-      }
-  }))
-  return handleTree(normalizedRoutes, 'id', 'parentId')
-}
-
 function filterAsyncRouter(asyncRouterMap, root = true) {
-  return asyncRouterMap.filter(route => {
+  return asyncRouterMap.map(route => {
+    const routerRoute = { ...route }
+    const routePath = typeof routerRoute.routePath === 'string' ? routerRoute.routePath : ''
+    routerRoute.name = routerRoute.routeName
+    routerRoute.path = root && !routePath.startsWith('/') ? '/' + routePath : routePath
+    routerRoute.hidden = !routerRoute.visible
+    routerRoute.meta = {
+      title: routerRoute.menuName,
+      icon: routerRoute.icon,
+      noCache: routerRoute.isCache === '1'
+    }
     if (root) {
-      route.path = route.path.startsWith('/') ? route.path : '/' + route.path
-      route.component = Layout
-    } else if (route.component) {
-      route.component = loadView(route.component)
+      routerRoute.component = Layout
+    } else if (routerRoute.vueComponentPath) {
+      routerRoute.component = loadView(routerRoute.vueComponentPath)
     }
-    if (route.menuType === 'M' && route.children != null && route.children.length) {
-      route.children = filterAsyncRouter(route.children, false)
-      route.alwaysShow = true
-      route.redirect = 'noRedirect'
+    if (routerRoute.menuType === 'M' && routerRoute.children != null && routerRoute.children.length) {
+      routerRoute.children = filterAsyncRouter(routerRoute.children, false)
+      routerRoute.alwaysShow = true
+      routerRoute.redirect = 'noRedirect'
     } else {
-      delete route['children']
-      delete route['redirect']
+      delete routerRoute['children']
+      delete routerRoute['redirect']
     }
-    return true
+    return routerRoute
   })
 }
 

@@ -4,28 +4,29 @@ import { filterRoutesByEnvironment } from '../src/utils/route-environment.js'
 
 const routes = [
   {
-    path: '/system',
+    routePath: '/system',
+    menuName: '系统管理',
     children: [
-      { path: 'role', component: 'system/role/index' },
-      { path: 'menu', component: 'system/menu/index' },
+      { routePath: 'role', vueComponentPath: 'system/role/index', menuName: '角色管理' },
+      { routePath: 'menu', vueComponentPath: 'system/menu/index', menuName: '菜单管理' },
       {
-        path: 'log',
-        meta: { title: '日志管理' },
+        routePath: 'log',
+        menuName: '日志管理',
         children: [
-          { path: 'operlog', component: 'monitor/operlog/index' },
-          { path: 'logininfor', component: 'monitor/logininfor/index' }
+          { routePath: 'operlog', vueComponentPath: 'monitor/operlog/index' },
+          { routePath: 'logininfor', vueComponentPath: 'monitor/logininfor/index' }
         ]
       },
-      { path: 'dict', component: 'system/dict/index', meta: { title: '字典管理' } },
-      { path: 'config', component: 'system/config/index', meta: { title: '参数设置' } }
+      { routePath: 'dict', vueComponentPath: 'system/dict/index', menuName: '字典管理' },
+      { routePath: 'config', vueComponentPath: 'system/config/index', menuName: '参数设置' }
     ]
   },
   {
-    path: 'monitor',
-    meta: { title: '系统监控' },
+    routePath: 'monitor',
+    menuName: '系统监控',
     children: [
-      { path: 'online', component: 'monitor/online/index' },
-      { path: 'server', component: 'monitor/server/index' }
+      { routePath: 'online', vueComponentPath: 'monitor/online/index' },
+      { routePath: 'server', vueComponentPath: 'monitor/server/index' }
     ]
   }
 ]
@@ -42,9 +43,10 @@ test('hides restricted menus outside development', () => {
 
     assert.deepEqual(filteredRoutes, [
       {
-        path: '/system',
+        routePath: '/system',
+        menuName: '系统管理',
         children: [
-          { path: 'role', component: 'system/role/index' }
+          { routePath: 'role', vueComponentPath: 'system/role/index', menuName: '角色管理' }
         ]
       }
     ])

@@ -33,10 +33,10 @@ export function filterRoutesByEnvironment(routes, environment) {
 }
 
 function isRestrictedMenu(route) {
-  const path = typeof route.path === 'string' ? route.path.replace(/^\/|\/$/g, '') : ''
-  const title = route.meta?.title
+  const path = typeof route.routePath === 'string' ? route.routePath.replace(/^\/|\/$/g, '') : ''
+  const title = route.menuName
 
-  return HIDDEN_MENU_COMPONENTS.has(route.component)
+  return HIDDEN_MENU_COMPONENTS.has(route.vueComponentPath)
     || HIDDEN_MENU_PATHS.has(path)
     || HIDDEN_MENU_TITLES.has(title)
 }

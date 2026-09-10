@@ -1,12 +1,12 @@
 <template>
   <div v-if="!item.hidden">
     <template v-if="hasOneShowingChild(item.children, item) && (!onlyOneChild.children || onlyOneChild.noShowingChildren) && !item.alwaysShow">
-      <app-link v-if="onlyOneChild.meta" :to="resolvePath(onlyOneChild.path)">
+      <router-link v-if="onlyOneChild.meta" :to="resolvePath(onlyOneChild.path)">
         <el-menu-item :index="resolvePath(onlyOneChild.path)" :class="{ 'submenu-title-noDropdown': !isNest }">
           <svg-icon :icon-class="onlyOneChild.meta.icon || (item.meta && item.meta.icon)"/>
           <template #title><span class="menu-title" :title="hasTitle(onlyOneChild.meta.title)">{{ onlyOneChild.meta.title }}</span></template>
         </el-menu-item>
-      </app-link>
+      </router-link>
     </template>
 
     <el-sub-menu v-else ref="subMenu" :index="resolvePath(item.path)" teleported>
@@ -28,7 +28,6 @@
 </template>
 
 <script setup>
-import AppLink from './Link'
 import { getNormalPath } from '@/utils/ruoyi'
 
 const props = defineProps({
