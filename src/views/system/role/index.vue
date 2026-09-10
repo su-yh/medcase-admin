@@ -358,7 +358,10 @@ function handleAuthMenu(row) {
   menuNodeAll.value = false
   menuCheckStrictly.value = row.menuCheckStrictly !== false
   Promise.all([menuTreeselect(), getRoleMenuIds(row.roleId)]).then(([menuResponse, menuIds]) => {
-    menuOptions.value = menuResponse.data
+    menuOptions.value = proxy.handleTree(
+      menuResponse.data.map(menu => ({ ...menu, label: menu.menuName })),
+      "id"
+    )
     menuOpen.value = true
     nextTick(() => {
       menuRef.value.setCheckedKeys(menuIds || [])

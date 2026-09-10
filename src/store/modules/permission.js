@@ -3,6 +3,7 @@ import router, { constantRoutes, dynamicRoutes } from '@/router'
 import { getRouters } from '@/api/menu'
 import Layout from '@/layout/index'
 import { filterRoutesByEnvironment } from '@/utils/route-environment'
+import { handleTree } from '@/utils/ruoyi'
 
 // 匹配views里面所有的.vue文件
 const modules = import.meta.glob('./../../views/**/*.vue')
@@ -56,18 +57,19 @@ const usePermissionStore = defineStore(
 
 // 遍历后台传来的路由字符串，转换为组件对象
 function normalizeBackendRoutes(routes) {
-  return routes.map(route => {
-    const normalized = {
+  const normalizedRoutes = routes.map(route => ({
       ...route,
       name: route.routeName,
       path: route.routePath,
-      component: route.vueComponentPath
-    }
-    if (Array.isArray(route.children)) {
-      normalized.children = normalizeBackendRoutes(route.children)
-    }
-    return normalized
-  })
+      component: route.vueComponentPath,
+      hidden: !route.visible,
+      meta: {
+        title: route.menuName,
+        icon: route.icon,
+        noCache: route.isCache === '1'
+      }
+  }))
+  return handleTree(normalizedRoutes, 'id', 'parentId')
 }
 
 function filterAsyncRouter(asyncRouterMap, root = true) {
@@ -78,8 +80,10 @@ function filterAsyncRouter(asyncRouterMap, root = true) {
     } else if (route.component) {
       route.component = loadView(route.component)
     }
-    if (route.children != null && route.children && route.children.length) {
+    if (route.menuType === 'M' && route.children != null && route.children.length) {
       route.children = filterAsyncRouter(route.children, false)
+      route.alwaysShow = true
+      route.redirect = 'noRedirect'
     } else {
       delete route['children']
       delete route['redirect']
