@@ -178,13 +178,13 @@ if (props.showColumnsType == "transfer") {
   // transfer穿梭显隐列初始默认隐藏列
   if (Array.isArray(props.columns)) {
     for (let item in props.columns) {
-      if (props.columns[item].visible === false) {
+      if (!props.columns[item].visible) {
         value.value.push(parseInt(item))
       }
     }
   } else {
     Object.keys(props.columns).forEach((key, index) => {
-      if (props.columns[key].visible === false) {
+      if (!props.columns[key].visible) {
         value.value.push(index)
       }
     })

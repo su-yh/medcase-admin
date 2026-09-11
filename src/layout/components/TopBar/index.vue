@@ -35,10 +35,10 @@ const activeMenu = computed(() => {
 
 const visibleNumber = ref(5)
 const topMenus = computed(() => {
-  return permissionStore.sidebarRouters.filter((f) => !f.hidden).slice(0, visibleNumber.value)
+  return permissionStore.sidebarRouters.filter((f) => f.visible).slice(0, visibleNumber.value)
 })
 const moreRoutes = computed(() => {
-  return permissionStore.sidebarRouters.filter((f) => !f.hidden).slice(visibleNumber.value)
+  return permissionStore.sidebarRouters.filter((f) => f.visible).slice(visibleNumber.value)
 })
 function setVisibleNumber() {
   const width = document.body.getBoundingClientRect().width / 3

@@ -143,7 +143,7 @@ function initFuse(list) {
 function generateRoutes(routes, basePath = '', prefixTitle = []) {
   let res = []
   for (const r of routes) {
-    if (r.hidden) { continue }
+    if (!r.visible) { continue }
     const p = r.path.length > 0 && r.path[0] === '/' ? r.path : '/' + r.path
     const data = {
       path: getNormalPath(basePath + p),

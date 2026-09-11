@@ -64,7 +64,6 @@ function filterAsyncRouter(asyncRouterMap, root = true) {
     const routePath = typeof routerRoute.routePath === 'string' ? routerRoute.routePath : ''
     routerRoute.name = routerRoute.routeName
     routerRoute.path = root && !routePath.startsWith('/') ? '/' + routePath : routePath
-    routerRoute.hidden = !routerRoute.visible
     routerRoute.meta = {
       title: routerRoute.menuName,
       icon: routerRoute.icon,

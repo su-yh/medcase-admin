@@ -5,7 +5,7 @@ import Layout from '@/layout'
 /**
  * Note: 路由配置项
  *
- * hidden: true                     // 当设置 true 的时候该路由不会再侧边栏出现 如401，login等页面，或者如一些编辑页面/edit/1
+ * visible: false                  // 当设置 false 的时候该路由不会再侧边栏出现 如401，login等页面，或者如一些编辑页面/edit/1
  * alwaysShow: true                 // 当你一个路由下面的 children 声明的路由大于1个时，自动会变成嵌套的模式--如组件页面
  *                                  // 只有一个时，会将那个子路由当做根路由显示在侧边栏--如引导页面
  *                                  // 若你想不管路由下面的 children 声明的个数都显示你的根路由
@@ -28,7 +28,7 @@ export const constantRoutes = [
   {
     path: '/redirect',
     component: Layout,
-    hidden: true,
+    visible: false,
     children: [
       {
         path: '/redirect/:path(.*)',
@@ -39,31 +39,33 @@ export const constantRoutes = [
   {
     path: '/login',
     component: () => import('@/views/login'),
-    hidden: true
+    visible: false
   },
   {
     path: '/register',
     component: () => import('@/views/register'),
-    hidden: true
+    visible: false
   },
   {
     path: "/:pathMatch(.*)*",
     component: () => import('@/views/error/404'),
-    hidden: true
+    visible: false
   },
   {
     path: '/401',
     component: () => import('@/views/error/401'),
-    hidden: true
+    visible: false
   },
   {
     path: '',
     component: Layout,
+    visible: true,
     redirect: '/index',
     children: [
       {
         path: '/index',
         component: () => import('@/views/index'),
+        visible: true,
         name: 'Index',
         meta: { title: '首页', icon: 'dashboard', affix: true }
       }
@@ -72,13 +74,13 @@ export const constantRoutes = [
   {
     path: '/lock',
     component: () => import('@/views/lock'),
-    hidden: true,
+    visible: false,
     meta: { title: '锁定屏幕' }
   },
   {
     path: '/user',
     component: Layout,
-    hidden: true,
+    visible: false,
     redirect: 'noredirect',
     children: [
       {
@@ -96,7 +98,7 @@ export const dynamicRoutes = [
   {
     path: '/system/user-auth',
     component: Layout,
-    hidden: true,
+    visible: false,
     permissions: ['system:user:edit'],
     children: [
       {
@@ -110,7 +112,7 @@ export const dynamicRoutes = [
   {
     path: '/system/role-auth',
     component: Layout,
-    hidden: true,
+    visible: false,
     permissions: ['system:role:edit'],
     children: [
       {
@@ -124,7 +126,7 @@ export const dynamicRoutes = [
   {
     path: '/system/dict-data',
     component: Layout,
-    hidden: true,
+    visible: false,
     permissions: ['system:dict:list'],
     children: [
       {

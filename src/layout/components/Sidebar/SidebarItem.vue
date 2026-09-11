@@ -1,5 +1,5 @@
 <template>
-  <div v-if="!item.hidden">
+  <div v-if="item.visible">
     <template v-if="hasOneShowingChild(item.children, item) && (!onlyOneChild.children || onlyOneChild.noShowingChildren) && !item.alwaysShow">
       <router-link v-if="onlyOneChild.meta" :to="resolvePath(onlyOneChild.path)">
         <el-menu-item :index="resolvePath(onlyOneChild.path)" :class="{ 'submenu-title-noDropdown': !isNest }">
@@ -53,7 +53,7 @@ function hasOneShowingChild(children = [], parent) {
     children = []
   }
   const showingChildren = children.filter(item => {
-    if (item.hidden) {
+    if (!item.visible) {
       return false
     }
     onlyOneChild.value = item

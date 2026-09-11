@@ -60,7 +60,7 @@ const routers = computed(() => permissionStore.topbarRouters)
 const topMenus = computed(() => {
   let topMenus = []
   routers.value.map((menu) => {
-    if (menu.hidden !== true) {
+    if (menu.visible) {
       // 兼容顶部栏一级菜单内部跳转
       if (menu.path === '/' && menu.children) {
           topMenus.push(menu.children[0])
