@@ -2,9 +2,7 @@
   <section class="app-main">
     <router-view v-slot="{ Component, route }">
       <transition name="fade-transform" mode="out-in">
-        <keep-alive :include="tagsViewStore.cachedViews">
-          <component :is="Component" :key="route.path"/>
-        </keep-alive>
+        <component :is="Component" :key="route.path"/>
       </transition>
     </router-view>
     <copyright />
@@ -13,9 +11,6 @@
 
 <script setup>
 import copyright from "./Copyright/index"
-import useTagsViewStore from '@/store/modules/tagsView'
-
-const tagsViewStore = useTagsViewStore()
 </script>
 
 <style lang="scss" scoped>

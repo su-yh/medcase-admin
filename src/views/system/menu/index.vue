@@ -209,22 +209,6 @@
                      </template>
                   </el-form-item>
                </el-col>
-               <el-col :span="12" v-if="form.menuType == 'C'">
-                  <el-form-item>
-                     <template #label>
-                        <span>
-                           <el-tooltip content="选择是则会被`keep-alive`缓存，需要匹配组件的`name`和地址保持一致" placement="top">
-                              <el-icon><question-filled /></el-icon>
-                           </el-tooltip>
-                           是否缓存
-                        </span>
-                     </template>
-                     <el-radio-group v-model="form.isCache">
-                        <el-radio value="0">缓存</el-radio>
-                        <el-radio value="1">不缓存</el-radio>
-                     </el-radio-group>
-                  </el-form-item>
-               </el-col>
                <el-col :span="12" v-if="form.menuType != 'F'">
                   <el-form-item>
                      <template #label>
@@ -348,7 +332,6 @@ function reset() {
     icon: undefined,
     menuType: "M",
     orderNum: undefined,
-    isCache: "0",
     visible: true,
     status: "0"
   }

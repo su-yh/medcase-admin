@@ -66,8 +66,7 @@ function filterAsyncRouter(asyncRouterMap, root = true) {
     routerRoute.path = root && !routePath.startsWith('/') ? '/' + routePath : routePath
     routerRoute.meta = {
       title: routerRoute.menuName,
-      icon: routerRoute.icon,
-      noCache: routerRoute.isCache === '1'
+      icon: routerRoute.icon
     }
     if (root) {
       routerRoute.component = Layout

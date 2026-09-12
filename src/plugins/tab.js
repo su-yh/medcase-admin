@@ -4,26 +4,24 @@ import router from '@/router'
 export default {
   // 刷新当前tab页签
   refreshPage(obj) {
-    const { path, query, matched } = router.currentRoute.value
+    const { path: currentPath, query: currentQuery, matched } = router.currentRoute.value
     // 防止在重定向过程中重复刷新
-    if (path.startsWith('/redirect/')) {
+    if (currentPath.startsWith('/redirect/')) {
       return Promise.resolve()
     }
     if (obj === undefined) {
       matched.forEach((m) => {
         if (m.components && m.components.default && m.components.default.name) {
           if (m.components.default.name !== 'Layout') {
-            obj = { name: m.components.default.name, path: path, query: query }
+            obj = { name: m.components.default.name, path: currentPath, query: currentQuery }
           }
         }
       })
     }
-    return useTagsViewStore().delCachedView(obj).then(() => {
-      const { path, query } = obj
-      router.replace({
-        path: '/redirect' + path,
-        query: query
-      })
+    const { path, query } = obj
+    return router.replace({
+      path: '/redirect' + path,
+      query: query
     })
   },
   // 关闭当前tab页签，打开新页签

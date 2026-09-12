@@ -25,13 +25,11 @@ const useTagsViewStore = defineStore(
   'tags-view',
   {
     state: () => ({
-      visitedViews: [],
-      cachedViews: []
+      visitedViews: []
     }),
     actions: {
       addView(view) {
         this.addVisitedView(view)
-        this.addCachedView(view)
       },
       addVisitedView(view) {
         if (this.visitedViews.some(v => v.path === view.path)) return
@@ -50,19 +48,11 @@ const useTagsViewStore = defineStore(
           })
         )
       },
-      addCachedView(view) {
-        if (this.cachedViews.includes(view.name)) return
-        if (!view.meta.noCache) {
-          this.cachedViews.push(view.name)
-        }
-      },
       delView(view) {
         return new Promise(resolve => {
           this.delVisitedView(view)
-          this.delCachedView(view)
           resolve({
-            visitedViews: [...this.visitedViews],
-            cachedViews: [...this.cachedViews]
+            visitedViews: [...this.visitedViews]
           })
         })
       },
@@ -78,20 +68,11 @@ const useTagsViewStore = defineStore(
           resolve([...this.visitedViews])
         })
       },
-      delCachedView(view) {
-        return new Promise(resolve => {
-          const index = this.cachedViews.indexOf(view.name)
-          index > -1 && this.cachedViews.splice(index, 1)
-          resolve([...this.cachedViews])
-        })
-      },
       delOthersViews(view) {
         return new Promise(resolve => {
           this.delOthersVisitedViews(view)
-          this.delOthersCachedViews(view)
           resolve({
-            visitedViews: [...this.visitedViews],
-            cachedViews: [...this.cachedViews]
+            visitedViews: [...this.visitedViews]
           })
         })
       },
@@ -104,24 +85,11 @@ const useTagsViewStore = defineStore(
           resolve([...this.visitedViews])
         })
       },
-      delOthersCachedViews(view) {
-        return new Promise(resolve => {
-          const index = this.cachedViews.indexOf(view.name)
-          if (index > -1) {
-            this.cachedViews = this.cachedViews.slice(index, index + 1)
-          } else {
-            this.cachedViews = []
-          }
-          resolve([...this.cachedViews])
-        })
-      },
       delAllViews(view) {
         return new Promise(resolve => {
           this.delAllVisitedViews(view)
-          this.delAllCachedViews(view)
           resolve({
-            visitedViews: [...this.visitedViews],
-            cachedViews: [...this.cachedViews]
+            visitedViews: [...this.visitedViews]
           })
         })
       },
@@ -131,12 +99,6 @@ const useTagsViewStore = defineStore(
           this.visitedViews = affixTags
           clearVisitedViews()
           resolve([...this.visitedViews])
-        })
-      },
-      delAllCachedViews(view) {
-        return new Promise(resolve => {
-          this.cachedViews = []
-          resolve([...this.cachedViews])
         })
       },
       updateVisitedView(view) {
@@ -157,10 +119,6 @@ const useTagsViewStore = defineStore(
             if (idx <= index || (item.meta && item.meta.affix)) {
               return true
             }
-            const i = this.cachedViews.indexOf(item.name)
-            if (i > -1) {
-              this.cachedViews.splice(i, 1)
-            }
             return false
           })
           saveVisitedViews(this.visitedViews)
@@ -176,10 +134,6 @@ const useTagsViewStore = defineStore(
           this.visitedViews = this.visitedViews.filter((item, idx) => {
             if (idx >= index || (item.meta && item.meta.affix)) {
               return true
-            }
-            const i = this.cachedViews.indexOf(item.name)
-            if (i > -1) {
-              this.cachedViews.splice(i, 1)
             }
             return false
           })
