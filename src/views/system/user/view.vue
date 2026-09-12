@@ -100,20 +100,6 @@
         </el-col>
       </el-row>
       <el-row :gutter="20" class="mb8">
-        <el-col :span="12">
-          <div class="info-item">
-            <label class="info-label">最后登录IP：</label>
-            <span class="info-value plaintext">{{ info.loginIp }}</span>
-          </div>
-        </el-col>
-        <el-col :span="12">
-          <div class="info-item">
-            <label class="info-label">最后登录时间：</label>
-            <span class="info-value plaintext">{{ info.loginDate }}</span>
-          </div>
-        </el-col>
-      </el-row>
-      <el-row :gutter="20" class="mb8">
         <el-col :span="24">
           <div class="info-item full-width">
             <label class="info-label">备注：</label>
