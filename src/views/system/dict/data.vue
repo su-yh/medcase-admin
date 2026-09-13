@@ -20,8 +20,8 @@
                @keyup.enter="handleQuery"
             />
          </el-form-item>
-         <el-form-item label="状态" prop="status">
-            <el-select v-model="queryParams.status" placeholder="数据状态" clearable style="width: 200px">
+         <el-form-item label="状态" prop="enabled">
+            <el-select v-model="queryParams.enabled" placeholder="数据状态" clearable style="width: 200px">
                <el-option
                   v-for="dict in NORMAL_DISABLE_OPTIONS"
                   :key="dict.value"
@@ -88,9 +88,9 @@
          </el-table-column>
          <el-table-column label="字典键值" align="center" prop="dictValue" />
          <el-table-column label="字典排序" align="center" prop="dictSort" />
-         <el-table-column label="状态" align="center" prop="status">
+         <el-table-column label="状态" align="center" prop="enabled">
             <template #default="scope">
-               <dict-tag :options="NORMAL_DISABLE_OPTIONS" :value="scope.row.status" />
+               <dict-tag :options="NORMAL_DISABLE_OPTIONS" :value="scope.row.enabled" />
             </template>
          </el-table-column>
          <el-table-column label="备注" align="center" prop="remark" :show-overflow-tooltip="true" />
@@ -143,8 +143,8 @@
                   ></el-option>
                </el-select>
             </el-form-item>
-            <el-form-item label="状态" prop="status">
-               <el-radio-group v-model="form.status">
+            <el-form-item label="状态" prop="enabled">
+               <el-radio-group v-model="form.enabled">
                   <el-radio
                      v-for="dict in NORMAL_DISABLE_OPTIONS"
                      :key="dict.value"
@@ -203,7 +203,7 @@ const data = reactive({
     pageSize: 10,
     dictType: undefined,
     dictLabel: undefined,
-    status: undefined
+    enabled: undefined
   },
   rules: {
     dictLabel: [{ required: true, message: "数据标签不能为空", trigger: "blur" }],
@@ -255,7 +255,7 @@ function reset() {
     cssClass: undefined,
     listClass: "default",
     dictSort: 0,
-    status: "0",
+    enabled: true,
     remark: undefined
   }
   proxy.resetForm("dataRef")

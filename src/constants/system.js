@@ -5,13 +5,23 @@ export const USER_SEX_OPTIONS = [
 ]
 
 export const NORMAL_DISABLE_OPTIONS = [
+  { label: '正常', value: true, elTagType: 'primary' },
+  { label: '停用', value: false, elTagType: 'danger' }
+]
+
+export const YES_NO_OPTIONS = [
+  { label: '是', value: true, elTagType: 'primary' },
+  { label: '否', value: false, elTagType: 'danger' }
+]
+
+export const USER_STATUS_OPTIONS = [
   { label: '正常', value: '0', elTagType: 'primary' },
   { label: '停用', value: '1', elTagType: 'danger' }
 ]
 
-export const YES_NO_OPTIONS = [
-  { label: '是', value: 'Y', elTagType: 'primary' },
-  { label: '否', value: 'N', elTagType: 'danger' }
+export const SUPPLIER_STATUS_OPTIONS = [
+  { label: '正常', value: '0', elTagType: 'primary' },
+  { label: '停用', value: '1', elTagType: 'danger' }
 ]
 
 export const NOTICE_TYPE_OPTIONS = [
@@ -20,6 +30,6 @@ export const NOTICE_TYPE_OPTIONS = [
 ]
 
 export const NOTICE_STATUS_OPTIONS = [
-  { label: '正常', value: '0', elTagType: 'primary' },
-  { label: '关闭', value: '1', elTagType: 'danger' }
+  { label: '正常', value: true, elTagType: 'primary' },
+  { label: '关闭', value: false, elTagType: 'danger' }
 ]

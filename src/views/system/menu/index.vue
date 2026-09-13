@@ -10,8 +10,8 @@
                @keyup.enter="handleQuery"
             />
          </el-form-item>
-         <el-form-item label="状态" prop="status">
-            <el-select v-model="queryParams.status" placeholder="菜单状态" clearable style="width: 200px">
+         <el-form-item label="状态" prop="enabled">
+            <el-select v-model="queryParams.enabled" placeholder="菜单状态" clearable style="width: 200px">
                <el-option
                   v-for="dict in NORMAL_DISABLE_OPTIONS"
                   :key="dict.value"
@@ -84,9 +84,9 @@
          </el-table-column>
          <el-table-column prop="perms" label="权限标识" :show-overflow-tooltip="true" />
          <el-table-column prop="vueComponentPath" label="组件路径" :show-overflow-tooltip="true" />
-         <el-table-column prop="status" label="状态" width="80">
+         <el-table-column prop="enabled" label="状态" width="80">
             <template #default="scope">
-               <dict-tag :options="NORMAL_DISABLE_OPTIONS" :value="scope.row.status" />
+               <dict-tag :options="NORMAL_DISABLE_OPTIONS" :value="scope.row.enabled" />
             </template>
          </el-table-column>
          <el-table-column label="操作" align="center" width="210" class-name="small-padding fixed-width">
@@ -238,7 +238,7 @@
                            菜单状态
                         </span>
                      </template>
-                     <el-radio-group v-model="form.status">
+                     <el-radio-group v-model="form.enabled">
                         <el-radio
                            v-for="dict in NORMAL_DISABLE_OPTIONS"
                            :key="dict.value"
@@ -333,7 +333,7 @@ function reset() {
     menuType: "M",
     orderNum: undefined,
     visible: true,
-    status: "0"
+    enabled: true
   }
   proxy.resetForm("menuRef")
 }

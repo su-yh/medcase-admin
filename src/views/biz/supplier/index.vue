@@ -33,7 +33,7 @@
           style="width: 180px"
         >
           <el-option
-            v-for="dict in NORMAL_DISABLE_OPTIONS"
+            v-for="dict in SUPPLIER_STATUS_OPTIONS"
             :key="dict.value"
             :label="dict.label"
             :value="dict.value"
@@ -230,7 +230,7 @@
         </el-form-item>
         <el-form-item label="状态" prop="status">
           <el-radio-group v-model="form.status">
-            <el-radio v-for="dict in NORMAL_DISABLE_OPTIONS" :key="dict.value" :value="dict.value">
+            <el-radio v-for="dict in SUPPLIER_STATUS_OPTIONS" :key="dict.value" :value="dict.value">
               {{ dict.label }}
             </el-radio>
           </el-radio-group>
@@ -266,7 +266,7 @@ import {
   updateSupplierStatus
 } from '@/api/biz/supplier'
 import { selectDictLabel } from '@/utils/ruoyi'
-import { NORMAL_DISABLE_OPTIONS, USER_SEX_OPTIONS } from '@/constants/system'
+import { SUPPLIER_STATUS_OPTIONS, USER_SEX_OPTIONS } from '@/constants/system'
 
 const loading = ref(false)
 const submitting = ref(false)

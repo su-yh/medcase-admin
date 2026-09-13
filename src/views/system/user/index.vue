@@ -12,7 +12,7 @@
           </el-form-item>
           <el-form-item label="状态" prop="status">
             <el-select v-model="queryParams.status" placeholder="用户状态" clearable style="width: 240px">
-              <el-option v-for="dict in NORMAL_DISABLE_OPTIONS" :key="dict.value" :label="dict.label" :value="dict.value" />
+              <el-option v-for="dict in USER_STATUS_OPTIONS" :key="dict.value" :label="dict.label" :value="dict.value" />
             </el-select>
           </el-form-item>
           <el-form-item label="创建时间" style="width: 308px">
@@ -134,7 +134,7 @@
           <el-col :span="12">
             <el-form-item label="状态">
               <el-radio-group v-model="form.status">
-                <el-radio v-for="dict in NORMAL_DISABLE_OPTIONS" :key="dict.value" :value="dict.value">{{ dict.label }}</el-radio>
+                <el-radio v-for="dict in USER_STATUS_OPTIONS" :key="dict.value" :value="dict.value">{{ dict.label }}</el-radio>
               </el-radio-group>
             </el-form-item>
           </el-col>
@@ -143,14 +143,14 @@
           <el-col :span="12">
             <el-form-item label="岗位">
               <el-select v-model="form.postIds" multiple placeholder="请选择">
-                <el-option v-for="item in postOptions" :key="item.postId" :label="item.postName" :value="item.postId" :disabled="item.status == 1"></el-option>
+                <el-option v-for="item in postOptions" :key="item.postId" :label="item.postName" :value="item.postId" :disabled="!item.enabled"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="角色">
               <el-select v-model="form.roleIds" multiple placeholder="请选择">
-                <el-option v-for="item in roleOptions" :key="item.roleId" :label="item.roleName" :value="item.roleId" :disabled="item.status == 1"></el-option>
+                <el-option v-for="item in roleOptions" :key="item.roleId" :label="item.roleName" :value="item.roleId" :disabled="!item.enabled"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
@@ -181,7 +181,7 @@ import TreePanel from "@/components/TreePanel"
 import UserViewDrawer from "./view"
 import { usePasswordRule } from "@/utils/passwordRule"
 import { changeUserStatus, listUser, resetUserPwd, delUser, getUser, updateUser, addUser, deptTreeSelect } from "@/api/system/user"
-import { NORMAL_DISABLE_OPTIONS, USER_SEX_OPTIONS } from "@/constants/system"
+import { USER_SEX_OPTIONS, USER_STATUS_OPTIONS } from "@/constants/system"
 
 const router = useRouter()
 const { proxy } = getCurrentInstance()

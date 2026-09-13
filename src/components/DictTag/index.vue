@@ -35,7 +35,7 @@ const props = defineProps({
     default: null,
   },
   // 当前的值
-  value: [Number, String, Array],
+  value: [Boolean, Number, String, Array],
   // 当未找到匹配的数据时，显示value
   showValue: {
     type: Boolean,

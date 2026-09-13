@@ -60,8 +60,7 @@ const loading = ref(false)
 const detail = ref(null)
 
 const isStatusNormal = computed(() => {
-  const status = detail.value && detail.value.status
-  return status === '0' || status === 0
+  return detail.value?.enabled
 })
 
 const hasContent = computed(() => {

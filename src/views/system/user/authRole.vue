@@ -82,7 +82,7 @@ function getRowKey(row) {
 
 // 检查角色状态
 function checkSelectable(row) {
-  return row.status === "0" ? true : false
+  return row.enabled
 }
 
 /** 关闭按钮 */

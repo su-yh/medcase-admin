@@ -19,9 +19,9 @@
                @keyup.enter="handleQuery"
             />
          </el-form-item>
-         <el-form-item label="状态" prop="status">
+         <el-form-item label="状态" prop="enabled">
             <el-select
-               v-model="queryParams.status"
+               v-model="queryParams.enabled"
                placeholder="角色状态"
                clearable
                style="width: 240px"
@@ -92,9 +92,9 @@
          <el-table-column label="状态" align="center" width="100">
             <template #default="scope">
                <el-switch
-                  v-model="scope.row.status"
-                  active-value="0"
-                  inactive-value="1"
+                  v-model="scope.row.enabled"
+                  :active-value="true"
+                  :inactive-value="false"
                   @change="handleStatusChange(scope.row)"
                ></el-switch>
             </template>
@@ -151,7 +151,7 @@
                <el-input-number v-model="form.roleSort" controls-position="right" :min="0" />
             </el-form-item>
             <el-form-item label="状态">
-               <el-radio-group v-model="form.status">
+               <el-radio-group v-model="form.enabled">
                   <el-radio
                   v-for="dict in NORMAL_DISABLE_OPTIONS"
                      :key="dict.value"
@@ -247,7 +247,7 @@ const data = reactive({
     pageSize: 10,
     roleNameLike: undefined,
     roleKeyLike: undefined,
-    status: undefined
+    enabled: undefined
   },
   rules: {
     roleName: [{ required: true, message: "角色名称不能为空", trigger: "blur" }],
@@ -301,13 +301,13 @@ function handleSelectionChange(selection) {
 
 /** 角色状态修改 */
 function handleStatusChange(row) {
-  let text = row.status === "0" ? "启用" : "停用"
+  let text = row.enabled ? "停用" : "启用"
   proxy.$modal.confirm('确认要"' + text + '""' + row.roleName + '"角色吗?').then(function () {
-    return changeRoleStatus(row.roleId, row.status)
+    return changeRoleStatus(row.roleId, row.enabled)
   }).then(() => {
     proxy.$modal.msgSuccess(text + "成功")
   }).catch(function () {
-    row.status = row.status === "0" ? "1" : "0"
+    row.enabled = !row.enabled
   })
 }
 
@@ -324,7 +324,7 @@ function reset() {
     roleName: undefined,
     roleKey: undefined,
     roleSort: 0,
-    status: "0",
+    enabled: true,
     menuCheckStrictly: true,
     remark: undefined
   }

@@ -19,8 +19,8 @@
                @keyup.enter="handleQuery"
             />
          </el-form-item>
-         <el-form-item label="状态" prop="status">
-            <el-select v-model="queryParams.status" placeholder="岗位状态" clearable style="width: 200px">
+         <el-form-item label="状态" prop="enabled">
+            <el-select v-model="queryParams.enabled" placeholder="岗位状态" clearable style="width: 200px">
                <el-option
                   v-for="dict in NORMAL_DISABLE_OPTIONS"
                   :key="dict.value"
@@ -74,9 +74,9 @@
          <el-table-column label="岗位编码" align="center" prop="postCode" />
          <el-table-column label="岗位名称" align="center" prop="postName" />
          <el-table-column label="岗位排序" align="center" prop="postSort" />
-         <el-table-column label="状态" align="center" prop="status">
+         <el-table-column label="状态" align="center" prop="enabled">
             <template #default="scope">
-               <dict-tag :options="NORMAL_DISABLE_OPTIONS" :value="scope.row.status" />
+               <dict-tag :options="NORMAL_DISABLE_OPTIONS" :value="scope.row.enabled" />
             </template>
          </el-table-column>
          <el-table-column label="创建时间" align="center" prop="createTime" width="180">
@@ -112,8 +112,8 @@
             <el-form-item label="岗位顺序" prop="postSort">
                <el-input-number v-model="form.postSort" controls-position="right" :min="0" />
             </el-form-item>
-            <el-form-item label="岗位状态" prop="status">
-               <el-radio-group v-model="form.status">
+            <el-form-item label="岗位状态" prop="enabled">
+               <el-radio-group v-model="form.enabled">
                   <el-radio
                      v-for="dict in NORMAL_DISABLE_OPTIONS"
                      :key="dict.value"
@@ -158,7 +158,7 @@ const data = reactive({
     pageSize: 10,
     postCode: undefined,
     postName: undefined,
-    status: undefined
+    enabled: undefined
   },
   rules: {
     postName: [{ required: true, message: "岗位名称不能为空", trigger: "blur" }],
@@ -192,7 +192,7 @@ function reset() {
     postCode: undefined,
     postName: undefined,
     postSort: 0,
-    status: "0",
+    enabled: true,
     remark: undefined
   }
   proxy.resetForm("postRef")

@@ -53,10 +53,10 @@ export function updateRole(data) {
 }
 
 // 角色状态修改
-export function changeRoleStatus(roleId, status) {
+export function changeRoleStatus(roleId, enabled) {
   const data = {
     roleId,
-    status
+    enabled
   }
   return adminRequest({
     url: '/system/role/changeStatus',

@@ -61,8 +61,8 @@
           <div class="dict-cell">
             <div class="dict-cell-key">状态</div>
             <div class="dict-cell-val">
-              <el-tag :type="item.status === '0' ? 'success' : 'danger'" size="small">
-                {{ item.status === '0' ? '正常' : '停用' }}
+              <el-tag :type="item.enabled ? 'success' : 'danger'" size="small">
+                {{ item.enabled ? '正常' : '停用' }}
               </el-tag>
             </div>
           </div>
@@ -85,8 +85,8 @@ const emit = defineEmits(['update:visible'])
 const loading = ref(false)
 const dataList = ref([])
 
-const normalCount = computed(() => dataList.value.filter(r => r.status === '0').length)
-const disabledCount = computed(() => dataList.value.filter(r => r.status !== '0').length)
+const normalCount = computed(() => dataList.value.filter(r => r.enabled).length)
+const disabledCount = computed(() => dataList.value.filter(r => !r.enabled).length)
 
 watch(() => props.visible, (val) => {
   if (val) {

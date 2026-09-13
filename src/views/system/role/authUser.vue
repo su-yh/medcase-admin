@@ -65,7 +65,7 @@
          <el-table-column label="手机" prop="phonenumber" :show-overflow-tooltip="true" />
          <el-table-column label="状态" align="center" prop="status">
             <template #default="scope">
-                  <dict-tag :options="NORMAL_DISABLE_OPTIONS" :value="scope.row.status" />
+                  <dict-tag :options="USER_STATUS_OPTIONS" :value="scope.row.status" />
             </template>
          </el-table-column>
          <el-table-column label="创建时间" align="center" prop="createTime" width="180">
@@ -94,7 +94,7 @@
 <script setup name="AuthUser">
 import selectUser from "./selectUser"
 import { allocatedUserList, authUserCancel, authUserCancelAll } from "@/api/system/role"
-import { NORMAL_DISABLE_OPTIONS } from "@/constants/system"
+import { USER_STATUS_OPTIONS } from "@/constants/system"
 
 const route = useRoute()
 const { proxy } = getCurrentInstance()

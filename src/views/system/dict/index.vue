@@ -19,9 +19,9 @@
                @keyup.enter="handleQuery"
             />
          </el-form-item>
-         <el-form-item label="状态" prop="status">
+         <el-form-item label="状态" prop="enabled">
             <el-select
-               v-model="queryParams.status"
+               v-model="queryParams.enabled"
                placeholder="字典状态"
                clearable
                style="width: 240px"
@@ -101,9 +101,9 @@
                <a class="link-type" style="cursor:pointer" @click="handleViewData(scope.row)">{{ scope.row.dictType }}</a>
             </template>
          </el-table-column>
-         <el-table-column label="状态" align="center" prop="status">
+         <el-table-column label="状态" align="center" prop="enabled">
             <template #default="scope">
-               <dict-tag :options="NORMAL_DISABLE_OPTIONS" :value="scope.row.status" />
+               <dict-tag :options="NORMAL_DISABLE_OPTIONS" :value="scope.row.enabled" />
             </template>
          </el-table-column>
          <el-table-column label="备注" align="center" prop="remark" :show-overflow-tooltip="true" />
@@ -146,8 +146,8 @@
                  </span>
                </template>
             </el-form-item>
-            <el-form-item label="状态" prop="status">
-               <el-radio-group v-model="form.status">
+            <el-form-item label="状态" prop="enabled">
+               <el-radio-group v-model="form.enabled">
                   <el-radio
                      v-for="dict in NORMAL_DISABLE_OPTIONS"
                      :key="dict.value"
@@ -199,7 +199,7 @@ const data = reactive({
     pageSize: 10,
     dictName: undefined,
     dictType: undefined,
-    status: undefined
+    enabled: undefined
   },
   rules: {
     dictName: [{ required: true, message: "字典名称不能为空", trigger: "blur" }],
@@ -231,7 +231,7 @@ function reset() {
     dictId: undefined,
     dictName: undefined,
     dictType: undefined,
-    status: "0",
+    enabled: true,
     remark: undefined
   }
   proxy.resetForm("dictRef")
