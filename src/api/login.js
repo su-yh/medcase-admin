@@ -41,10 +41,7 @@ export function getInfo() {
   }).then(response => ({
     user: response.user,
     roles: response.roles,
-    permissions: response.permissions,
-    pwdChrtype: response.pwdChrtype,
-    isDefaultModifyPwd: response.defaultModifyPwd,
-    isPasswordExpired: response.passwordExpired
+    permissions: response.permissions
   }))
 }
 
