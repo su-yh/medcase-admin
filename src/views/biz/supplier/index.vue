@@ -173,8 +173,8 @@
         <template #default="{ row }">
           <el-switch
             v-model="row.status"
-            active-value="0"
-            inactive-value="1"
+            :active-value="true"
+            :inactive-value="false"
             v-hasPermi="['supplier:status']"
             @change="status => handleStatusChange(row, status)"
           />
@@ -289,7 +289,7 @@ const queryParams = reactive({
   pageSize: 10,
   name: '',
   phone: '',
-  status: ''
+  status: undefined
 })
 
 const form = reactive({
@@ -299,7 +299,7 @@ const form = reactive({
   phone: '',
   email: '',
   idCardNumber: '',
-  status: '0',
+  status: true,
   remark: ''
 })
 
@@ -322,7 +322,7 @@ function getList() {
     pageSize: queryParams.pageSize,
     name: queryParams.name || undefined,
     phone: queryParams.phone || undefined,
-    status: queryParams.status || undefined
+    status: queryParams.status
   }).then(response => {
     supplierList.value = response.list || []
     total.value = response.total || 0
@@ -417,7 +417,7 @@ function resetForm() {
     phone: '',
     email: '',
     idCardNumber: '',
-    status: '0',
+    status: true,
     remark: ''
   })
   formRef.value?.clearValidate()
@@ -470,10 +470,10 @@ async function submitForm() {
 }
 
 async function handleStatusChange(row, status) {
-  const oldStatus = status === '0' ? '1' : '0'
+  const oldStatus = !status
   try {
     await ElMessageBox.confirm(
-      `确认${status === '0' ? '启用' : '停用'}供应商「${row.name}」吗？`,
+      `确认${status ? '启用' : '停用'}供应商「${row.name}」吗？`,
       '状态确认',
       {
         type: 'warning',
@@ -482,7 +482,7 @@ async function handleStatusChange(row, status) {
       }
     )
     await updateSupplierStatus(row.id, status)
-    ElMessage.success(status === '0' ? '启用成功' : '停用成功')
+    ElMessage.success(status ? '启用成功' : '停用成功')
   } catch {
     row.status = oldStatus
   }

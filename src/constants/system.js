@@ -10,8 +10,8 @@ export const USER_STATUS_OPTIONS = [
 ]
 
 export const SUPPLIER_STATUS_OPTIONS = [
-  { label: '正常', value: '0', elTagType: 'primary' },
-  { label: '停用', value: '1', elTagType: 'danger' }
+  { label: '正常', value: true, elTagType: 'primary' },
+  { label: '停用', value: false, elTagType: 'danger' }
 ]
 
 export const NOTICE_TYPE_OPTIONS = [

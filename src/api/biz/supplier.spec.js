@@ -26,7 +26,7 @@ describe('supplier api', () => {
     getSupplier(1)
     addSupplier({ name: '供应商A' })
     updateSupplier({ supplierId: 1, name: '供应商B' })
-    updateSupplierStatus(1, '1')
+    updateSupplierStatus(1, false)
     listSupplierUsers(1, { pageNo: 1, pageSize: 10 })
     listSupplierUserCases(1, 12, { pageNo: 1, pageSize: 10 })
 
@@ -52,7 +52,7 @@ describe('supplier api', () => {
     expect(requestMock).toHaveBeenNthCalledWith(5, {
       url: '/biz/supplier/1/status',
       method: 'put',
-      data: { status: '1' }
+      data: { status: false }
     })
     expect(requestMock).toHaveBeenNthCalledWith(6, {
       url: '/biz/supplier/1/users',
