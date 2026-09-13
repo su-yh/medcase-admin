@@ -13,7 +13,7 @@
          <el-form-item label="状态" prop="status">
             <el-select v-model="queryParams.status" placeholder="部门状态" clearable style="width: 200px">
                <el-option
-                  v-for="dict in sys_normal_disable"
+                  v-for="dict in NORMAL_DISABLE_OPTIONS"
                   :key="dict.value"
                   :label="dict.label"
                   :value="dict.value"
@@ -72,7 +72,7 @@
          </el-table-column>
          <el-table-column prop="status" label="状态" width="100">
             <template #default="scope">
-               <dict-tag :options="sys_normal_disable" :value="scope.row.status" />
+               <dict-tag :options="NORMAL_DISABLE_OPTIONS" :value="scope.row.status" />
             </template>
          </el-table-column>
          <el-table-column label="创建时间" align="center" prop="createTime" width="200">
@@ -134,7 +134,7 @@
                   <el-form-item label="部门状态">
                      <el-radio-group v-model="form.status">
                         <el-radio
-                           v-for="dict in sys_normal_disable"
+                           v-for="dict in NORMAL_DISABLE_OPTIONS"
                            :key="dict.value"
                            :value="dict.value"
                         >{{ dict.label }}</el-radio>
@@ -155,9 +155,9 @@
 
 <script setup name="Dept">
 import { listDept, getDept, delDept, addDept, updateDept, updateDeptSort, listDeptExcludeChild } from "@/api/system/dept"
+import { NORMAL_DISABLE_OPTIONS } from "@/constants/system"
 
 const { proxy } = getCurrentInstance()
-const { sys_normal_disable } = useDict("sys_normal_disable")
 
 const deptList = ref([])
 const open = ref(false)

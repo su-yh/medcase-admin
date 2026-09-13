@@ -33,7 +33,7 @@
           style="width: 180px"
         >
           <el-option
-            v-for="dict in sys_normal_disable"
+            v-for="dict in NORMAL_DISABLE_OPTIONS"
             :key="dict.value"
             :label="dict.label"
             :value="dict.value"
@@ -214,7 +214,7 @@
         </el-form-item>
         <el-form-item label="性别" prop="sex">
           <el-radio-group v-model="form.sex">
-            <el-radio v-for="dict in sys_user_sex" :key="dict.value" :value="dict.value">
+            <el-radio v-for="dict in USER_SEX_OPTIONS" :key="dict.value" :value="dict.value">
               {{ dict.label }}
             </el-radio>
           </el-radio-group>
@@ -230,7 +230,7 @@
         </el-form-item>
         <el-form-item label="状态" prop="status">
           <el-radio-group v-model="form.status">
-            <el-radio v-for="dict in sys_normal_disable" :key="dict.value" :value="dict.value">
+            <el-radio v-for="dict in NORMAL_DISABLE_OPTIONS" :key="dict.value" :value="dict.value">
               {{ dict.label }}
             </el-radio>
           </el-radio-group>
@@ -265,8 +265,8 @@ import {
   updateSupplier,
   updateSupplierStatus
 } from '@/api/biz/supplier'
-import { useDict } from '@/utils/dict'
 import { selectDictLabel } from '@/utils/ruoyi'
+import { NORMAL_DISABLE_OPTIONS, USER_SEX_OPTIONS } from '@/constants/system'
 
 const loading = ref(false)
 const submitting = ref(false)
@@ -277,7 +277,6 @@ const dialogOpen = ref(false)
 const dialogTitle = ref('')
 const queryRef = ref()
 const formRef = ref()
-const { sys_user_sex, sys_normal_disable } = useDict('sys_user_sex', 'sys_normal_disable')
 const supplierUsers = reactive({})
 const supplierUserTotals = reactive({})
 const supplierUserQueries = reactive({})
@@ -490,7 +489,7 @@ async function handleStatusChange(row, status) {
 }
 
 function sexLabel(sex) {
-  return selectDictLabel(sys_user_sex.value, sex) || '-'
+  return selectDictLabel(USER_SEX_OPTIONS, sex) || '-'
 }
 
 function userTypeLabel(userType) {

@@ -385,9 +385,9 @@
 import { onMounted, reactive, ref } from 'vue'
 import { getDoctor, listDoctor, reviewDoctor } from '@/api/biz/doctor'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { useDict } from '@/utils/dict'
 import { selectDictLabel } from '@/utils/ruoyi'
 import AttachmentPreviewDialog from '@/components/attachments/AttachmentPreviewDialog.vue'
+import { USER_SEX_OPTIONS } from '@/constants/system'
 import {
   DOCTOR_LIST_COLUMNS,
   DOCTOR_STATUS_OPTIONS
@@ -414,8 +414,6 @@ const reviewRules = {
     { required: true, message: '请输入审核拒绝原因', trigger: 'blur' }
   ]
 }
-const { sys_user_sex } = useDict('sys_user_sex')
-
 const columns = reactive(Object.fromEntries(
   DOCTOR_LIST_COLUMNS.map(({ key, label }) => [key, { label, visible: true }])
 ))
@@ -479,7 +477,7 @@ function handleReview(row) {
 }
 
 function sexLabel(sex) {
-  return selectDictLabel(sys_user_sex.value, sex) || '-'
+  return selectDictLabel(USER_SEX_OPTIONS, sex) || '-'
 }
 
 function openPreview(attachment) {

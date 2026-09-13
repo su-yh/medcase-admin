@@ -23,7 +23,7 @@
          <el-form-item label="状态" prop="status">
             <el-select v-model="queryParams.status" placeholder="数据状态" clearable style="width: 200px">
                <el-option
-                  v-for="dict in sys_normal_disable"
+                  v-for="dict in NORMAL_DISABLE_OPTIONS"
                   :key="dict.value"
                   :label="dict.label"
                   :value="dict.value"
@@ -90,7 +90,7 @@
          <el-table-column label="字典排序" align="center" prop="dictSort" />
          <el-table-column label="状态" align="center" prop="status">
             <template #default="scope">
-               <dict-tag :options="sys_normal_disable" :value="scope.row.status" />
+               <dict-tag :options="NORMAL_DISABLE_OPTIONS" :value="scope.row.status" />
             </template>
          </el-table-column>
          <el-table-column label="备注" align="center" prop="remark" :show-overflow-tooltip="true" />
@@ -146,7 +146,7 @@
             <el-form-item label="状态" prop="status">
                <el-radio-group v-model="form.status">
                   <el-radio
-                     v-for="dict in sys_normal_disable"
+                     v-for="dict in NORMAL_DISABLE_OPTIONS"
                      :key="dict.value"
                      :value="dict.value"
                   >{{ dict.label }}</el-radio>
@@ -170,9 +170,9 @@
 import useDictStore from '@/store/modules/dict'
 import { optionselect as getDictOptionselect, getType } from "@/api/system/dict/type"
 import { listData, getData, delData, addData, updateData } from "@/api/system/dict/data"
+import { NORMAL_DISABLE_OPTIONS } from "@/constants/system"
 
 const { proxy } = getCurrentInstance()
-const { sys_normal_disable } = useDict("sys_normal_disable")
 
 const dataList = ref([])
 const open = ref(false)

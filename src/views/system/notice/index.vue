@@ -22,7 +22,7 @@
          <el-form-item label="类型" prop="noticeType">
             <el-select v-model="queryParams.noticeType" placeholder="公告类型" clearable style="width: 200px">
                <el-option
-                  v-for="dict in sys_notice_type"
+                  v-for="dict in NOTICE_TYPE_OPTIONS"
                   :key="dict.value"
                   :label="dict.label"
                   :value="dict.value"
@@ -78,12 +78,12 @@
          </el-table-column>
          <el-table-column label="公告类型" align="center" prop="noticeType" width="100">
             <template #default="scope">
-               <dict-tag :options="sys_notice_type" :value="scope.row.noticeType" />
+               <dict-tag :options="NOTICE_TYPE_OPTIONS" :value="scope.row.noticeType" />
             </template>
          </el-table-column>
          <el-table-column label="状态" align="center" prop="status" width="100">
             <template #default="scope">
-               <dict-tag :options="sys_notice_status" :value="scope.row.status" />
+               <dict-tag :options="NOTICE_STATUS_OPTIONS" :value="scope.row.status" />
             </template>
          </el-table-column>
          <el-table-column label="创建者" align="center" prop="createBy" width="100" />
@@ -122,7 +122,7 @@
                   <el-form-item label="公告类型" prop="noticeType">
                      <el-select v-model="form.noticeType" placeholder="请选择">
                         <el-option
-                           v-for="dict in sys_notice_type"
+                           v-for="dict in NOTICE_TYPE_OPTIONS"
                            :key="dict.value"
                            :label="dict.label"
                            :value="dict.value"
@@ -134,7 +134,7 @@
                   <el-form-item label="状态">
                      <el-radio-group v-model="form.status">
                         <el-radio
-                           v-for="dict in sys_notice_status"
+                           v-for="dict in NOTICE_STATUS_OPTIONS"
                            :key="dict.value"
                            :value="dict.value"
                         >{{ dict.label }}</el-radio>
@@ -164,9 +164,9 @@
 import NoticeDetailView from "@/layout/components/HeaderNotice/DetailView"
 import ReadUsersDialog from "./ReadUsers"
 import { listNotice, getNotice, delNotice, addNotice, updateNotice } from "@/api/system/notice"
+import { NOTICE_STATUS_OPTIONS, NOTICE_TYPE_OPTIONS } from "@/constants/system"
 
 const { proxy } = getCurrentInstance()
-const { sys_notice_status, sys_notice_type } = useDict("sys_notice_status", "sys_notice_type")
 
 const noticeList = ref([])
 const open = ref(false)

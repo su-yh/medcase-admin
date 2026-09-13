@@ -27,7 +27,7 @@
                style="width: 240px"
             >
                <el-option
-                  v-for="dict in sys_normal_disable"
+                  v-for="dict in NORMAL_DISABLE_OPTIONS"
                   :key="dict.value"
                   :label="dict.label"
                   :value="dict.value"
@@ -153,7 +153,7 @@
             <el-form-item label="状态">
                <el-radio-group v-model="form.status">
                   <el-radio
-                     v-for="dict in sys_normal_disable"
+                  v-for="dict in NORMAL_DISABLE_OPTIONS"
                      :key="dict.value"
                      :value="dict.value"
                   >{{ dict.label }}</el-radio>
@@ -216,10 +216,10 @@ import {
   updateRoleMenus
 } from "@/api/system/role"
 import { treeselect as menuTreeselect } from "@/api/system/menu"
+import { NORMAL_DISABLE_OPTIONS } from "@/constants/system"
 
 const router = useRouter()
 const { proxy } = getCurrentInstance()
-const { sys_normal_disable } = useDict("sys_normal_disable")
 
 const roleList = ref([])
 const open = ref(false)

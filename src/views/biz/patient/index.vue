@@ -329,9 +329,9 @@
 import { onMounted, reactive, ref } from 'vue'
 import { getPatient, listPatient, reviewPatient } from '@/api/biz/patient'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { useDict } from '@/utils/dict'
 import { selectDictLabel } from '@/utils/ruoyi'
 import AttachmentPreviewDialog from '@/components/attachments/AttachmentPreviewDialog.vue'
+import { USER_SEX_OPTIONS } from '@/constants/system'
 import {
   PATIENT_LIST_COLUMNS,
   PATIENT_STATUS_OPTIONS
@@ -358,8 +358,6 @@ const reviewRules = {
     { required: true, message: '请输入审核拒绝原因', trigger: 'blur' }
   ]
 }
-const { sys_user_sex } = useDict('sys_user_sex')
-
 const columns = reactive(Object.fromEntries(
   PATIENT_LIST_COLUMNS.map(({ key, label }) => [key, { label, visible: true }])
 ))
@@ -423,7 +421,7 @@ function handleReview(row) {
 }
 
 function sexLabel(sex) {
-  return selectDictLabel(sys_user_sex.value, sex) || '-'
+  return selectDictLabel(USER_SEX_OPTIONS, sex) || '-'
 }
 
 function openPreview(attachment) {

@@ -22,7 +22,7 @@
          <el-form-item label="系统内置" prop="configType">
             <el-select v-model="queryParams.configType" placeholder="系统内置" clearable style="width: 240px">
                <el-option
-                  v-for="dict in sys_yes_no"
+                  v-for="dict in YES_NO_OPTIONS"
                   :key="dict.value"
                   :label="dict.label"
                   :value="dict.value"
@@ -95,7 +95,7 @@
          <el-table-column label="参数键值" align="center" prop="configValue" :show-overflow-tooltip="true" />
          <el-table-column label="系统内置" align="center" prop="configType">
             <template #default="scope">
-               <dict-tag :options="sys_yes_no" :value="scope.row.configType" />
+               <dict-tag :options="YES_NO_OPTIONS" :value="scope.row.configType" />
             </template>
          </el-table-column>
          <el-table-column label="备注" align="center" prop="remark" :show-overflow-tooltip="true" />
@@ -135,7 +135,7 @@
             <el-form-item label="系统内置" prop="configType">
                <el-radio-group v-model="form.configType">
                   <el-radio
-                     v-for="dict in sys_yes_no"
+                     v-for="dict in YES_NO_OPTIONS"
                      :key="dict.value"
                      :value="dict.value"
                   >{{ dict.label }}</el-radio>
@@ -157,9 +157,9 @@
 
 <script setup name="Config">
 import { listConfig, getConfig, delConfig, addConfig, updateConfig, refreshCache } from "@/api/system/config"
+import { YES_NO_OPTIONS } from "@/constants/system"
 
 const { proxy } = getCurrentInstance()
-const { sys_yes_no } = useDict("sys_yes_no")
 
 const configList = ref([])
 const open = ref(false)

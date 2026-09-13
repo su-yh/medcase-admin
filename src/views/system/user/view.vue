@@ -113,6 +113,7 @@
 
 <script setup>
 import { getUser } from '@/api/system/user'
+import { USER_SEX_OPTIONS } from '@/constants/system'
 
 const visible = ref(false)
 const loading = ref(false)
@@ -120,9 +121,7 @@ const info = reactive({})
 const postOptions = ref([])
 const roleOptions = ref([])
 
-const { sys_user_sex } = useDict("sys_user_sex")
-
-const sexLabel = computed(() => selectDictLabel(sys_user_sex.value, info.sex) || '-')
+const sexLabel = computed(() => selectDictLabel(USER_SEX_OPTIONS, info.sex) || '-')
 
 const postNames = computed(() => {
   if (!postOptions.value.length || !info.postIds) return ''
