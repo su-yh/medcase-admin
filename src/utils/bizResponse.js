@@ -4,9 +4,7 @@ export function createBizError(response, fallbackMessage = '接口请求失败')
   const payload = response?.data
   const payloadCode = payload && typeof payload === 'object' ? payload.code : undefined
   const code = response?.status >= 400 ? response.status : payloadCode ?? response?.status
-  const message = typeof payload === 'string'
-    ? payload
-    : payload?.msg || fallbackMessage
+  const message = typeof payload === 'string' ? payload : payload?.msg || fallbackMessage
   const error = new Error(message)
 
   if (code !== undefined && code !== null) {
