@@ -21,12 +21,8 @@
          </el-form-item>
          <el-form-item label="状态" prop="enabled">
             <el-select v-model="queryParams.enabled" placeholder="岗位状态" clearable style="width: 200px">
-               <el-option
-                  v-for="dict in NORMAL_DISABLE_OPTIONS"
-                  :key="dict.value"
-                  :label="dict.label"
-                  :value="dict.value"
-               />
+               <el-option label="正常" :value="true" />
+               <el-option label="停用" :value="false" />
             </el-select>
          </el-form-item>
          <el-form-item>
@@ -76,7 +72,9 @@
          <el-table-column label="岗位排序" align="center" prop="postSort" />
          <el-table-column label="状态" align="center" prop="enabled">
             <template #default="scope">
-               <dict-tag :options="NORMAL_DISABLE_OPTIONS" :value="scope.row.enabled" />
+               <el-tag :type="scope.row.enabled ? 'primary' : 'danger'">
+                  {{ scope.row.enabled ? '正常' : '停用' }}
+               </el-tag>
             </template>
          </el-table-column>
          <el-table-column label="创建时间" align="center" prop="createTime" width="180">
@@ -114,11 +112,8 @@
             </el-form-item>
             <el-form-item label="岗位状态" prop="enabled">
                <el-radio-group v-model="form.enabled">
-                  <el-radio
-                     v-for="dict in NORMAL_DISABLE_OPTIONS"
-                     :key="dict.value"
-                     :value="dict.value"
-                  >{{ dict.label }}</el-radio>
+                  <el-radio :value="true">正常</el-radio>
+                  <el-radio :value="false">停用</el-radio>
                </el-radio-group>
             </el-form-item>
             <el-form-item label="备注" prop="remark">
@@ -137,7 +132,6 @@
 
 <script setup name="Post">
 import { listPost, addPost, delPost, getPost, updatePost } from "@/api/system/post"
-import { NORMAL_DISABLE_OPTIONS } from "@/constants/system"
 
 const { proxy } = getCurrentInstance()
 

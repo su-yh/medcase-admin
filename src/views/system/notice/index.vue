@@ -83,7 +83,9 @@
          </el-table-column>
          <el-table-column label="状态" align="center" prop="enabled" width="100">
             <template #default="scope">
-               <dict-tag :options="NOTICE_STATUS_OPTIONS" :value="scope.row.enabled" />
+               <el-tag :type="scope.row.enabled ? 'primary' : 'danger'">
+                  {{ scope.row.enabled ? '正常' : '关闭' }}
+               </el-tag>
             </template>
          </el-table-column>
          <el-table-column label="创建者" align="center" prop="createBy" width="100" />
@@ -133,11 +135,8 @@
                <el-col :span="24">
                   <el-form-item label="状态">
                      <el-radio-group v-model="form.enabled">
-                        <el-radio
-                           v-for="dict in NOTICE_STATUS_OPTIONS"
-                           :key="dict.value"
-                           :value="dict.value"
-                        >{{ dict.label }}</el-radio>
+                        <el-radio :value="true">正常</el-radio>
+                        <el-radio :value="false">关闭</el-radio>
                      </el-radio-group>
                   </el-form-item>
                </el-col>
@@ -164,7 +163,7 @@
 import NoticeDetailView from "@/layout/components/HeaderNotice/DetailView"
 import ReadUsersDialog from "./ReadUsers"
 import { listNotice, getNotice, delNotice, addNotice, updateNotice } from "@/api/system/notice"
-import { NOTICE_STATUS_OPTIONS, NOTICE_TYPE_OPTIONS } from "@/constants/system"
+import { NOTICE_TYPE_OPTIONS } from "@/constants/system"
 
 const { proxy } = getCurrentInstance()
 

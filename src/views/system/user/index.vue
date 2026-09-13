@@ -95,7 +95,7 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="归属部门" prop="deptId">
-              <el-tree-select v-model="form.deptId" :data="enabledDeptOptions" :props="{ value: 'id', label: 'label', children: 'children' }" value-key="id" placeholder="请选择归属部门" clearable check-strictly />
+              <el-tree-select v-model="form.deptId" :data="enabledDeptOptions" :props="deptTreeProps" value-key="id" placeholder="请选择归属部门" clearable check-strictly />
             </el-form-item>
           </el-col>
         </el-row>
@@ -198,6 +198,12 @@ const title = ref("")
 const dateRange = ref([])
 const deptOptions = ref(undefined)
 const enabledDeptOptions = ref(undefined)
+const deptTreeProps = {
+  value: 'id',
+  label: 'label',
+  children: 'children',
+  disabled: data => !data.enabled
+}
 const postOptions = ref([])
 const roleOptions = ref([])
 // 列显隐信息
@@ -252,7 +258,7 @@ function getDeptTree() {
 /** 过滤禁用的部门 */
 function filterDisabledDept(deptList) {
   return deptList.filter(dept => {
-    if (dept.disabled) {
+    if (!dept.enabled) {
       return false
     }
     if (dept.children && dept.children.length) {

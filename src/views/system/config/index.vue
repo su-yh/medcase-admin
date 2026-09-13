@@ -18,16 +18,12 @@
                style="width: 240px"
                @keyup.enter="handleQuery"
             />
-         </el-form-item>
-         <el-form-item label="系统内置" prop="builtIn">
-            <el-select v-model="queryParams.builtIn" placeholder="系统内置" clearable style="width: 240px">
-               <el-option
-                  v-for="dict in YES_NO_OPTIONS"
-                  :key="dict.value"
-                  :label="dict.label"
-                  :value="dict.value"
-               />
-            </el-select>
+            </el-form-item>
+            <el-form-item label="系统内置" prop="builtIn">
+               <el-select v-model="queryParams.builtIn" placeholder="系统内置" clearable style="width: 240px">
+                  <el-option label="是" :value="true" />
+                  <el-option label="否" :value="false" />
+               </el-select>
          </el-form-item>
          <el-form-item label="创建时间" style="width: 308px;">
             <el-date-picker
@@ -95,7 +91,9 @@
          <el-table-column label="参数键值" align="center" prop="configValue" :show-overflow-tooltip="true" />
          <el-table-column label="系统内置" align="center" prop="builtIn">
             <template #default="scope">
-               <dict-tag :options="YES_NO_OPTIONS" :value="scope.row.builtIn" />
+               <el-tag :type="scope.row.builtIn ? 'primary' : 'danger'">
+                  {{ scope.row.builtIn ? '是' : '否' }}
+               </el-tag>
             </template>
          </el-table-column>
          <el-table-column label="备注" align="center" prop="remark" :show-overflow-tooltip="true" />
@@ -134,11 +132,8 @@
             </el-form-item>
             <el-form-item label="系统内置" prop="builtIn">
                <el-radio-group v-model="form.builtIn">
-                  <el-radio
-                     v-for="dict in YES_NO_OPTIONS"
-                     :key="dict.value"
-                     :value="dict.value"
-                  >{{ dict.label }}</el-radio>
+                  <el-radio :value="true">是</el-radio>
+                  <el-radio :value="false">否</el-radio>
                </el-radio-group>
             </el-form-item>
             <el-form-item label="备注" prop="remark">
@@ -157,7 +152,6 @@
 
 <script setup name="Config">
 import { listConfig, getConfig, delConfig, addConfig, updateConfig, refreshCache } from "@/api/system/config"
-import { YES_NO_OPTIONS } from "@/constants/system"
 
 const { proxy } = getCurrentInstance()
 

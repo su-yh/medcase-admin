@@ -12,12 +12,8 @@
          </el-form-item>
          <el-form-item label="状态" prop="enabled">
             <el-select v-model="queryParams.enabled" placeholder="部门状态" clearable style="width: 200px">
-               <el-option
-                  v-for="dict in NORMAL_DISABLE_OPTIONS"
-                  :key="dict.value"
-                  :label="dict.label"
-                  :value="dict.value"
-               />
+               <el-option label="正常" :value="true" />
+               <el-option label="停用" :value="false" />
             </el-select>
          </el-form-item>
          <el-form-item>
@@ -72,7 +68,9 @@
          </el-table-column>
          <el-table-column prop="enabled" label="状态" width="100">
             <template #default="scope">
-               <dict-tag :options="NORMAL_DISABLE_OPTIONS" :value="scope.row.enabled" />
+               <el-tag :type="scope.row.enabled ? 'primary' : 'danger'">
+                  {{ scope.row.enabled ? '正常' : '停用' }}
+               </el-tag>
             </template>
          </el-table-column>
          <el-table-column label="创建时间" align="center" prop="createTime" width="200">
@@ -133,11 +131,8 @@
                <el-col :span="12">
                   <el-form-item label="部门状态">
                      <el-radio-group v-model="form.enabled">
-                        <el-radio
-                           v-for="dict in NORMAL_DISABLE_OPTIONS"
-                           :key="dict.value"
-                           :value="dict.value"
-                        >{{ dict.label }}</el-radio>
+                        <el-radio :value="true">正常</el-radio>
+                        <el-radio :value="false">停用</el-radio>
                      </el-radio-group>
                   </el-form-item>
                </el-col>
@@ -155,7 +150,6 @@
 
 <script setup name="Dept">
 import { listDept, getDept, delDept, addDept, updateDept, updateDeptSort, listDeptExcludeChild } from "@/api/system/dept"
-import { NORMAL_DISABLE_OPTIONS } from "@/constants/system"
 
 const { proxy } = getCurrentInstance()
 

@@ -26,12 +26,8 @@
                clearable
                style="width: 240px"
             >
-               <el-option
-                  v-for="dict in NORMAL_DISABLE_OPTIONS"
-                  :key="dict.value"
-                  :label="dict.label"
-                  :value="dict.value"
-               />
+               <el-option label="正常" :value="true" />
+               <el-option label="停用" :value="false" />
             </el-select>
          </el-form-item>
          <el-form-item label="创建时间" style="width: 308px">
@@ -152,11 +148,8 @@
             </el-form-item>
             <el-form-item label="状态">
                <el-radio-group v-model="form.enabled">
-                  <el-radio
-                  v-for="dict in NORMAL_DISABLE_OPTIONS"
-                     :key="dict.value"
-                     :value="dict.value"
-                  >{{ dict.label }}</el-radio>
+                  <el-radio :value="true">正常</el-radio>
+                  <el-radio :value="false">停用</el-radio>
                </el-radio-group>
             </el-form-item>
             <el-form-item label="备注">
@@ -216,7 +209,6 @@ import {
   updateRoleMenus
 } from "@/api/system/role"
 import { treeselect as menuTreeselect } from "@/api/system/menu"
-import { NORMAL_DISABLE_OPTIONS } from "@/constants/system"
 
 const router = useRouter()
 const { proxy } = getCurrentInstance()
@@ -356,7 +348,7 @@ function handleAuthMenu(row) {
   menuRoleName.value = row.roleName
   menuExpand.value = false
   menuNodeAll.value = false
-  menuCheckStrictly.value = row.menuCheckStrictly !== false
+  menuCheckStrictly.value = row.menuCheckStrictly ?? true
   Promise.all([menuTreeselect(), getRoleMenuIds(row.roleId)]).then(([menuResponse, menuIds]) => {
     menuOptions.value = proxy.handleTree(
       menuResponse.data.map(menu => ({ ...menu, label: menu.menuName })),
