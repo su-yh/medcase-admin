@@ -3,6 +3,7 @@ import { getToken, setToken, removeToken } from '@/utils/auth'
 import { isHttp } from "@/utils/validate"
 import useLockStore from '@/store/modules/lock'
 import defAva from '@/assets/images/default-avatar.svg'
+import { logoutAndClearSession } from './userSession'
 
 function attachmentUrl(filePath) {
   return import.meta.env.VITE_APP_BASE_API
@@ -71,18 +72,15 @@ const useUserStore = defineStore(
       },
       // 退出系统
       logOut() {
-        return new Promise((resolve, reject) => {
-          logout(this.token).then(() => {
+        return logoutAndClearSession(
+          () => logout(this.token),
+          () => {
             this.token = ''
             this.roles = []
             this.permissions = []
             this.avatar = defAva
             removeToken()
-            resolve()
-          }).catch(error => {
-            reject(error)
           })
-        })
       }
     }
   })
