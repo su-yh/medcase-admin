@@ -1,4 +1,4 @@
-import request from '@/utils/adminRequest'
+import request from '@/utils/request'
 
 export function getSystemVersion() {
   return request({

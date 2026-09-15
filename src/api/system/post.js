@@ -1,8 +1,8 @@
-import adminRequest from '@/utils/adminRequest'
+import request from '@/utils/request'
 
 // 查询岗位列表
 export function listPost(query) {
-  return adminRequest({
+  return request({
     url: '/system/post/list',
     method: 'get',
     params: query
@@ -11,7 +11,7 @@ export function listPost(query) {
 
 // 查询岗位详细
 export function getPost(postId) {
-  return adminRequest({
+  return request({
     url: '/system/post/' + postId,
     method: 'get'
   }).then(data => ({ data }))
@@ -19,7 +19,7 @@ export function getPost(postId) {
 
 // 新增岗位
 export function addPost(data) {
-  return adminRequest({
+  return request({
     url: '/system/post',
     method: 'post',
     data: data
@@ -28,7 +28,7 @@ export function addPost(data) {
 
 // 修改岗位
 export function updatePost(data) {
-  return adminRequest({
+  return request({
     url: '/system/post',
     method: 'put',
     data: data
@@ -37,7 +37,7 @@ export function updatePost(data) {
 
 // 删除岗位
 export function delPost(postId) {
-  return adminRequest({
+  return request({
     url: '/system/post/' + postId,
     method: 'delete'
   })

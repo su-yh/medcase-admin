@@ -1,4 +1,4 @@
-import adminRequest from '@/utils/adminRequest'
+import request from '@/utils/request'
 
 // 登录方法
 export function login(username, password, code, uuid) {
@@ -8,7 +8,7 @@ export function login(username, password, code, uuid) {
     code,
     uuid
   }
-  return adminRequest({
+  return request({
     url: '/login',
     headers: {
       isToken: false,
@@ -23,7 +23,7 @@ export function login(username, password, code, uuid) {
 
 // 注册方法
 export function register(data) {
-  return adminRequest({
+  return request({
     url: '/register',
     headers: {
       isToken: false
@@ -35,7 +35,7 @@ export function register(data) {
 
 // 获取用户详细信息
 export function getInfo() {
-  return adminRequest({
+  return request({
     url: '/getInfo',
     method: 'get'
   }).then(response => ({
@@ -47,7 +47,7 @@ export function getInfo() {
 
 // 解锁屏幕
 export function unlockScreen(password) {
-  return adminRequest({
+  return request({
     url: '/unlockscreen',
     method: 'post',
     data: { password }
@@ -56,7 +56,7 @@ export function unlockScreen(password) {
 
 // 退出方法
 export function logout() {
-  return adminRequest({
+  return request({
     url: '/logout',
     method: 'post'
   })
@@ -64,7 +64,7 @@ export function logout() {
 
 // 获取验证码
 export function getCodeImg() {
-  return adminRequest({
+  return request({
     url: '/captchaImage',
     headers: {
       isToken: false

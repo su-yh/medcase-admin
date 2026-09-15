@@ -1,8 +1,8 @@
-import adminRequest from '@/utils/adminRequest'
+import request from '@/utils/request'
 
 // 查询角色列表
 export function listRole(query) {
-  return adminRequest({
+  return request({
     url: '/system/role/list',
     method: 'get',
     params: query
@@ -11,7 +11,7 @@ export function listRole(query) {
 
 // 查询角色详细
 export function getRole(roleId) {
-  return adminRequest({
+  return request({
     url: '/system/role/' + roleId,
     method: 'get'
   }).then(data => ({ data }))
@@ -19,7 +19,7 @@ export function getRole(roleId) {
 
 // 查询角色关联的菜单ID
 export function getRoleMenuIds(roleId) {
-  return adminRequest({
+  return request({
     url: '/system/role/' + roleId + '/menuIds',
     method: 'get'
   })
@@ -27,7 +27,7 @@ export function getRoleMenuIds(roleId) {
 
 // 修改角色关联菜单
 export function updateRoleMenus(roleId, data) {
-  return adminRequest({
+  return request({
     url: '/system/role/' + roleId + '/menus',
     method: 'put',
     data: data
@@ -36,7 +36,7 @@ export function updateRoleMenus(roleId, data) {
 
 // 新增角色
 export function addRole(data) {
-  return adminRequest({
+  return request({
     url: '/system/role',
     method: 'post',
     data: data
@@ -45,7 +45,7 @@ export function addRole(data) {
 
 // 修改角色
 export function updateRole(data) {
-  return adminRequest({
+  return request({
     url: '/system/role',
     method: 'put',
     data: data
@@ -58,7 +58,7 @@ export function changeRoleStatus(roleId, enabled) {
     roleId,
     enabled
   }
-  return adminRequest({
+  return request({
     url: '/system/role/changeStatus',
     method: 'put',
     data: data
@@ -67,7 +67,7 @@ export function changeRoleStatus(roleId, enabled) {
 
 // 删除角色
 export function delRole(roleId) {
-  return adminRequest({
+  return request({
     url: '/system/role/' + roleId,
     method: 'delete'
   })
@@ -75,7 +75,7 @@ export function delRole(roleId) {
 
 // 查询角色已授权用户列表
 export function allocatedUserList(query) {
-  return adminRequest({
+  return request({
     url: '/system/role/authUser/allocatedList',
     method: 'get',
     params: query
@@ -84,7 +84,7 @@ export function allocatedUserList(query) {
 
 // 查询角色未授权用户列表
 export function unallocatedUserList(query) {
-  return adminRequest({
+  return request({
     url: '/system/role/authUser/unallocatedList',
     method: 'get',
     params: query
@@ -93,7 +93,7 @@ export function unallocatedUserList(query) {
 
 // 取消用户授权角色
 export function authUserCancel(data) {
-  return adminRequest({
+  return request({
     url: '/system/role/authUser/cancel',
     method: 'put',
     data: data
@@ -102,7 +102,7 @@ export function authUserCancel(data) {
 
 // 批量取消用户授权角色
 export function authUserCancelAll(data) {
-  return adminRequest({
+  return request({
     url: '/system/role/authUser/cancelAll',
     method: 'put',
     params: data
@@ -111,7 +111,7 @@ export function authUserCancelAll(data) {
 
 // 授权用户选择
 export function authUserSelectAll(data) {
-  return adminRequest({
+  return request({
     url: '/system/role/authUser/selectAll',
     method: 'put',
     params: data

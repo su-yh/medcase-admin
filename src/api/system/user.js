@@ -1,9 +1,9 @@
-import adminRequest from '@/utils/adminRequest'
+import request from '@/utils/request'
 import { parseStrEmpty } from "@/utils/ruoyi";
 
 // 查询用户列表
 export function listUser(query) {
-  return adminRequest({
+  return request({
     url: '/system/user/list',
     method: 'get',
     params: query
@@ -12,7 +12,7 @@ export function listUser(query) {
 
 // 查询用户详细
 export function getUser(userId) {
-  return adminRequest({
+  return request({
     url: '/system/user/' + parseStrEmpty(userId),
     method: 'get'
   }).then(response => ({
@@ -26,7 +26,7 @@ export function getUser(userId) {
 
 // 新增用户
 export function addUser(data) {
-  return adminRequest({
+  return request({
     url: '/system/user',
     method: 'post',
     data: data
@@ -35,7 +35,7 @@ export function addUser(data) {
 
 // 修改用户
 export function updateUser(data) {
-  return adminRequest({
+  return request({
     url: '/system/user',
     method: 'put',
     data: data
@@ -44,7 +44,7 @@ export function updateUser(data) {
 
 // 删除用户
 export function delUser(userId) {
-  return adminRequest({
+  return request({
     url: '/system/user/' + userId,
     method: 'delete'
   })
@@ -56,7 +56,7 @@ export function resetUserPwd(userId, password) {
     userId,
     password
   }
-  return adminRequest({
+  return request({
     url: '/system/user/resetPwd',
     method: 'put',
     data: data
@@ -69,7 +69,7 @@ export function changeUserStatus(userId, status) {
     userId,
     status
   }
-  return adminRequest({
+  return request({
     url: '/system/user/changeStatus',
     method: 'put',
     data: data
@@ -78,7 +78,7 @@ export function changeUserStatus(userId, status) {
 
 // 查询用户个人信息
 export function getUserProfile() {
-  return adminRequest({
+  return request({
     url: '/system/user/profile',
     method: 'get'
   })
@@ -86,7 +86,7 @@ export function getUserProfile() {
 
 // 修改用户个人信息
 export function updateUserProfile(data) {
-  return adminRequest({
+  return request({
     url: '/system/user/profile',
     method: 'put',
     data: data
@@ -99,7 +99,7 @@ export function updateUserPwd(oldPassword, newPassword) {
     oldPassword,
     newPassword
   }
-  return adminRequest({
+  return request({
     url: '/system/user/profile/updatePwd',
     method: 'put',
     data: data
@@ -108,7 +108,7 @@ export function updateUserPwd(oldPassword, newPassword) {
 
 // 用户头像上传
 export function uploadAvatar(data) {
-  return adminRequest({
+  return request({
     url: '/file/upload',
     method: 'post',
     params: { business: 'avatar' },
@@ -119,7 +119,7 @@ export function uploadAvatar(data) {
 
 // 查询授权角色
 export function getAuthRole(userId) {
-  return adminRequest({
+  return request({
     url: '/system/user/authRole/' + userId,
     method: 'get'
   })
@@ -127,7 +127,7 @@ export function getAuthRole(userId) {
 
 // 保存授权角色
 export function updateAuthRole(data) {
-  return adminRequest({
+  return request({
     url: '/system/user/authRole',
     method: 'put',
     params: data
@@ -136,7 +136,7 @@ export function updateAuthRole(data) {
 
 // 查询部门下拉树结构
 export function deptTreeSelect() {
-  return adminRequest({
+  return request({
     url: '/system/user/deptTree',
     method: 'get'
   }).then(data => ({ data }))

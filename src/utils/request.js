@@ -5,15 +5,43 @@ import errorCode from '@/utils/errorCode'
 import { tansParams } from '@/utils/ruoyi'
 import cache from '@/plugins/cache'
 import useUserStore from '@/store/modules/user'
-import { BIZ_SUCCESS_CODE, createBizError } from '@/utils/bizResponse'
 import { isBizUnauthorized } from '@/utils/bizAuth'
+
+export const SUCCESS_CODE = 'OK'
+
+export function createError(response, fallbackMessage = '接口请求失败') {
+  const payload = response?.data
+  const payloadCode = payload && typeof payload === 'object' ? payload.code : undefined
+  const code = response?.status >= 400 ? response.status : payloadCode ?? response?.status
+  const message = typeof payload === 'string' ? payload : payload?.msg || fallbackMessage
+  const error = new Error(message)
+
+  if (code !== undefined && code !== null) {
+    error.code = code
+  }
+  if (response?.status !== undefined && response?.status !== null) {
+    error.status = response.status
+  }
+
+  return error
+}
+
+export function unwrapResponse(response) {
+  const payload = response?.data
+
+  if (payload?.code === SUCCESS_CODE) {
+    return payload.data
+  }
+
+  throw createError(response)
+}
 
 // 是否显示重新登录
 export let isRelogin = { show: false }
 
 axios.defaults.headers['Content-Type'] = 'application/json;charset=utf-8'
 
-const adminRequest = axios.create({
+const request = axios.create({
   baseURL: import.meta.env.VITE_APP_BASE_API,
   timeout: 10000
 })
@@ -64,7 +92,7 @@ function rejectBusinessError(error) {
   return Promise.reject(error)
 }
 
-adminRequest.interceptors.request.use(config => {
+request.interceptors.request.use(config => {
   const isToken = (config.headers || {}).isToken === false
   const isRepeatSubmit = (config.headers || {}).repeatSubmit === false
   const interval = (config.headers || {}).interval || 1000
@@ -94,9 +122,9 @@ adminRequest.interceptors.request.use(config => {
       return config
     }
 
-    const sessionObj = cache.session.getJSON('adminRequestSessionObj')
+    const sessionObj = cache.session.getJSON('requestSessionObj')
     if (sessionObj === undefined || sessionObj === null || sessionObj === '') {
-      cache.session.setJSON('adminRequestSessionObj', requestObj)
+      cache.session.setJSON('requestSessionObj', requestObj)
     } else {
       const s_url = sessionObj.url
       const s_data = sessionObj.data
@@ -106,7 +134,7 @@ adminRequest.interceptors.request.use(config => {
         console.warn(`[${s_url}]: ` + message)
         return Promise.reject(new Error(message))
       } else {
-        cache.session.setJSON('adminRequestSessionObj', requestObj)
+        cache.session.setJSON('requestSessionObj', requestObj)
       }
     }
   }
@@ -117,7 +145,7 @@ adminRequest.interceptors.request.use(config => {
   return Promise.reject(error)
 })
 
-adminRequest.interceptors.response.use(res => {
+request.interceptors.response.use(res => {
     const payload = res.data
 
     if (isBinaryResponse(res)) {
@@ -125,14 +153,14 @@ adminRequest.interceptors.response.use(res => {
     }
 
     if (typeof payload === 'string') {
-      return rejectBusinessError(createBizError(res))
+      return rejectBusinessError(createError(res))
     }
 
-    if (payload?.code === BIZ_SUCCESS_CODE) {
+    if (payload?.code === SUCCESS_CODE) {
       return payload.data
     }
 
-    return rejectBusinessError(createBizError(res))
+    return rejectBusinessError(createError(res))
   },
   error => {
     console.log('err' + error)
@@ -154,10 +182,10 @@ adminRequest.interceptors.response.use(res => {
       fallbackMessage = '系统接口' + error.message.slice(-3) + '异常'
     }
 
-    const normalizedError = createBizError(response, fallbackMessage)
+    const normalizedError = createError(response, fallbackMessage)
     ElMessage({ message: normalizedError.message, type: 'error', duration: 5 * 1000 })
     return Promise.reject(normalizedError)
   }
 )
 
-export default adminRequest
+export default request

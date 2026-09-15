@@ -1,8 +1,8 @@
-import adminRequest from '@/utils/adminRequest'
+import request from '@/utils/request'
 
 // 获取路由
 export const getRouters = () => {
-  return adminRequest({
+  return request({
     url: '/getRouters',
     method: 'get'
   }).then(data => ({

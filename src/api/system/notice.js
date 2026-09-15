@@ -1,8 +1,8 @@
-import adminRequest from '@/utils/adminRequest'
+import request from '@/utils/request'
 
 // 查询公告列表
 export function listNotice(query) {
-  return adminRequest({
+  return request({
     url: '/system/notice/list',
     method: 'get',
     params: query
@@ -11,7 +11,7 @@ export function listNotice(query) {
 
 // 查询公告详细
 export function getNotice(noticeId) {
-  return adminRequest({
+  return request({
     url: '/system/notice/' + noticeId,
     method: 'get'
   }).then(data => ({ data }))
@@ -19,7 +19,7 @@ export function getNotice(noticeId) {
 
 // 新增公告
 export function addNotice(data) {
-  return adminRequest({
+  return request({
     url: '/system/notice',
     method: 'post',
     data: data
@@ -28,7 +28,7 @@ export function addNotice(data) {
 
 // 修改公告
 export function updateNotice(data) {
-  return adminRequest({
+  return request({
     url: '/system/notice',
     method: 'put',
     data: data
@@ -37,7 +37,7 @@ export function updateNotice(data) {
 
 // 删除公告
 export function delNotice(noticeId) {
-  return adminRequest({
+  return request({
     url: '/system/notice/' + noticeId,
     method: 'delete'
   })
@@ -45,7 +45,7 @@ export function delNotice(noticeId) {
 
 // 首页顶部公告列表（带已读状态）
 export function listNoticeTop() {
-  return adminRequest({
+  return request({
     url: '/system/notice/listTop',
     method: 'get'
   })
@@ -53,7 +53,7 @@ export function listNoticeTop() {
 
 // 标记公告已读
 export function markNoticeRead(noticeId) {
-  return adminRequest({
+  return request({
     url: '/system/notice/markRead',
     method: 'post',
     params: { noticeId }
@@ -62,7 +62,7 @@ export function markNoticeRead(noticeId) {
 
 // 批量标记已读
 export function markNoticeReadAll(ids) {
-  return adminRequest({
+  return request({
     url: '/system/notice/markReadAll',
     method: 'post',
     params: { ids }
@@ -71,7 +71,7 @@ export function markNoticeReadAll(ids) {
 
 // 查询公告已读用户列表
 export function listNoticeReadUsers(query) {
-  return adminRequest({
+  return request({
     url: '/system/notice/readUsers/list',
     method: 'get',
     params: query

@@ -1,8 +1,8 @@
-import adminRequest from '@/utils/adminRequest'
+import request from '@/utils/request'
 
 // 查询部门列表
 export function listDept(query) {
-  return adminRequest({
+  return request({
     url: '/system/dept/list',
     method: 'get',
     params: query
@@ -11,7 +11,7 @@ export function listDept(query) {
 
 // 查询部门列表（排除节点）
 export function listDeptExcludeChild(deptId) {
-  return adminRequest({
+  return request({
     url: '/system/dept/list/exclude/' + deptId,
     method: 'get'
   }).then(data => ({ data }))
@@ -19,7 +19,7 @@ export function listDeptExcludeChild(deptId) {
 
 // 查询部门详细
 export function getDept(deptId) {
-  return adminRequest({
+  return request({
     url: '/system/dept/' + deptId,
     method: 'get'
   }).then(data => ({ data }))
@@ -27,7 +27,7 @@ export function getDept(deptId) {
 
 // 新增部门
 export function addDept(data) {
-  return adminRequest({
+  return request({
     url: '/system/dept',
     method: 'post',
     data: data
@@ -36,7 +36,7 @@ export function addDept(data) {
 
 // 修改部门
 export function updateDept(data) {
-  return adminRequest({
+  return request({
     url: '/system/dept',
     method: 'put',
     data: data
@@ -45,7 +45,7 @@ export function updateDept(data) {
 
 // 保存部门排序
 export function updateDeptSort(data) {
-  return adminRequest({
+  return request({
     url: '/system/dept/updateSort',
     method: 'put',
     data: data
@@ -54,7 +54,7 @@ export function updateDeptSort(data) {
 
 // 删除部门
 export function delDept(deptId) {
-  return adminRequest({
+  return request({
     url: '/system/dept/' + deptId,
     method: 'delete'
   })

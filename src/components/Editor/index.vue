@@ -29,7 +29,7 @@
 <script setup>
 import { QuillEditor } from "@vueup/vue-quill"
 import "@vueup/vue-quill/dist/vue-quill.snow.css"
-import adminRequest from "@/utils/adminRequest"
+import request from "@/utils/request"
 
 const { proxy } = getCurrentInstance()
 
@@ -176,7 +176,7 @@ function handleUploadRequest(options) {
 function uploadNoticeImage(file) {
   const formData = new FormData()
   formData.append("file", file)
-  return adminRequest({
+  return request({
     url: uploadUrl.value,
     method: "post",
     params: { business: "notice" },

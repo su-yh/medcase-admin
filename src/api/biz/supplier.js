@@ -1,7 +1,7 @@
-import adminRequest from '@/utils/adminRequest'
+import request from '@/utils/request'
 
 export function listSupplier(query) {
-  return adminRequest({
+  return request({
     url: '/biz/supplier/list',
     method: 'get',
     params: query
@@ -9,14 +9,14 @@ export function listSupplier(query) {
 }
 
 export function getSupplier(supplierId) {
-  return adminRequest({
+  return request({
     url: `/biz/supplier/${supplierId}`,
     method: 'get'
   })
 }
 
 export function addSupplier(data) {
-  return adminRequest({
+  return request({
     url: '/biz/supplier',
     method: 'post',
     data
@@ -24,7 +24,7 @@ export function addSupplier(data) {
 }
 
 export function updateSupplier(data) {
-  return adminRequest({
+  return request({
     url: '/biz/supplier',
     method: 'put',
     data
@@ -32,7 +32,7 @@ export function updateSupplier(data) {
 }
 
 export function updateSupplierStatus(supplierId, status) {
-  return adminRequest({
+  return request({
     url: `/biz/supplier/${supplierId}/status`,
     method: 'put',
     data: { status }
@@ -40,7 +40,7 @@ export function updateSupplierStatus(supplierId, status) {
 }
 
 export function listSupplierUsers(supplierId, query) {
-  return adminRequest({
+  return request({
     url: `/biz/supplier/${supplierId}/users`,
     method: 'get',
     params: query
@@ -48,7 +48,7 @@ export function listSupplierUsers(supplierId, query) {
 }
 
 export function listSupplierUserCases(supplierId, userId, query) {
-  return adminRequest({
+  return request({
     url: `/biz/supplier/${supplierId}/users/${userId}/cases`,
     method: 'get',
     params: query

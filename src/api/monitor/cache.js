@@ -1,8 +1,8 @@
-import adminRequest from '@/utils/adminRequest'
+import request from '@/utils/request'
 
 // 查询缓存详细
 export function getCache() {
-  return adminRequest({
+  return request({
     url: '/monitor/cache',
     method: 'get'
   }).then(data => ({ data }))
@@ -10,7 +10,7 @@ export function getCache() {
 
 // 查询缓存名称列表
 export function listCacheName() {
-  return adminRequest({
+  return request({
     url: '/monitor/cache/getNames',
     method: 'get'
   }).then(data => ({ data }))
@@ -18,7 +18,7 @@ export function listCacheName() {
 
 // 查询缓存键名列表
 export function listCacheKey(cacheName) {
-  return adminRequest({
+  return request({
     url: '/monitor/cache/getKeys/' + cacheName,
     method: 'get'
   }).then(data => ({ data }))
@@ -26,7 +26,7 @@ export function listCacheKey(cacheName) {
 
 // 查询缓存内容
 export function getCacheValue(cacheName, cacheKey) {
-  return adminRequest({
+  return request({
     url: '/monitor/cache/getValue/' + cacheName + '/' + cacheKey,
     method: 'get'
   }).then(data => ({ data }))
@@ -34,7 +34,7 @@ export function getCacheValue(cacheName, cacheKey) {
 
 // 清理指定名称缓存
 export function clearCacheName(cacheName) {
-  return adminRequest({
+  return request({
     url: '/monitor/cache/clearCacheName/' + cacheName,
     method: 'delete'
   })
@@ -42,7 +42,7 @@ export function clearCacheName(cacheName) {
 
 // 清理指定键名缓存
 export function clearCacheKey(cacheKey) {
-  return adminRequest({
+  return request({
     url: '/monitor/cache/clearCacheKey/' + cacheKey,
     method: 'delete'
   })
@@ -50,7 +50,7 @@ export function clearCacheKey(cacheKey) {
 
 // 清理全部缓存
 export function clearCacheAll() {
-  return adminRequest({
+  return request({
     url: '/monitor/cache/clearCacheAll',
     method: 'delete'
   })

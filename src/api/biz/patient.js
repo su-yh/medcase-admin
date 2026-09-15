@@ -1,7 +1,7 @@
-import adminRequest from '@/utils/adminRequest'
+import request from '@/utils/request'
 
 export function listPatient(query) {
-  return adminRequest({
+  return request({
     url: '/biz/patient-user/list',
     method: 'get',
     params: query
@@ -9,14 +9,14 @@ export function listPatient(query) {
 }
 
 export function getPatient(userId) {
-  return adminRequest({
+  return request({
     url: '/biz/patient-user/' + userId,
     method: 'get'
   })
 }
 
 export function reviewPatient(userId, data) {
-  return adminRequest({
+  return request({
     url: `/biz/patient-user/${userId}/review`,
     method: 'post',
     data

@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 const requestMock = vi.fn()
 
-vi.mock('@/utils/adminRequest', () => ({
+vi.mock('@/utils/request', () => ({
   default: requestMock
 }))
 

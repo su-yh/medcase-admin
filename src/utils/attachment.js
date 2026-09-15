@@ -1,6 +1,6 @@
-import adminRequest from '@/utils/adminRequest'
+import request from '@/utils/request'
 
-export function fetchAttachmentBlob(attachment, requestClient = adminRequest) {
+export function fetchAttachmentBlob(attachment, requestClient = request) {
   const filePath = attachment?.filePath
   if (!filePath) {
     return Promise.resolve(null)
@@ -22,7 +22,7 @@ export function fetchAttachmentBlob(attachment, requestClient = adminRequest) {
 export async function downloadAttachment(
   attachment,
   {
-    requestClient = adminRequest,
+    requestClient = request,
     documentObject = typeof document !== 'undefined' ? document : null,
     urlObject = typeof URL !== 'undefined' ? URL : null
   } = {}

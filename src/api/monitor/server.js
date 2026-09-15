@@ -1,8 +1,8 @@
-import adminRequest from '@/utils/adminRequest'
+import request from '@/utils/request'
 
 // 获取服务信息
 export function getServer() {
-  return adminRequest({
+  return request({
     url: '/monitor/server',
     method: 'get'
   }).then(data => ({ data }))
